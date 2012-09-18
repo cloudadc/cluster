@@ -1,10 +1,23 @@
 package com.kylin.tankwar;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.util.*;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.Rectangle;
+import java.awt.Toolkit;
+import java.awt.event.KeyEvent;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
+
+import org.apache.log4j.Logger;
+
+
 
 public class Tank {
+	
+	private static final Logger logger = Logger.getLogger(Tank.class);
+	
 	public static final int XSPEED = 5;
 	public static final int YSPEED = 5;
 	
@@ -13,7 +26,7 @@ public class Tank {
 	
 	private int life = 100;
 	
-	TankClient tc;
+	TankFrame tc;
 	
 	private boolean good;
 	
@@ -66,10 +79,12 @@ public class Tank {
 		this.good = good;
 	}
 	
-	public Tank(int x, int y, boolean good, Direction dir,  TankClient tc) {
+	public Tank(int x, int y, boolean good, Direction dir,  TankFrame tc) {
 		this(x, y, good);
 		this.dir = dir;
 		this.tc = tc;
+		
+		logger.info("initialize a Tank instance[x= " + x + ", y= " + y + ", good= " + good + ", direction= " + dir );
 	}
 	
 	public void draw(Graphics g) {
@@ -156,8 +171,8 @@ public class Tank {
 		
 		if(x < 0) x = 0;
 		if(y < 30) y = 30;
-		if(x + Tank.WIDTH > TankClient.GAME_WIDTH) x = TankClient.GAME_WIDTH - Tank.WIDTH;
-		if(y + Tank.HEIGHT > TankClient.GAME_HEIGHT) y = TankClient.GAME_HEIGHT - Tank.HEIGHT;
+		if(x + Tank.WIDTH > TankFrame.GAME_WIDTH) x = TankFrame.GAME_WIDTH - Tank.WIDTH;
+		if(y + Tank.HEIGHT > TankFrame.GAME_HEIGHT) y = TankFrame.GAME_HEIGHT - Tank.HEIGHT;
 		
 		if(!good) {
 			Direction[] dirs = Direction.values();
@@ -217,7 +232,7 @@ public class Tank {
 	public void keyReleased(KeyEvent e) {
 		int key = e.getKeyCode();
 		switch(key) {
-		case KeyEvent.VK_CONTROL:
+		case KeyEvent.VK_SPACE:
 			fire();
 			break;
 		case KeyEvent.VK_LEFT :
@@ -232,7 +247,7 @@ public class Tank {
 		case KeyEvent.VK_DOWN :
 			bD = false;
 			break;
-		case KeyEvent.VK_A :
+		case KeyEvent.VK_F:
 			superFire();
 			break;
 		}
@@ -240,7 +255,9 @@ public class Tank {
 	}
 	
 	public Missile fire() {
-		if(!live) return null;
+		if(!live) {
+			return null;
+		}
 		int x = this.x + Tank.WIDTH/2 - Missile.WIDTH/2;
 		int y = this.y + Tank.HEIGHT/2 - Missile.HEIGHT/2;
 		Missile m = new Missile(x, y, good, ptDir, this.tc);
@@ -273,11 +290,7 @@ public class Tank {
 		return good;
 	}
 	
-	/**
-	 * ײǽ
-	 * @param w ��ײ��ǽ
-	 * @return ײ���˷���true������false
-	 */
+	
 	public boolean collidesWithWall(Wall w) {
 		if(this.live && this.getRect().intersects(w.getRect())) {
 			this.stay();

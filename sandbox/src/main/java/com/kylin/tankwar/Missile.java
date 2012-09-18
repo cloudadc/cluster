@@ -17,7 +17,7 @@ public class Missile {
 	private boolean good;
 	private boolean live = true;
 	
-	private TankClient tc;
+	private TankFrame tc;
 	
 	private static Toolkit tk = Toolkit.getDefaultToolkit();
 	private static Image[] missileImages = null;
@@ -51,7 +51,7 @@ public class Missile {
 		this.dir = dir;
 	}
 	
-	public Missile(int x, int y, boolean good, Direction dir, TankClient tc) {
+	public Missile(int x, int y, boolean good, Direction dir, TankFrame tc) {
 		this(x, y, dir);
 		this.good = good;
 		this.tc = tc;
@@ -129,7 +129,7 @@ public class Missile {
 			break;
 		}
 		
-		if(x < 0 || y < 0 || x > TankClient.GAME_WIDTH || y > TankClient.GAME_HEIGHT) {
+		if(x < 0 || y < 0 || x > TankFrame.GAME_WIDTH || y > TankFrame.GAME_HEIGHT) {
 			live = false;
 		}		
 	}

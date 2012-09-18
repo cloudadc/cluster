@@ -7,7 +7,7 @@ public class Explode {
 	int x, y;
 	private boolean live = true;
 	
-	private TankClient tc ;
+	private TankFrame tc ;
 	
 	private static Toolkit tk = Toolkit.getDefaultToolkit();
 	
@@ -29,7 +29,7 @@ public class Explode {
 	
 	private static boolean init = false;
 	
-	public Explode(int x, int y, TankClient tc) {
+	public Explode(int x, int y, TankFrame tc) {
 		this.x = x;
 		this.y = y;
 		this.tc = tc;

@@ -1,9 +1,13 @@
 package com.kylin.tankwar;
 import java.awt.*;
 
+import org.apache.log4j.Logger;
+
 public class Blood {
 	int x, y, w, h;
-	TankClient tc; 
+	TankFrame tc; 
+	
+	private static final Logger logger = Logger.getLogger(Blood.class);
 	
 	int step = 0;
 	private boolean live = true;
@@ -16,6 +20,8 @@ public class Blood {
 		x = pos[0][0];
 		y = pos[0][1];
 		w = h = 15;
+		
+		logger.info("initialize a Blood instance");
 	}
 	
 	public void draw(Graphics g) {

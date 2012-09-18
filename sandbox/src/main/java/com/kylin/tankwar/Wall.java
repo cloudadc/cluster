@@ -1,17 +1,25 @@
 package com.kylin.tankwar;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Rectangle;
+
+import org.apache.log4j.Logger;
 
 public class Wall {
 	int x, y, w, h;
-	TankClient tc ;
+	TankFrame tc ;
 	
-	public Wall(int x, int y, int w, int h, TankClient tc) {
+	private static final Logger logger = Logger.getLogger(Wall.class);
+	
+	public Wall(int x, int y, int w, int h, TankFrame tc) {
 		this.x = x;
 		this.y = y;
 		this.w = w;
 		this.h = h;
 		this.tc = tc;
+		
+		logger.info("initialize a Wall instance, [x= " + x + ", y= " + y + ", w= " + w + ", h= " + h);
 	}
 	
 	public void draw(Graphics g) {

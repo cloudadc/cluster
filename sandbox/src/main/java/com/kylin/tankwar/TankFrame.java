@@ -11,17 +11,22 @@ import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 
 
-public class TankClient extends Frame {
+
+public class TankFrame extends Frame {
 
 	private static final long serialVersionUID = -7910394094118792741L;
 	public static final int GAME_WIDTH = 800;
 	public static final int GAME_HEIGHT = 600;
 	
+	private static final Logger logger = Logger.getLogger(TankFrame.class);
+	
 	Tank myTank = new Tank(50, 50, true, Direction.STOP, this);
 	
-	Wall w1 = new Wall(100, 200, 20, 150, this), w2 = new Wall(300, 100, 300, 20, this);
+	Wall w1 = new Wall(100, 200, 20, 150, this);
+	Wall w2 = new Wall(300, 100, 300, 20, this);
 	
 	List<Explode> explodes = new ArrayList<Explode>();
 	List<Missile> missiles = new ArrayList<Missile>();
@@ -37,11 +42,16 @@ public class TankClient extends Frame {
 		g.drawString("tanks    count:" + tanks.size(), 10, 90);
 		g.drawString("tanks     life:" + myTank.getLife(), 10, 110);
 		
-		if(tanks.size() <= 0) {
-			for(int i=0; i<Integer.parseInt(PropertyMgr.getProperty("reProduceTankCount")); i++) {
-				tanks.add(new Tank(50 + 40*(i+1), 50, false, Direction.D, this));
-			}
-		}
+		logger.trace("missiles count:" + missiles.size());
+		logger.trace("explodes count:" + explodes.size());
+		logger.trace("tanks    count:" + tanks.size());
+		logger.trace("tanks     life:" + myTank.getLife());
+		
+//		if(tanks.size() <= 0) {
+//			for(int i=0; i<Integer.parseInt(PropertyMgr.getProperty("reProduceTankCount")); i++) {
+//				tanks.add(new Tank(50 + 40*(i+1), 50, false, Direction.D, this));
+//			}
+//		}
 		
 		for(int i=0; i<missiles.size(); i++) {
 			Missile m = missiles.get(i);
@@ -80,7 +90,7 @@ public class TankClient extends Frame {
 		}
 		Graphics gOffScreen = offScreenImage.getGraphics();
 		Color c = gOffScreen.getColor();
-		gOffScreen.setColor(Color.BLACK);
+		gOffScreen.setColor(Color.LIGHT_GRAY);
 		gOffScreen.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
 		gOffScreen.setColor(c);
 		paint(gOffScreen);
@@ -90,10 +100,14 @@ public class TankClient extends Frame {
 	
 	public void lauchFrame() {
 	
-		int initTankCount = Integer.parseInt(PropertyMgr.getProperty("initTankCount"));
-		for(int i=0; i<initTankCount; i++) {
-			tanks.add(new Tank(50 + 40*(i+1), 50, false, Direction.D, this));
-		}
+		logger.info("lauch Frame Start");
+		
+//		int initTankCount = Integer.parseInt(PropertyMgr.getProperty("initTankCount"));
+//		logger.info("add enemy Tank number is: " + initTankCount);
+//		
+//		for(int i=0; i<initTankCount; i++) {
+//			tanks.add(new Tank(50 + 40*(i+1), 50, false, Direction.D, this));
+//		}
 		
 		//this.setLocation(400, 300);
 		this.setSize(GAME_WIDTH, GAME_HEIGHT);
@@ -114,7 +128,7 @@ public class TankClient extends Frame {
 	}
 
 	public static void main(String[] args) {
-		TankClient tc = new TankClient();
+		TankFrame tc = new TankFrame();
 		tc.lauchFrame();
 	}
 	
