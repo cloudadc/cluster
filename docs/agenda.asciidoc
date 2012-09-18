@@ -1,0 +1,11 @@
+Agenda
+------
+
+|=========================================================
+|Event                                |Status       | Descriptions
+|integrate oroginal project           |Pending      | original project is a simple java project, came from my college work
+|update, adjust origin project        |Scheduled    | use log4j
+|enable jGroups replicate session     |Scheduled    | come soon
+|enable Infinispan replicate session  |Scheduled    | come soone
+|=========================================================
+
