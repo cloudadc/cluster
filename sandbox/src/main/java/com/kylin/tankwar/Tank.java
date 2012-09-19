@@ -35,7 +35,10 @@ public class Tank {
 	
 	private static Random r = new Random();
 	
-	private boolean bL=false, bU=false, bR=false, bD = false;
+	private boolean bL = false;
+	private boolean bU = false;
+	private boolean bR = false;
+	private boolean bD = false;
 		
 	private Direction dir = Direction.STOP;
 	private Direction ptDir = Direction.D;
@@ -127,7 +130,7 @@ public class Tank {
 		move();
 	}
 	
-	void move() {
+	private void move() {
 		
 		this.oldX = x;
 		this.oldY = y;
@@ -193,10 +196,12 @@ public class Tank {
 	}
 	
 	public void keyPressed(KeyEvent e) {
+		
 		int key = e.getKeyCode();
-		switch(key) {
-		case KeyEvent.VK_F2 :
-			if(!this.live) {
+
+		switch (key) {
+		case KeyEvent.VK_F2:
+			if (!this.live) {
 				this.live = true;
 				this.life = 100;
 			}
@@ -214,28 +219,46 @@ public class Tank {
 			bD = true;
 			break;
 		}
+		
 		locateDirection();
 	}
 	
-	void locateDirection() {
-		if(bL && !bU && !bR && !bD) dir = Direction.L;
-		else if(bL && bU && !bR && !bD) dir = Direction.LU;
-		else if(!bL && bU && !bR && !bD) dir = Direction.U;
-		else if(!bL && bU && bR && !bD) dir = Direction.RU;
-		else if(!bL && !bU && bR && !bD) dir = Direction.R;
-		else if(!bL && !bU && bR && bD) dir = Direction.RD;
-		else if(!bL && !bU && !bR && bD) dir = Direction.D;
-		else if(bL && !bU && !bR && bD) dir = Direction.LD;
-		else if(!bL && !bU && !bR && !bD) dir = Direction.STOP;
+	private void locateDirection() {
+		
+		logger.debug("locate direction [bL= " + bL + ", bU= " + bU + ", bR= " + bR + ", bD= " + bD + "]");
+		
+		if(bL && !bU && !bR && !bD) {
+			dir = Direction.L;
+		} else if(bL && bU && !bR && !bD) {
+			dir = Direction.LU;
+		} else if(!bL && bU && !bR && !bD) {
+			dir = Direction.U;
+		} else if(!bL && bU && bR && !bD) {
+			dir = Direction.RU;
+		} else if(!bL && !bU && bR && !bD) {
+			dir = Direction.R;
+		} else if(!bL && !bU && bR && bD) {
+			dir = Direction.RD;
+		} else if(!bL && !bU && !bR && bD) {
+			dir = Direction.D;
+		} else if(bL && !bU && !bR && bD) {
+			dir = Direction.LD;
+		} else if(!bL && !bU && !bR && !bD) {
+			dir = Direction.STOP;
+		}
+		
+		logger.debug("Tank direction: " + dir);
 	}
 
 	public void keyReleased(KeyEvent e) {
+		
 		int key = e.getKeyCode();
-		switch(key) {
+		
+		switch (key) {
 		case KeyEvent.VK_SPACE:
 			fire();
 			break;
-		case KeyEvent.VK_LEFT :
+		case KeyEvent.VK_LEFT:
 			bL = false;
 			break;
 		case KeyEvent.VK_UP :
@@ -251,13 +274,18 @@ public class Tank {
 			superFire();
 			break;
 		}
+		
 		locateDirection();		
 	}
 	
 	public Missile fire() {
+		
+		logger.debug("Tank fire, Tank direction= " + dir + "(" + x + ", " + y + ")");
+		
 		if(!live) {
 			return null;
 		}
+		
 		int x = this.x + Tank.WIDTH/2 - Missile.WIDTH/2;
 		int y = this.y + Tank.HEIGHT/2 - Missile.HEIGHT/2;
 		Missile m = new Missile(x, y, good, ptDir, this.tc);
@@ -266,7 +294,11 @@ public class Tank {
 	}
 	
 	public Missile fire(Direction dir) {
-		if(!live) return null;
+		
+		if(!live) {
+			return null;
+		}
+		
 		int x = this.x + Tank.WIDTH/2 - Missile.WIDTH/2;
 		int y = this.y + Tank.HEIGHT/2 - Missile.HEIGHT/2;
 		Missile m = new Missile(x, y, good, dir, this.tc);

@@ -53,7 +53,7 @@ public class TankFrame extends Frame {
 //			}
 //		}
 		
-		for(int i=0; i<missiles.size(); i++) {
+		for (int i = 0; i < missiles.size(); i++) {
 			Missile m = missiles.get(i);
 			m.hitTanks(tanks);
 			m.hitTank(myTank);
@@ -64,12 +64,12 @@ public class TankFrame extends Frame {
 			//else m.draw(g);
 		}
 		
-		for(int i=0; i<explodes.size(); i++) {
+		for (int i = 0; i < explodes.size(); i++) {
 			Explode e = explodes.get(i);
 			e.draw(g);
 		}
 		
-		for(int i=0; i<tanks.size(); i++) {
+		for (int i = 0; i < tanks.size(); i++) {
 			Tank t = tanks.get(i);
 			t.collidesWithWall(w1);
 			t.collidesWithWall(w2);

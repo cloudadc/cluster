@@ -4,7 +4,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
+
 public class Missile {
+	
+	private static final Logger logger = Logger.getLogger(Missile.class);
+	
 	public static final int XSPEED = 10;
 	public static final int YSPEED = 10;
 	
@@ -49,6 +54,8 @@ public class Missile {
 		this.x = x;
 		this.y = y;
 		this.dir = dir;
+		
+		logger.debug("initialize a missle, direction= " + dir + " (" + x + ", " + y + ")");
 	}
 	
 	public Missile(int x, int y, boolean good, Direction dir, TankFrame tc) {
@@ -58,12 +65,14 @@ public class Missile {
 	}
 	
 	public void draw(Graphics g) {
-		if(!live) {
+
+		if (!live) {
 			tc.missiles.remove(this);
 			return;
 		}
 		
 		switch(dir) {
+		
 		case L:
 			g.drawImage(imgs.get("L"), x, y, null);
 			break;
