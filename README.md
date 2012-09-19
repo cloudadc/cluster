@@ -8,3 +8,11 @@ TankWar
 Project Agenda 
 ===============
 https://github.com/kylinsoong/TankWar/blob/master/docs/agenda.asciidoc
+
+
+Related Link
+============
+
+* http://www.jgroups.org/
+* https://github.com/belaban/JGroups
+* http://www.jboss.org/projects

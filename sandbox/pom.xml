@@ -44,6 +44,11 @@
     <dependencies>
 
 	<dependency>
+           <groupId>org.jgroups</groupId>
+           <artifactId>jgroups</artifactId>
+           <version>3.1.0.Final</version>
+       </dependency>
+	<dependency>
            <groupId>log4j</groupId>
            <artifactId>log4j</artifactId>
            <version>1.2.16</version>

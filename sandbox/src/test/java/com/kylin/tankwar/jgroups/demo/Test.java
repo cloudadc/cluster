@@ -1,4 +1,4 @@
-package com.kylin.tankwar.test;
+package com.kylin.tankwar.jgroups.demo;
 
 import org.apache.log4j.Logger;
 
