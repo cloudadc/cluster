@@ -88,6 +88,7 @@ public class Tank {
 		this.tc = tc;
 		
 		logger.info("initialize a Tank instance[x= " + x + ", y= " + y + ", good= " + good + ", direction= " + dir );
+		
 	}
 	
 	public void draw(Graphics g) {
@@ -256,7 +257,7 @@ public class Tank {
 		
 		switch (key) {
 		case KeyEvent.VK_SPACE:
-			fire();
+			fire(ptDir);
 			break;
 		case KeyEvent.VK_LEFT:
 			bL = false;
@@ -278,29 +279,38 @@ public class Tank {
 		locateDirection();		
 	}
 	
-	public Missile fire() {
-		
-		logger.debug("Tank fire, Tank direction= " + dir + "(" + x + ", " + y + ")");
-		
-		if(!live) {
-			return null;
-		}
-		
-		int x = this.x + Tank.WIDTH/2 - Missile.WIDTH/2;
-		int y = this.y + Tank.HEIGHT/2 - Missile.HEIGHT/2;
-		Missile m = new Missile(x, y, good, ptDir, this.tc);
-		tc.missiles.add(m);
-		return m;
-	}
 	
+	/**
+	 * 
+	 * Tank fire will create a Missile, Image cause missile's initial position not exact 
+	 * (Tank.WIDTH/2 - Missile.WIDTH/2 , Tank.HEIGHT/2 - Missile.HEIGHT/2)
+	 * 
+	 */
 	public Missile fire(Direction dir) {
 		
 		if(!live) {
 			return null;
 		}
 		
-		int x = this.x + Tank.WIDTH/2 - Missile.WIDTH/2;
-		int y = this.y + Tank.HEIGHT/2 - Missile.HEIGHT/2;
+		int x = 0, y = 0;
+		
+//		x = this.x + Tank.WIDTH/2 - Missile.WIDTH/2 ;
+//		y = this.y + Tank.HEIGHT/2 - Missile.HEIGHT/2 ;
+		
+		if(dir == Direction.LU || dir == Direction.RU || dir == Direction.RD || dir == Direction.LD) {
+			x = this.x + Tank.WIDTH/2 - Missile.WIDTH/2 + 20;
+			y = this.y + Tank.HEIGHT/2 - Missile.HEIGHT/2 + 20;
+		} else if(dir == Direction.U) {
+			x = this.x + Tank.WIDTH/2 - Missile.WIDTH/2 + 10;
+			y = this.y + Tank.HEIGHT/2 - Missile.HEIGHT/2 + 10;
+		} else if(dir == Direction.R || dir == Direction.L) {
+			x = this.x + Tank.WIDTH/2 - Missile.WIDTH/2 + 10;
+			y = this.y + Tank.HEIGHT/2 - Missile.HEIGHT/2 + 13;
+		} else if(dir == Direction.D) {
+			x = this.x + Tank.WIDTH/2 - Missile.WIDTH/2 + 8;
+			y = this.y + Tank.HEIGHT/2 - Missile.HEIGHT/2 + 10;
+		} 
+		
 		Missile m = new Missile(x, y, good, dir, this.tc);
 		tc.missiles.add(m);
 		return m;

@@ -19,7 +19,7 @@ public class Wall {
 		this.h = h;
 		this.tc = tc;
 		
-		logger.info("initialize a Wall instance, [x= " + x + ", y= " + y + ", w= " + w + ", h= " + h);
+		logger.info("initialize a Wall instance, [x= " + x + ", y= " + y + ", w= " + w + ", h= " + h + "]");
 	}
 	
 	public void draw(Graphics g) {
