@@ -1,6 +1,9 @@
 What's JGroups
 --------------
 
+JUDCon 2010 Berlin - Running JBoss Cluster in the Cloud
++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
 * Reliable cluster transport
 
 * Tasks
@@ -9,7 +12,8 @@ What's JGroups
 ** Retransmission, ordering, duplicate, removal
 ** Transports: UDP (IP multicasting), TCP
 
-.JGroups architecture
 image::img/JGroups_architecture.png[]
 
+Bela Ban's Note:
+++++++++++++++++
 
