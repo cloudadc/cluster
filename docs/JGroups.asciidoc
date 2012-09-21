@@ -1,0 +1,15 @@
+What's JGroups
+--------------
+
+* Reliable cluster transport
+
+* Tasks
+** Discovers nodes in a cluster
+** Joins new nodes, removes left or crashed nodes
+** Retransmission, ordering, duplicate, removal
+** Transports: UDP (IP multicasting), TCP
+
+.JGroups architecture
+image::img/JGroups_architecture.png[]
+
+
