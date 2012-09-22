@@ -17,11 +17,20 @@ image::img/JGroups_architecture.png[JGroups architecture]
 Bela Ban's Note:
 ++++++++++++++++
 
-* JGroups is toolkit for reliable group communication. Processes can join a group, send messages to all members or single members and receive messages from members in the group. 
-* The JGroups system keeps track of the members in every group, and notifies group members when a new member joins, or an existing member leaves or crashes.
-* A group is identified by its name. Groups do not have to be created explicitly; when a process joins a non-existing group, that group will be created automatically.
-*  Processes of a group can be located on the same host, within the same LAN, or across a WAN. A member can be part of multiple groups.
+* JGroups is toolkit for reliable group communication. Processes can join a group, send messages to all members or single members and receive messages from members in the group. The JGroups system keeps track of the members in every group, and notifies group members when a new member joins, or an existing member leaves or crashes. A group is identified by its name. Groups do not have to be created explicitly; when a process joins a non-existing group, that group will be created automatically. Processes of a group can be located on the same host, within the same LAN, or across a WAN. A member can be part of multiple groups.
 
 image::img/The_architecture_of_JGroups.png[The architecture of JGroups]
+
+It consists of 3 parts:
+
+. the Channel used by application programmers to build reliable group communication applications
+. the building blocks, which are layered on top of the channel and provide a higher abstraction 
+. the protocol stack, which implements the properties specified for a given channel.
+
+* A channel is connected to a protocol stack. Whenever the application sends a message, the channel passes it on to the protocol stack, which passes it to the topmost protocol. The protocol processes the message and the passes it down to the protocol below it. Thus the message is handed from protocol to protocol until the bottom (transport) protocol puts it on the network. The same happens in the reverse direction: the transport protocol listens for messages on the network. When a message is received it will be handed up the protocol stack until it reaches the channel. The channel then invokes the receive() callback in the application to deliver the message.
+
+* When an application connects to the channel, the protocol stack will be started, and when it disconnects the stack will be stopped. When the channel is closed, the stack will be destroyed, releasing its resources.
+
+
 
 
