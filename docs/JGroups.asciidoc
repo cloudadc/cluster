@@ -27,10 +27,35 @@ It consists of 3 parts:
 . the building blocks, which are layered on top of the channel and provide a higher abstraction 
 . the protocol stack, which implements the properties specified for a given channel.
 
-
 * A channel is connected to a protocol stack. Whenever the application sends a message, the channel passes it on to the protocol stack, which passes it to the topmost protocol. The protocol processes the message and the passes it down to the protocol below it. Thus the message is handed from protocol to protocol until the bottom (transport) protocol puts it on the network. The same happens in the reverse direction: the transport protocol listens for messages on the network. When a message is received it will be handed up the protocol stack until it reaches the channel. The channel then invokes the receive() callback in the application to deliver the message.
 
 * When an application connects to the channel, the protocol stack will be started, and when it disconnects the stack will be stopped. When the channel is closed, the stack will be destroyed, releasing its resources.
+
+How to run Test & Demo?
+-----------------------
+* All Test code
+----
+java -cp JGroups-stu.jar:jgroups-3.0.14.Final.jar:log4j-1.2.16.jar  -Djava.net.preferIPv4Stack=true com.kylin.jgroups.JGupsAPITestRunner
+----
+
+* `com.kylin.jgroups.te.JChannelGetTest`
+----
+java -cp JGroups-stu.jar:jgroups-3.0.14.Final.jar:log4j-1.2.16.jar  -Djava.net.preferIPv4Stack=true com.kylin.jgroups.te.JChannelGetTest
+----
+NOTE: JChannelGetTest can explicitily explan the relations among View Id, View Creater, View Coordinator, View Memembers
+
+* `com.kylin.jgroups.demo.SimplisticChat`
+----
+java -cp JGroups-stu.jar:jgroups-3.0.14.Final.jar -Djava.net.preferIPv4Stack=true com.kylin.jgroups.demo.SimplisticChat
+---
+
+* `com.kylin.jgroups.demo.ProgrammaticChat`
+----
+java -cp JGroups-stu.jar:jgroups-3.0.14.Final.jar -Djava.net.preferIPv4Stack=true com.kylin.jgroups.demo.ProgrammaticChat
+----
+
+NOTE: difference between `SimplisticChat` and `ProgrammaticChat` is one use default *udp.xml* construct JChnnel, the other use *JGroups API*
+
 
 
 
