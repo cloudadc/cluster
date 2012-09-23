@@ -5,6 +5,8 @@ import org.apache.log4j.Logger;
 import com.kylin.jgroups.test.AddressTest;
 import com.kylin.jgroups.test.EventTest;
 import com.kylin.jgroups.test.HeaderTest;
+import com.kylin.jgroups.test.JChannelGetTest;
+import com.kylin.jgroups.test.JChannelTest;
 import com.kylin.jgroups.test.MessageTest;
 import com.kylin.jgroups.test.UtilTest;
 import com.kylin.jgroups.test.ViewTest;
@@ -33,6 +35,12 @@ public class JGroupsAPITestRunner {
 		logger.info("END\n");
 		
 		new ViewTest().test();
+		logger.info("END\n");
+		
+		new JChannelTest().test();
+		logger.info("END\n");
+		
+		new JChannelGetTest().test();
 		logger.info("END\n");
 		
 		logger.info("----- JGroups API Test End --------");

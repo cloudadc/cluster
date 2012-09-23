@@ -1,7 +1,6 @@
 package com.kylin.jgroups.test;
 
 import org.apache.log4j.Logger;
-import org.jgroups.Address;
 import org.jgroups.JChannel;
 import org.jgroups.View;
 
