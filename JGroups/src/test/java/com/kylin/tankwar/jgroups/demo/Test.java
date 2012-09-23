@@ -8,8 +8,12 @@ public class Test {
 
 	public static void main(String[] args) {
 
-		logger.info("TankWar");
-		logger.debug("TankWar Debug");
+		A a = new A();
+		B b = new B();
+		
+		logger.info(a == b);
+		logger.info(b == a);
+		
 	}
 
 }
