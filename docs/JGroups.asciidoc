@@ -42,12 +42,13 @@ java -cp JGroups-stu.jar:jgroups-3.0.14.Final.jar:log4j-1.2.16.jar  -Djava.net.p
 ----
 java -cp JGroups-stu.jar:jgroups-3.0.14.Final.jar:log4j-1.2.16.jar  -Djava.net.preferIPv4Stack=true com.kylin.jgroups.te.JChannelGetTest
 ----
+
 NOTE: JChannelGetTest can explicitily explan the relations among View Id, View Creater, View Coordinator, View Memembers
 
 * `com.kylin.jgroups.demo.SimplisticChat`
 ----
 java -cp JGroups-stu.jar:jgroups-3.0.14.Final.jar -Djava.net.preferIPv4Stack=true com.kylin.jgroups.demo.SimplisticChat
----
+----
 
 * `com.kylin.jgroups.demo.ProgrammaticChat`
 ----
