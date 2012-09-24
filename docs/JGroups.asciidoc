@@ -57,6 +57,12 @@ java -cp JGroups-stu.jar:jgroups-3.0.14.Final.jar -Djava.net.preferIPv4Stack=tru
 
 NOTE: difference between `SimplisticChat` and `ProgrammaticChat` is one use default *udp.xml* construct JChnnel, the other use *JGroups API*
 
+* `com.kylin.jgroups.test.MessageDispatcherTest`
+----
+java -cp JGroups-stu.jar:jgroups-3.0.14.Final.jar:log4j-1.2.16.jar  -Djava.net.preferIPv4Stack=true com.kylin.jgroups.test.MessageDispatcherTest
+----
+This Test will illustrate how to use MessageDispatcher, open multiple terminal window, run MessageDispatcherTest as a sequence
+
 
 
 
