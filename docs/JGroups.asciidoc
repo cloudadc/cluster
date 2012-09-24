@@ -75,6 +75,11 @@ java -cp JGroups-stu.jar:jgroups-3.0.14.Final.jar:log4j-1.2.16.jar  -Djava.net.p
 ----
 This Test will illustrate how to use RpcDispatcherTest with Future listener, open multiple terminal window, run RpcDispatcherTestWithFuture as a sequence, then you can see all view members's getUser method, thread will sleep a random integer less then 3000 miliseconds, then constructor a User instance, which use random sleep time as id, View id as name, all memebers as career.
 
+* `com.kylin.jgroups.test.RpcDispatcherTestWithRespFilter`
+----
+java -cp JGroups-stu.jar:jgroups-3.0.14.Final.jar:log4j-1.2.16.jar  -Djava.net.preferIPv4Stack=true com.kylin.jgroups.test.RpcDispatcherTestWithRespFilter
+----
+This Test will illustrate how to use RpcDispatcherTestWithRespFilter, open multiple terminal window, run RpcDispatcherTest as a sequence, then you can see all view members are invoved, also a User object will returned, User use view members zise as id, view id as name, all members as career.
 
 
 
