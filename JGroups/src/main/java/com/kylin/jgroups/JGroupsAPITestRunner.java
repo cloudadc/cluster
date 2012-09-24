@@ -10,6 +10,8 @@ import com.kylin.jgroups.test.JChannelTest;
 import com.kylin.jgroups.test.MessageDispatcherTest;
 import com.kylin.jgroups.test.MessageTest;
 import com.kylin.jgroups.test.RpcDispatcherTest;
+import com.kylin.jgroups.test.RpcDispatcherTestWithFuture;
+import com.kylin.jgroups.test.RpcDispatcherTestWithRespFilter;
 import com.kylin.jgroups.test.UtilTest;
 import com.kylin.jgroups.test.ViewTest;
 
@@ -49,6 +51,12 @@ public class JGroupsAPITestRunner {
 		logger.info("END\n");
 		
 		new RpcDispatcherTest().test();
+		logger.info("END\n");
+		
+		new RpcDispatcherTestWithFuture().test();
+		logger.info("END\n");
+		
+		new RpcDispatcherTestWithRespFilter().test();
 		logger.info("END\n");
 		
 		logger.info("----- JGroups API Test End --------");
