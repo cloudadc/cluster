@@ -63,6 +63,11 @@ java -cp JGroups-stu.jar:jgroups-3.0.14.Final.jar:log4j-1.2.16.jar  -Djava.net.p
 ----
 This Test will illustrate how to use MessageDispatcher, open multiple terminal window, run MessageDispatcherTest as a sequence
 
+* `com.kylin.jgroups.test.RpcDispatcherTest`
+----
+java -cp JGroups-stu.jar:jgroups-3.0.14.Final.jar:log4j-1.2.16.jar  -Djava.net.preferIPv4Stack=true com.kylin.jgroups.test.RpcDispatcherTest
+----
+This Test will illustrate how to use RpcDispatcherTest, open multiple terminal window, run MessageDispatcherTest as a sequence, then you can see all view members are invoved, also User object will returned, User use view members zise as id, view id as name, all members as career.
 
 
 
