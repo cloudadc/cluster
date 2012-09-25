@@ -1,0 +1,25 @@
+How to Run JGroups Usage Demo?
+------------------------------
+
+Chat Demo
+++++++++++
+
+* This demo simulate group chat, one of group members set a message, all group member will recieve this message
+* How to run?
+In a local network, start `ChatDemo` sequentially, In node 1:
+----
+java -cp jgroups-3.1.0.Final.jar:JGroups-stu.jar:log4j-1.2.16.jar  -Djava.net.preferIPv4Stack=true com.kylin.jgroups.demo.ChatDemo -p udp.xml -n node-1 -c ChatCluster
+----
+
+node 2:
+----
+java -cp jgroups-3.1.0.Final.jar:JGroups-stu.jar:log4j-1.2.16.jar  -Djava.net.preferIPv4Stack=true com.kylin.jgroups.demo.ChatDemo -p udp.xml -n node-2 -c ChatCluster
+----
+
+node 3:
+----
+java -cp jgroups-3.1.0.Final.jar:JGroups-stu.jar:log4j-1.2.16.jar  -Djava.net.preferIPv4Stack=true com.kylin.jgroups.demo.ChatDemo -p udp.xml -n node-1 -c ChatCluster
+----
+
+* Analysing
+In node 1 print any message, node 2 and node 3 will recieve this message

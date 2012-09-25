@@ -6,15 +6,19 @@ import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
+import com.kylin.tankwar.jgroups.TankDraw;
 
 
-public class Tank {
+
+public class Tank implements Serializable{
 	
 	private static final Logger logger = Logger.getLogger(Tank.class);
 	
@@ -99,7 +103,9 @@ public class Tank {
 			return;
 		}
 		
-		if(good) bb.draw(g);
+		if(good) {
+			bb.draw(g);
+		}
 		
 		switch(ptDir) {
 		case L:
@@ -370,7 +376,8 @@ public class Tank {
 		this.life = life;
 	}
 	
-	private class BloodBar {
+	private class BloodBar implements Serializable{
+		
 		public void draw(Graphics g) {
 			Color c = g.getColor();
 			g.setColor(Color.RED);
@@ -388,5 +395,29 @@ public class Tank {
 			return true;
 		}
 		return false;
+	}
+	
+	private String id = UUID.randomUUID().toString();
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+	
+	public TankDraw getTankDraw() {
+		return new TankDraw(id, good, live, life, x, y, ptDir);
+	}
+	
+	public void updateTank(TankDraw td){
+		this.id = td.getId();
+		this.good = td.isGood();
+		this.live = td.isLive();
+		this.life = td.getLife();
+		this.x = td.getX();
+		this.y = td.getY();
+		this.ptDir = td.getPtDir();
 	}
 }

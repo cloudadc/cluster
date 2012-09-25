@@ -8,14 +8,18 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import com.kylin.tankwar.jgroups.Session;
+import com.kylin.tankwar.jgroups.TankWarCommunication;
 
 
-public class TankFrame extends Frame {
+
+public class TankFrame extends Frame implements Serializable{
 
 	private static final long serialVersionUID = -7910394094118792741L;
 	public static final int GAME_WIDTH = 800;
@@ -34,6 +38,8 @@ public class TankFrame extends Frame {
 	Image offScreenImage = null;
 	
 	Blood b = new Blood();
+	
+	TankWarCommunication comm = new TankWarCommunication();
 
 	public void paint(Graphics g) {
 		
@@ -47,11 +53,15 @@ public class TankFrame extends Frame {
 		logger.trace("tanks    count:" + tanks.size());
 		logger.trace("tanks     life:" + myTank.getLife());
 		
-//		if(tanks.size() <= 0) {
-//			for(int i=0; i<Integer.parseInt(PropertyMgr.getProperty("reProduceTankCount")); i++) {
-//				tanks.add(new Tank(50 + 40*(i+1), 50, false, Direction.D, this));
-//			}
-//		}
+		if (tanks.size() <= 0) {
+			for (int i = 0; i < 5 ; i++) {
+				tanks.add(new Tank(50 + 40 * (i + 1), 50, false, Direction.D, this));
+			}
+		}
+		
+//		Session session = comm.synSend(new Session(tanks, missiles, explodes));
+//		updateSession(session);
+		
 		
 		for (int i = 0; i < missiles.size(); i++) {
 			Missile m = missiles.get(i);
@@ -84,6 +94,26 @@ public class TankFrame extends Frame {
 		b.draw(g);
 	}
 	
+	private void updateSession(Session session) {
+		
+		logger.info("update Session");
+
+		try {
+			tanks.clear();
+			tanks.addAll(session.getTanks());
+			
+			missiles.clear();
+			missiles.addAll(session.getMissiles());
+			
+			explodes.clear();
+			explodes.addAll(session.getExplodes());
+		} catch (Exception e) {
+			logger.error(e);
+			throw new RuntimeException(e);
+		}
+		
+	}
+
 	public void update(Graphics g) {
 		if(offScreenImage == null) {
 			offScreenImage = this.createImage(GAME_WIDTH, GAME_HEIGHT);
@@ -97,10 +127,16 @@ public class TankFrame extends Frame {
 		g.drawImage(offScreenImage, 0, 0, null);
 	}
 	
+	public void launchComm() {
+		
+		logger.info("launch communication Start");
+		
+		comm.connect("udp.xml", "TestCluster");
+	}
 	
-	public void lauchFrame() {
+	public void launchFrame() {
 	
-		logger.info("lauch Frame Start");
+		logger.info("launch Frame Start");
 		
 //		int initTankCount = Integer.parseInt(PropertyMgr.getProperty("initTankCount"));
 //		logger.info("add enemy Tank number is: " + initTankCount);
@@ -118,18 +154,20 @@ public class TankFrame extends Frame {
 			}
 		});
 		this.setResizable(false);
-		this.setBackground(Color.GREEN);
+		this.setBackground(Color.LIGHT_GRAY);
 		
 		this.addKeyListener(new KeyMonitor());
 		
 		setVisible(true);
 		
 		new Thread(new PaintThread()).start();
+		
 	}
 
 	public static void main(String[] args) {
 		TankFrame tc = new TankFrame();
-		tc.lauchFrame();
+		tc.launchComm();
+		tc.launchFrame();
 	}
 	
 	private class PaintThread implements Runnable {
@@ -146,7 +184,7 @@ public class TankFrame extends Frame {
 		}
 	}
 	
-	private class KeyMonitor extends KeyAdapter {
+	private class KeyMonitor extends KeyAdapter  {
 
 		public void keyReleased(KeyEvent e) {
 			myTank.keyReleased(e);

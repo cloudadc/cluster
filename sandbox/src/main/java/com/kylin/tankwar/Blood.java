@@ -1,9 +1,10 @@
 package com.kylin.tankwar;
 import java.awt.*;
+import java.io.Serializable;
 
 import org.apache.log4j.Logger;
 
-public class Blood {
+public class Blood implements Serializable{
 	int x, y, w, h;
 	TankFrame tc; 
 	

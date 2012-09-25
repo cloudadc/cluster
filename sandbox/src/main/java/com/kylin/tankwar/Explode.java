@@ -2,9 +2,12 @@ package com.kylin.tankwar;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Toolkit;
+import java.io.Serializable;
 
-public class Explode {
-	int x, y;
+public class Explode implements Serializable{
+	
+	public int x;
+	public int y;
 	private boolean live = true;
 	
 	private TankFrame tc ;
