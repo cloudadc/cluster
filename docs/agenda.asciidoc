@@ -7,6 +7,7 @@ Agenda
 |update, adjust origin project        |Done         | use log4j, modify origin code for missile be emitted From Tank center
 |JGroups study                        |Pending      | API study test code
 |enable jGroups replicate session     |Pending      | use JGroups replicate session
+|reconstruct whole code architecture  |Scheduled    | come soon
 |enable Infinispan replicate session  |Scheduled    | come soon
 |=========================================================
 
