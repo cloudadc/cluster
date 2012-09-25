@@ -6,7 +6,7 @@ Agenda
 |integrate oroginal project           |Done         | original project is a simple java project, came from my college homework
 |update, adjust origin project        |Done         | use log4j, modify origin code for missile be emitted From Tank center
 |JGroups study                        |Pending      | API study test code
-|enable jGroups replicate session     |Scheduled    | come soon
+|enable jGroups replicate session     |Pending      | use JGroups replicate session
 |enable Infinispan replicate session  |Scheduled    | come soon
 |=========================================================
 
