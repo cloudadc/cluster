@@ -3,11 +3,10 @@ package com.kylin.tankwar;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
-import java.io.Serializable;
 
 import org.apache.log4j.Logger;
 
-public class Wall implements Serializable{
+public class Wall{
 	int x, y, w, h;
 	TankFrame tc ;
 	

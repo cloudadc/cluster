@@ -2,9 +2,8 @@ package com.kylin.tankwar;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Toolkit;
-import java.io.Serializable;
 
-public class Explode implements Serializable{
+public class Explode {
 	
 	public int x;
 	public int y;

@@ -15,7 +15,8 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import com.kylin.tankwar.jgroups.Session;
-import com.kylin.tankwar.jgroups.TankWarCommunication;
+import com.kylin.tankwar.jgroups.TankDraw;
+import com.kylin.tankwar.jgroups.SynchCommunication;
 
 
 
@@ -39,7 +40,7 @@ public class TankFrame extends Frame implements Serializable{
 	
 	Blood b = new Blood();
 	
-	TankWarCommunication comm = new TankWarCommunication();
+	SynchCommunication comm = new SynchCommunication();
 
 	public void paint(Graphics g) {
 		
@@ -59,8 +60,9 @@ public class TankFrame extends Frame implements Serializable{
 			}
 		}
 		
-//		Session session = comm.synSend(new Session(tanks, missiles, explodes));
-//		updateSession(session);
+		// currently use synchronous mechanism replicate session
+		Session session = comm.synchSend(getOriginSession());
+		updateSession(session);
 		
 		
 		for (int i = 0; i < missiles.size(); i++) {
@@ -94,22 +96,42 @@ public class TankFrame extends Frame implements Serializable{
 		b.draw(g);
 	}
 	
+	private Session getOriginSession() {
+		
+		logger.debug("get original  Session");
+		
+		Session session = new Session();
+		
+		for (int i = 0 ; i < tanks.size() ; i ++) {
+			session.addTankDraw(tanks.get(i).getId(), tanks.get(i).getTankDraw());
+		}
+		
+		//TODO add missiles
+		
+		//TODO add explodes
+		
+		return session;
+	}
+	
+	/**
+	 *  This is for synchronous response update
+	 * @param session
+	 */
 	private void updateSession(Session session) {
 		
-		logger.info("update Session");
-
-		try {
-			tanks.clear();
-			tanks.addAll(session.getTanks());
-			
-			missiles.clear();
-			missiles.addAll(session.getMissiles());
-			
-			explodes.clear();
-			explodes.addAll(session.getExplodes());
-		} catch (Exception e) {
-			logger.error(e);
-			throw new RuntimeException(e);
+		logger.debug("update Session");
+		
+		for (int i = 0 ; i < tanks.size() ; i ++) {
+			Tank t = tanks.get(i);
+			t.updateTank(session.getTankDraw(t.getId()));
+			session.removeTankDraw(t.getId());
+		}
+		
+		for(String id : session.getTankDrawMap().keySet()) {
+			TankDraw td = session.getTankDraw(id);
+			Tank t = new Tank(td.getX(), td.getY(), td.isGood(), td.getDir(), null);
+			t.setId(id);
+			tanks.add(t);
 		}
 		
 	}
@@ -127,11 +149,36 @@ public class TankFrame extends Frame implements Serializable{
 		g.drawImage(offScreenImage, 0, 0, null);
 	}
 	
-	public void launchComm() {
+	public void launchComm(String[] args) {
 		
 		logger.info("launch communication Start");
 		
-		comm.connect("udp.xml", "TestCluster");
+		String props = "udp.xml";
+		String name = null;
+		
+		for(int i=0; i < args.length; i++) {
+
+			if (args[i].equals("-p")) {
+				props = args[++i];
+				continue;
+			}
+
+			if (args[i].equals("-n")) {
+				name = args[++i];
+				continue;
+			}
+
+			exit();
+		}
+		
+		comm.connect(props, name);
+	}
+	
+	private static void exit() {
+
+		System.out.println("Run Application with [-p <props>] [-n <name>] ");
+
+		System.exit(1);
 	}
 	
 	public void launchFrame() {
@@ -166,7 +213,7 @@ public class TankFrame extends Frame implements Serializable{
 
 	public static void main(String[] args) {
 		TankFrame tc = new TankFrame();
-		tc.launchComm();
+		tc.launchComm(args);
 		tc.launchFrame();
 	}
 	

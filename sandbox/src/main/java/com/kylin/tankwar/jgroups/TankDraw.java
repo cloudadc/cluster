@@ -20,15 +20,19 @@ public class TankDraw implements Serializable {
 	
 	private int y;
 	
+	private Direction dir;
+	
 	private Direction ptDir;
 
-	public TankDraw(String id, boolean good, boolean live, int life, int x, int y, Direction ptDir) {
+	public TankDraw(String id, boolean good, boolean live, int life, int x, int y, Direction dir, Direction ptDir) {
 		super();
+		this.id = id;
 		this.good = good;
 		this.live = live;
 		this.life = life;
 		this.x = x;
 		this.y = y;
+		this.dir = dir;
 		this.ptDir = ptDir;
 	}
 
@@ -80,6 +84,14 @@ public class TankDraw implements Serializable {
 		this.y = y;
 	}
 
+	public Direction getDir() {
+		return dir;
+	}
+
+	public void setDir(Direction dir) {
+		this.dir = dir;
+	}
+
 	public Direction getPtDir() {
 		return ptDir;
 	}
@@ -88,9 +100,11 @@ public class TankDraw implements Serializable {
 		this.ptDir = ptDir;
 	}
 
+	@Override
 	public String toString() {
 		return "TankDraw [id=" + id + ", good=" + good + ", live=" + live
-				+ ", life=" + life + ", x=" + x + ", y=" + y + "]";
+				+ ", life=" + life + ", x=" + x + ", y=" + y + ", dir=" + dir
+				+ ", ptDir=" + ptDir + "]";
 	}
 
 	

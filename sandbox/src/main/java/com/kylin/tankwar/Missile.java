@@ -1,13 +1,12 @@
 package com.kylin.tankwar;
 import java.awt.*;
-import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
 
-public class Missile implements Serializable{
+public class Missile {
 	
 	private static final Logger logger = Logger.getLogger(Missile.class);
 	

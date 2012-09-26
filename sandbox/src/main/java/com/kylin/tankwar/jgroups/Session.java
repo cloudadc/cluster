@@ -1,52 +1,41 @@
 package com.kylin.tankwar.jgroups;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
-import com.kylin.tankwar.Explode;
-import com.kylin.tankwar.Missile;
-import com.kylin.tankwar.Tank;
 
 public class Session implements Serializable {
 
 	private static final long serialVersionUID = 6954018317301039760L;
-
-	private List<Explode> explodes ;
 	
-	private List<Missile> missiles ;
+	Map<String, TankDraw> tankDrawMap = new HashMap<String, TankDraw>();
 	
-	private List<Tank> tanks ;
-	
-	public Session(List<Tank> tanks, List<Missile> missiles, List<Explode> explodes) {
-		this.tanks = tanks;
-		this.missiles = missiles;
-		this.explodes = explodes;
+	public void addTankDraw(String key, TankDraw value) {
+		tankDrawMap.put(key, value);
 	}
 
-	public List<Explode> getExplodes() {
-		return explodes;
-	}
-
-	public void setExplodes(List<Explode> explodes) {
-		this.explodes = explodes;
-	}
-
-	public List<Missile> getMissiles() {
-		return missiles;
-	}
-
-	public void setMissiles(List<Missile> missiles) {
-		this.missiles = missiles;
-	}
-
-	public List<Tank> getTanks() {
-		return tanks;
-	}
-
-	public void setTanks(List<Tank> tanks) {
-		this.tanks = tanks;
+	public TankDraw getTankDraw(String key) {
+		return tankDrawMap.get(key);
 	}
 	
+	public void removeTankDraw(String key) {
+		tankDrawMap.remove(key);
+	}
+
+	public Map<String, TankDraw> getTankDrawMap() {
+		return tankDrawMap;
+	}
+
+	public void merge(Session session) {
+
+		for(String id : session.getTankDrawMap().keySet()) {
+			addTankDraw(id, session.getTankDraw(id));
+		}
+		
+		//TODO add missiles
+		
+		// TODO add explodes
+	}
 
 }

@@ -6,7 +6,6 @@ import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
-import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -18,7 +17,7 @@ import com.kylin.tankwar.jgroups.TankDraw;
 
 
 
-public class Tank implements Serializable{
+public class Tank {
 	
 	private static final Logger logger = Logger.getLogger(Tank.class);
 	
@@ -376,7 +375,7 @@ public class Tank implements Serializable{
 		this.life = life;
 	}
 	
-	private class BloodBar implements Serializable{
+	private class BloodBar {
 		
 		public void draw(Graphics g) {
 			Color c = g.getColor();
@@ -408,16 +407,22 @@ public class Tank implements Serializable{
 	}
 	
 	public TankDraw getTankDraw() {
-		return new TankDraw(id, good, live, life, x, y, ptDir);
+		return new TankDraw(id, good, live, life, x, y, dir, ptDir);
 	}
 	
+	/**
+	 * Update Tank status after either synchronous or asychronous session replication finished
+	 * @param td
+	 */
 	public void updateTank(TankDraw td){
+		
 		this.id = td.getId();
 		this.good = td.isGood();
 		this.live = td.isLive();
 		this.life = td.getLife();
 		this.x = td.getX();
 		this.y = td.getY();
+		this.dir = td.getDir();
 		this.ptDir = td.getPtDir();
 	}
 }
