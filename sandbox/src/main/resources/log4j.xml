@@ -40,7 +40,7 @@
        </category>  
                     
          <root>      
-             <priority value ="TRACE"/>      
+             <priority value ="DEBUG"/>      
              <appender-ref ref="myConsole"/>      
              <appender-ref ref="myFile"/>         
         </root>         

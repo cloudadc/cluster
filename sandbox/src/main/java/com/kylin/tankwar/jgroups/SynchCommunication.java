@@ -12,8 +12,6 @@ import org.jgroups.util.RspList;
 
 public class SynchCommunication extends Communication implements RequestHandler {
 
-	private static final long serialVersionUID = 8037392995230775306L;
-
 	private static final Logger logger = Logger.getLogger(SynchCommunication.class);
 	
 	private MessageDispatcher msgDispatcher;
@@ -31,7 +29,7 @@ public class SynchCommunication extends Communication implements RequestHandler 
 			if(null != name){
 				channel.setName(name);
 			}
-			
+
 			channel.connect(CLUSTER_NAME);
 		} catch (Exception e) {
 			TankWarCommunicationException tce = new TankWarCommunicationException("connect to " + CLUSTER_NAME + " error", e);
@@ -67,16 +65,16 @@ public class SynchCommunication extends Communication implements RequestHandler 
 		}
 		
 		Session resp = (Session) msg.getObject();
-		resp.merge(getSession());
+		getSession().merge(resp);
 		
-		return msg.getObject();
+		return getSession();
 	}
 
 	public Session synchSend(Session session) throws TankWarCommunicationException {
 		
 		logger.debug("invoke synchronous session replication");
 		
-		setSession(session);
+		getSession().merge(session);
 		
 		try {
 			Message msg = new Message(null, session);

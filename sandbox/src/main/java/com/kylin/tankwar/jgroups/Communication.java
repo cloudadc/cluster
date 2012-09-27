@@ -1,22 +1,25 @@
 package com.kylin.tankwar.jgroups;
 
-import java.io.Serializable;
-
 import org.jgroups.JChannel;
-import org.jgroups.ReceiverAdapter;
 
-public abstract class Communication implements ICommunication, Serializable{
-
-	private static final long serialVersionUID = -1513301563004884546L;
+public abstract class Communication implements ICommunication{
 	
 	protected static final String CLUSTER_NAME = "TankWarCluster";
 
 	protected JChannel channel;
 	
-	protected Session session;
+	/**
+	 * The session keep all group instance, sessions received from any member in group will be merged to this session.
+	 */
+	Session session = new Session();
 	
-	public void setSession(Session session) {
-		this.session = session;
+	public int getMemberSize() {
+		
+		if(null == channel) {
+			return 0 ;
+		} else {
+			return channel.getView().getMembers().size();
+		}
 	}
 	
 	public Session getSession() {
@@ -27,7 +30,7 @@ public abstract class Communication implements ICommunication, Serializable{
 		return null;
 	}
 
-	public void asychSend(Session session, ReceiverAdapter receive) throws TankWarCommunicationException {
+	public void asychSend(Session session) throws TankWarCommunicationException {
 		
 	}
 

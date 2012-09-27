@@ -8,34 +8,33 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import com.kylin.tankwar.core.TankView;
 import com.kylin.tankwar.jgroups.Session;
-import com.kylin.tankwar.jgroups.TankDraw;
 import com.kylin.tankwar.jgroups.SynchCommunication;
 
 
 
-public class TankFrame extends Frame implements Serializable{
+public class TankFrame extends Frame {
 
-	private static final long serialVersionUID = -7910394094118792741L;
+	private static final long serialVersionUID = 6719091451757240088L;
 	public static final int GAME_WIDTH = 800;
 	public static final int GAME_HEIGHT = 600;
 	
 	private static final Logger logger = Logger.getLogger(TankFrame.class);
 	
-	Tank myTank = new Tank(50, 50, true, Direction.STOP, this);
+	Tank_ myTank = new Tank_(50, 50, true, Direction.STOP, this);
 	
 	Wall w1 = new Wall(100, 200, 20, 150, this);
 	Wall w2 = new Wall(300, 100, 300, 20, this);
 	
 	List<Explode> explodes = new ArrayList<Explode>();
 	List<Missile> missiles = new ArrayList<Missile>();
-	List<Tank> tanks = new ArrayList<Tank>();
+	List<Tank_> tanks = new ArrayList<Tank_>();
 	Image offScreenImage = null;
 	
 	Blood b = new Blood();
@@ -56,7 +55,7 @@ public class TankFrame extends Frame implements Serializable{
 		
 		if (tanks.size() <= 0) {
 			for (int i = 0; i < 5 ; i++) {
-				tanks.add(new Tank(50 + 40 * (i + 1), 50, false, Direction.D, this));
+				tanks.add(new Tank_(50 + 40 * (i + 1), 50, false, Direction.D, this));
 			}
 		}
 		
@@ -82,7 +81,7 @@ public class TankFrame extends Frame implements Serializable{
 		}
 		
 		for (int i = 0; i < tanks.size(); i++) {
-			Tank t = tanks.get(i);
+			Tank_ t = tanks.get(i);
 			t.collidesWithWall(w1);
 			t.collidesWithWall(w2);
 			t.collidesWithTanks(tanks);
@@ -122,14 +121,14 @@ public class TankFrame extends Frame implements Serializable{
 		logger.debug("update Session");
 		
 		for (int i = 0 ; i < tanks.size() ; i ++) {
-			Tank t = tanks.get(i);
+			Tank_ t = tanks.get(i);
 			t.updateTank(session.getTankDraw(t.getId()));
 			session.removeTankDraw(t.getId());
 		}
 		
 		for(String id : session.getTankDrawMap().keySet()) {
-			TankDraw td = session.getTankDraw(id);
-			Tank t = new Tank(td.getX(), td.getY(), td.isGood(), td.getDir(), null);
+			TankView td = session.getTankDraw(id);
+			Tank_ t = new Tank_(td.getX(), td.getY(), td.isGood(), td.getDir(), null);
 			t.setId(id);
 			tanks.add(t);
 		}

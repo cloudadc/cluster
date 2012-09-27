@@ -1,7 +1,5 @@
 package com.kylin.tankwar.jgroups;
 
-import org.jgroups.ReceiverAdapter;
-
 public interface ICommunication {
 	
 	/**
@@ -13,6 +11,6 @@ public interface ICommunication {
 	/**
 	 * asychronous send session
 	 */
-	public void asychSend(Session session, ReceiverAdapter receive) throws TankWarCommunicationException;
+	public void asychSend(Session session) throws TankWarCommunicationException;
 
 }
