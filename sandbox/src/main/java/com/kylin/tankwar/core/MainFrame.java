@@ -1,5 +1,8 @@
 package com.kylin.tankwar.core;
 
+import java.awt.Color;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -37,6 +40,8 @@ public class MainFrame extends JFrame {
 		initComm(props, name);
 		
 		initTank();
+		
+		launchFrame();
 	}
 
 	private void initTank() {
@@ -77,6 +82,23 @@ public class MainFrame extends JFrame {
 		comm = new AsychCommunication();
 		
 		comm.connect(props, name);
+	}
+	
+	private void launchFrame() {
+		
+		logger.info("launch Frame Start");
+		
+		this.setSize(GAME_WIDTH, GAME_HEIGHT);
+		this.setTitle("TankWar - " + comm.getChannelName());
+		this.addWindowListener(new WindowAdapter() {
+			public void windowClosing(WindowEvent e) {
+				System.exit(0);
+			}
+		});
+		this.setResizable(false);
+		this.setBackground(Color.LIGHT_GRAY);
+		
+		setVisible(true);
 	}
 
 }

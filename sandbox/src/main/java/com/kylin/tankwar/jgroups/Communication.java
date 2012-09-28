@@ -22,6 +22,14 @@ public abstract class Communication implements ICommunication{
 		}
 	}
 	
+	public String getChannelName() {
+		if(null == channel) {
+			return "";
+		} else {
+			return channel.getName();
+		}
+	}
+	
 	public Session getSession() {
 		return session;
 	}
