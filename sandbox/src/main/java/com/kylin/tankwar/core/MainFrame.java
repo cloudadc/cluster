@@ -1,6 +1,7 @@
 package com.kylin.tankwar.core;
 
 import java.awt.Color;
+import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.event.KeyAdapter;
@@ -13,8 +14,6 @@ import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
 
-import javax.swing.JFrame;
-
 import org.apache.log4j.Logger;
 
 import com.kylin.tankwar.Direction;
@@ -22,7 +21,7 @@ import com.kylin.tankwar.jgroups.AsychCommunication;
 import com.kylin.tankwar.jgroups.Communication;
 import com.kylin.tankwar.jgroups.Session;
 
-public class MainFrame extends JFrame {
+public class MainFrame extends Frame {
 
 	private static final long serialVersionUID = 8165439060971008330L;
 	
@@ -41,6 +40,10 @@ public class MainFrame extends JFrame {
 	
 	Map<String,Tank> tankMap = new HashMap<String,Tank>();
 	
+	public MainFrame() {
+		
+	}
+	
 	public MainFrame(String props, String name) {
 		
 		logger.info("initialize  MainFrame");
@@ -56,7 +59,7 @@ public class MainFrame extends JFrame {
 		
 		String id = UUID.randomUUID().toString();
 		
-		if(comm.getMemberSize() % 2 == 0) {
+		if(comm != null && comm.getMemberSize() % 2 == 0) {
 			isGood = false ;
 		} else {
 			isGood = true ;
@@ -97,7 +100,13 @@ public class MainFrame extends JFrame {
 		logger.info("launch Frame Start");
 		
 		this.setSize(GAME_WIDTH, GAME_HEIGHT);
-		this.setTitle("TankWar - " + comm.getChannelName());
+		
+		String name = "TankWar";
+		if(null != comm) {
+			name = name + " - " + comm.getChannelName();
+		}
+		this.setTitle(name);
+		
 		this.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
 				System.exit(0);
@@ -107,6 +116,8 @@ public class MainFrame extends JFrame {
 		this.setBackground(Color.LIGHT_GRAY);
 		
 		setVisible(true);
+		
+		this.addKeyListener(new KeyMonitor());
 		
 		new Thread(new PaintThread()).start();
 	}
@@ -124,13 +135,14 @@ public class MainFrame extends JFrame {
 		for(Tank tank : tankMap.values()) {
 			tank.draw(g);
 		}
-		
 	}
 	
 	public void update(Graphics g) {
+				
 		if(offScreenImage == null) {
 			offScreenImage = this.createImage(GAME_WIDTH, GAME_HEIGHT);
 		}
+		
 		Graphics gOffScreen = offScreenImage.getGraphics();
 		Color c = gOffScreen.getColor();
 		gOffScreen.setColor(Color.LIGHT_GRAY);
@@ -175,6 +187,12 @@ public class MainFrame extends JFrame {
 		}
 	}
 
+	public static void main(String[] args) {
+
+		MainFrame main = new MainFrame();
+		main.initTank();
+		main.launchFrame();
+	}
 
 
 	private class PaintThread implements Runnable {

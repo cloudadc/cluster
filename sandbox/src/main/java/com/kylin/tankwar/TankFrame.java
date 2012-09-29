@@ -136,6 +136,7 @@ public class TankFrame extends Frame {
 	}
 
 	public void update(Graphics g) {
+		
 		if(offScreenImage == null) {
 			offScreenImage = this.createImage(GAME_WIDTH, GAME_HEIGHT);
 		}
@@ -204,7 +205,7 @@ public class TankFrame extends Frame {
 		
 		this.addKeyListener(new KeyMonitor());
 		
-		setVisible(true);
+		this.setVisible(true);
 		
 		new Thread(new PaintThread()).start();
 		

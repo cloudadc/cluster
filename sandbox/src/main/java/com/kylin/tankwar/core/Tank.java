@@ -1,5 +1,6 @@
 package com.kylin.tankwar.core;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Toolkit;
@@ -147,6 +148,8 @@ public class Tank {
 			return;
 		}
 		
+		drawBloodBar(g);
+		
 		switch(ptDir) {
 		case L:
 			g.drawImage(imgs.get("L"), x, y, null);
@@ -174,9 +177,25 @@ public class Tank {
 			break;
 		}
 		
-//		move();
+		move();
 	}
 	
+	private void drawBloodBar(Graphics g) {
+
+		Color c = g.getColor();
+		
+		if(isGood){
+			g.setColor(Color.RED);
+		} else {
+			g.setColor(Color.BLUE);
+		}
+		
+		g.drawRect(x, y-12, WIDTH + 10, 10);
+		int w = (WIDTH + 10) * life/100 ;
+		g.fillRect(x, y-12, w, 10);
+		g.setColor(c);
+	}
+
 	private void move() {
 		
 		this.oldX = x;
@@ -224,21 +243,34 @@ public class Tank {
 		if(x + Tank_.WIDTH > TankFrame.GAME_WIDTH) x = TankFrame.GAME_WIDTH - Tank_.WIDTH;
 		if(y + Tank_.HEIGHT > TankFrame.GAME_HEIGHT) y = TankFrame.GAME_HEIGHT - Tank_.HEIGHT;
 		
-		if(!isGood) {
-			Direction[] dirs = Direction.values();
-			if(step == 0) {
-				step = r.nextInt(12) + 3;
-				int rn = r.nextInt(dirs.length);
-				dir = dirs[rn];
-			}			
-			step --;
-			
-		}		
 	}
 
 	public void keyReleased(KeyEvent e) {
-		// TODO Auto-generated method stub
+
+		int key = e.getKeyCode();
 		
+		switch (key) {
+		case KeyEvent.VK_SPACE:
+//			fire(ptDir);
+			break;
+		case KeyEvent.VK_LEFT:
+			bL = false;
+			break;
+		case KeyEvent.VK_UP :
+			bU = false;
+			break;
+		case KeyEvent.VK_RIGHT :
+			bR = false;
+			break;
+		case KeyEvent.VK_DOWN :
+			bD = false;
+			break;
+		case KeyEvent.VK_F:
+//			superFire();
+			break;
+		}
+		
+		locateDirection();
 	}
 
 	public void keyPressed(KeyEvent e) {
