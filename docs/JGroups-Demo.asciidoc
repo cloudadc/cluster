@@ -24,12 +24,15 @@ java -cp jgroups-3.1.0.Final.jar:JGroups-stu.jar:log4j-1.2.16.jar  -Djava.net.pr
 * Analysing
 In node 1 print any message, node 2 and node 3 will recieve this message
 
-* TankWar
+TankWar
++++++++
+
+* Node 1
 ----
 java -cp jgroups-3.1.0.Final.jar:tankwar-1.0.jar:log4j-1.2.16.jar  -Djava.net.preferIPv4Stack=true -Xrunjdwp:transport=dt_socket,address=8787,server=y,suspend=n com.kylin.tankwar.TankWar -n node1
 ----
 
-
+* Node 2
 ----
 java -cp jgroups-3.1.0.Final.jar:tankwar-1.0.jar:log4j-1.2.16.jar  -Djava.net.preferIPv4Stack=true -Xrunjdwp:transport=dt_socket,address=8787,server=y,suspend=n com.kylin.tankwar.TankWar -n node2
 ----
