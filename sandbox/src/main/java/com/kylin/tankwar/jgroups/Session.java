@@ -26,56 +26,31 @@ public class Session implements Serializable {
 		this.nodeName = nodeName;
 	}
 	
-	/**
-	 * This for keep remove exit node related draw instance
-	 */
-//	Map<String, Set<String>> nodeMap = new HashMap<String, Set<String>>();
-//	
-//	public void addNodeMapping(Session session) {
-//		
-//		Set<String> set = nodeMap.get(session.getNodeName());
-//		
-//		if(set == null) {
-//			set = new HashSet<String>();
-//		}
-//		
-//		set.addAll(session.getAllID());
-//	}
-//	
-//	public Set<String> getAllNodeID() {
-//		return nodeMap.keySet();
-//	}
-//
-//	private Set<String> getAllID() {
-//		
-//		Set<String> set = new HashSet<String>();
-//		set.addAll(tankDrawMap.keySet());
-//		set.addAll(missileDrawMap.keySet());
-//		set.addAll(explodeDrawMap.keySet());
-//		return set;
-//	}
-
 	
-	Map<String, TankView> tankDrawMap = new HashMap<String, TankView>();
+	Map<String, TankView> tankViewMap = new HashMap<String, TankView>();
 	
 	Map<String, MissileDraw> missileDrawMap = new HashMap<String, MissileDraw>();
 	
 	Map<String, ExplodeDraw> explodeDrawMap = new HashMap<String, ExplodeDraw>();
 	
-	public void addTankDraw(String key, TankView value) {
-		tankDrawMap.put(key, value);
+	public void addTankView(String key, TankView value) {
+		tankViewMap.put(key, value);
 	}
 
-	public TankView getTankDraw(String key) {
-		return tankDrawMap.get(key);
+	public TankView getTankView(String key) {
+		return tankViewMap.get(key);
 	}
 	
-	public void removeTankDraw(String key) {
-		tankDrawMap.remove(key);
+	public void removeTankView(String key) {
+		tankViewMap.remove(key);
+	}
+	
+	public Set<String> tankIdSet() {
+		return tankViewMap.keySet();
 	}
 
-	public Map<String, TankView> getTankDrawMap() {
-		return tankDrawMap;
+	public Map<String, TankView> getTankViewMap() {
+		return tankViewMap;
 	}
 	
 	public void logSession() {
@@ -85,9 +60,9 @@ public class Session implements Serializable {
 		}
 		
 		logger.debug("------------ Log Session Start --------------");
-		logger.debug("Total TankDraw size: " + tankDrawMap.size());
-		for(String key : tankDrawMap.keySet()) {
-			logger.debug(key + " -> " + tankDrawMap.get(key));
+		logger.debug("Total TankDraw size: " + tankViewMap.size());
+		for(String key : tankViewMap.keySet()) {
+			logger.debug(key + " -> " + tankViewMap.get(key));
 		}
 		
 		//TODO add missiles
@@ -101,10 +76,10 @@ public class Session implements Serializable {
 		
 		System.out.println("------------ Print Session Start --------------");
 		
-		System.out.println("Total TankDraw size: " + tankDrawMap.size());
+		System.out.println("Total TankDraw size: " + tankViewMap.size());
 		
-		for(String key : tankDrawMap.keySet()) {
-			System.out.println(key + " -> " + tankDrawMap.get(key));
+		for(String key : tankViewMap.keySet()) {
+			System.out.println(key + " -> " + tankViewMap.get(key));
 		}
 		
 		//TODO add missiles
@@ -116,8 +91,8 @@ public class Session implements Serializable {
 
 	public void merge(Session session) {
 
-		for(String id : session.getTankDrawMap().keySet()) {
-			addTankDraw(id, session.getTankDraw(id));
+		for(String id : session.getTankViewMap().keySet()) {
+			addTankView(id, session.getTankView(id));
 		}
 		
 		//TODO add missiles

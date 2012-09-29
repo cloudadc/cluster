@@ -102,7 +102,7 @@ public class TankFrame extends Frame {
 		Session session = new Session();
 		
 		for (int i = 0 ; i < tanks.size() ; i ++) {
-			session.addTankDraw(tanks.get(i).getId(), tanks.get(i).getTankDraw());
+			session.addTankView(tanks.get(i).getId(), tanks.get(i).getTankDraw());
 		}
 		
 		//TODO add missiles
@@ -122,12 +122,12 @@ public class TankFrame extends Frame {
 		
 		for (int i = 0 ; i < tanks.size() ; i ++) {
 			Tank_ t = tanks.get(i);
-			t.updateTank(session.getTankDraw(t.getId()));
-			session.removeTankDraw(t.getId());
+			t.updateTank(session.getTankView(t.getId()));
+			session.removeTankView(t.getId());
 		}
 		
-		for(String id : session.getTankDrawMap().keySet()) {
-			TankView td = session.getTankDraw(id);
+		for(String id : session.getTankViewMap().keySet()) {
+			TankView td = session.getTankView(id);
 			Tank_ t = new Tank_(td.getX(), td.getY(), td.isGood(), td.getDir(), null);
 			t.setId(id);
 			tanks.add(t);

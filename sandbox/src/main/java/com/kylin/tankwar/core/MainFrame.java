@@ -1,11 +1,16 @@
 package com.kylin.tankwar.core;
 
 import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 import java.util.UUID;
 
 import javax.swing.JFrame;
@@ -15,6 +20,7 @@ import org.apache.log4j.Logger;
 import com.kylin.tankwar.Direction;
 import com.kylin.tankwar.jgroups.AsychCommunication;
 import com.kylin.tankwar.jgroups.Communication;
+import com.kylin.tankwar.jgroups.Session;
 
 public class MainFrame extends JFrame {
 
@@ -31,7 +37,9 @@ public class MainFrame extends JFrame {
 	
 	private boolean isGood ;
 	
-	List<Tank> tanks = new ArrayList<Tank>();
+	private Image offScreenImage = null;
+	
+	Map<String,Tank> tankMap = new HashMap<String,Tank>();
 	
 	public MainFrame(String props, String name) {
 		
@@ -58,7 +66,7 @@ public class MainFrame extends JFrame {
 		int y = getRandom(GAME_HEIGHT - 100);
 		
 		myTank = new Tank(id, isGood, true, 100, x, y, Direction.STOP, Direction.D);
-		tanks.add(myTank);
+		tankMap.put(id, myTank);
 		logger.info("initialized a Tank, " + myTank.getView());
 	}
 	
@@ -99,6 +107,100 @@ public class MainFrame extends JFrame {
 		this.setBackground(Color.LIGHT_GRAY);
 		
 		setVisible(true);
+		
+		new Thread(new PaintThread()).start();
+	}
+	
+	
+	public void paint(Graphics g) {
+		
+		g.drawString("tanks    count:" + tankMap.keySet().size(), 10, 90);
+		g.drawString("tanks     life:" + myTank.getLife(), 10, 110);
+		
+		sendSession();
+		
+		receiveSession();
+		
+		for(Tank tank : tankMap.values()) {
+			tank.draw(g);
+		}
+		
+	}
+	
+	public void update(Graphics g) {
+		if(offScreenImage == null) {
+			offScreenImage = this.createImage(GAME_WIDTH, GAME_HEIGHT);
+		}
+		Graphics gOffScreen = offScreenImage.getGraphics();
+		Color c = gOffScreen.getColor();
+		gOffScreen.setColor(Color.LIGHT_GRAY);
+		gOffScreen.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
+		gOffScreen.setColor(c);
+		paint(gOffScreen);
+		g.drawImage(offScreenImage, 0, 0, null);
+	}
+
+
+
+	private void sendSession() {
+
+		logger.debug("Send session");
+		
+		Session session = new Session();
+		
+		for(Tank tank : tankMap.values()) {
+			session.addTankView(tank.getId(), tank.getView());
+		}
+		
+		//TODO
+		
+		//TODO
+		
+		comm.asychSend(session);
+	}
+
+	private void receiveSession() {
+		
+		logger.debug("Receive Session");
+		
+		Session session = comm.getSession();
+		
+		Set<String> tankIds = tankMap.keySet();
+		for(String id : session.tankIdSet()) {
+			if(tankIds.contains(id)) {
+				tankMap.get(id).updateTank(session.getTankView(id));
+			} else {
+				tankMap.put(id, new Tank(session.getTankView(id)));
+			}
+		}
+	}
+
+
+
+	private class PaintThread implements Runnable {
+
+		public void run() {
+			while(true) {
+				repaint();
+				try {
+					Thread.sleep(50);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+	
+	private class KeyMonitor extends KeyAdapter  {
+
+		public void keyReleased(KeyEvent e) {
+			myTank.keyReleased(e);
+		}
+
+		public void keyPressed(KeyEvent e) {
+			myTank.keyPressed(e);
+		}
+		
 	}
 
 }

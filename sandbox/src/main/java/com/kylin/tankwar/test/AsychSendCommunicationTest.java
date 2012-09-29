@@ -62,7 +62,7 @@ public class AsychSendCommunicationTest {
 			int value  = new Random().nextInt(1000);
 			Session session = new Session();
 			String uuid = UUID.randomUUID().toString();
-			session.addTankDraw(uuid, new TankView(uuid, true, true, value, value, value, Direction.D, Direction.D));
+			session.addTankView(uuid, new TankView(uuid, true, true, value, value, value, Direction.D, Direction.D));
 			comm.asychSend(session);
 			System.out.println("Response: \n");
 			comm.getSession().print();
