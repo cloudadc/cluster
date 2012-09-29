@@ -29,7 +29,7 @@ TankWar
 
 * Node 1
 ----
-java -cp jgroups-3.1.0.Final.jar:tankwar-1.0.jar:log4j-1.2.16.jar  -Djava.net.preferIPv4Stack=true -Xrunjdwp:transport=dt_socket,address=8787,server=y,suspend=n com.kylin.tankwar.TankWar -n node1
+java -cp jgroups-3.1.0.Final.jar:tankwar-1.0.jar:log4j-1.2.16.jar  -Djava.net.preferIPv4Stack=true -Xrunjdwp:transport=dt_socket,address=8788,server=y,suspend=n com.kylin.tankwar.TankWar -n node1
 ----
 
 * Node 2
