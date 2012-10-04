@@ -13,6 +13,7 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
+import com.kylin.tankwar.core.Direction;
 import com.kylin.tankwar.core.TankView;
 
 
@@ -291,7 +292,7 @@ public class Tank_ {
 	 * (Tank.WIDTH/2 - Missile.WIDTH/2 , Tank.HEIGHT/2 - Missile.HEIGHT/2)
 	 * 
 	 */
-	public Missile fire(Direction dir) {
+	public Missile_ fire(Direction dir) {
 		
 		if(!live) {
 			return null;
@@ -303,20 +304,20 @@ public class Tank_ {
 //		y = this.y + Tank.HEIGHT/2 - Missile.HEIGHT/2 ;
 		
 		if(dir == Direction.LU || dir == Direction.RU || dir == Direction.RD || dir == Direction.LD) {
-			x = this.x + Tank_.WIDTH/2 - Missile.WIDTH/2 + 20;
-			y = this.y + Tank_.HEIGHT/2 - Missile.HEIGHT/2 + 20;
+			x = this.x + Tank_.WIDTH/2 - Missile_.WIDTH/2 + 20;
+			y = this.y + Tank_.HEIGHT/2 - Missile_.HEIGHT/2 + 20;
 		} else if(dir == Direction.U) {
-			x = this.x + Tank_.WIDTH/2 - Missile.WIDTH/2 + 10;
-			y = this.y + Tank_.HEIGHT/2 - Missile.HEIGHT/2 + 10;
+			x = this.x + Tank_.WIDTH/2 - Missile_.WIDTH/2 + 10;
+			y = this.y + Tank_.HEIGHT/2 - Missile_.HEIGHT/2 + 10;
 		} else if(dir == Direction.R || dir == Direction.L) {
-			x = this.x + Tank_.WIDTH/2 - Missile.WIDTH/2 + 10;
-			y = this.y + Tank_.HEIGHT/2 - Missile.HEIGHT/2 + 13;
+			x = this.x + Tank_.WIDTH/2 - Missile_.WIDTH/2 + 10;
+			y = this.y + Tank_.HEIGHT/2 - Missile_.HEIGHT/2 + 13;
 		} else if(dir == Direction.D) {
-			x = this.x + Tank_.WIDTH/2 - Missile.WIDTH/2 + 8;
-			y = this.y + Tank_.HEIGHT/2 - Missile.HEIGHT/2 + 10;
+			x = this.x + Tank_.WIDTH/2 - Missile_.WIDTH/2 + 8;
+			y = this.y + Tank_.HEIGHT/2 - Missile_.HEIGHT/2 + 10;
 		} 
 		
-		Missile m = new Missile(x, y, good, dir, this.tc);
+		Missile_ m = new Missile_(x, y, good, dir, this.tc);
 		tc.missiles.add(m);
 		return m;
 	}
@@ -338,7 +339,7 @@ public class Tank_ {
 	}
 	
 	
-	public boolean collidesWithWall(Wall w) {
+	public boolean collidesWithWall(Wall_ w) {
 		if(this.live && this.getRect().intersects(w.getRect())) {
 			this.stay();
 			return true;

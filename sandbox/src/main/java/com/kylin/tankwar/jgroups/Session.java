@@ -8,6 +8,8 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
+import com.kylin.tankwar.core.Event;
+import com.kylin.tankwar.core.MissileView;
 import com.kylin.tankwar.core.TankView;
 
 public class Session implements Serializable {
@@ -26,10 +28,18 @@ public class Session implements Serializable {
 		this.nodeName = nodeName;
 	}
 	
+	private Event event ;
 	
+	
+	public Event getEvent() {
+		return event;
+	}
+
+	public void setEvent(Event event) {
+		this.event = event;
+	}
+
 	Map<String, TankView> tankViewMap = new HashMap<String, TankView>();
-	
-	Map<String, MissileDraw> missileDrawMap = new HashMap<String, MissileDraw>();
 	
 	Map<String, ExplodeDraw> explodeDrawMap = new HashMap<String, ExplodeDraw>();
 	
@@ -53,6 +63,28 @@ public class Session implements Serializable {
 		return tankViewMap;
 	}
 	
+	Map<String, MissileView> missileViewMap = new HashMap<String, MissileView>();
+	
+	public void addMissileView(String key, MissileView value) {
+		missileViewMap.put(key, value);
+	}
+	
+	public MissileView getMissileView(String key) {
+		return missileViewMap.get(key);
+	}
+	
+	public void romoveMissileView(String key) {
+		missileViewMap.remove(key);
+	}
+	
+	public Set<String> missileIdSet() {
+		return missileViewMap.keySet();
+	}
+	
+	public Map<String, MissileView> getMissileViewMap() {
+		return missileViewMap ;
+	}
+	
 	public void logSession() {
 		
 		if(!logger.isDebugEnabled()) {
@@ -60,12 +92,16 @@ public class Session implements Serializable {
 		}
 		
 		logger.debug("------------ Log Session Start --------------");
-		logger.debug("Total TankDraw size: " + tankViewMap.size());
+		
+		logger.debug("Total TankView size: " + tankViewMap.size());
 		for(String key : tankViewMap.keySet()) {
 			logger.debug(key + " -> " + tankViewMap.get(key));
 		}
 		
-		//TODO add missiles
+		logger.debug("Total MissileView size: " + missileViewMap.size());
+		for(String key : missileViewMap.keySet()) {
+			logger.debug(key + " -> " + missileViewMap.get(key));
+		}
 		
 		// TODO add explodes
 		
@@ -76,13 +112,17 @@ public class Session implements Serializable {
 		
 		System.out.println("------------ Print Session Start --------------");
 		
-		System.out.println("Total TankDraw size: " + tankViewMap.size());
+		System.out.println("Total TankView size: " + tankViewMap.size());
 		
 		for(String key : tankViewMap.keySet()) {
 			System.out.println(key + " -> " + tankViewMap.get(key));
 		}
 		
-		//TODO add missiles
+		System.out.println("Total MissileView size: " + missileViewMap.size());
+		
+		for(String key : missileViewMap.keySet()) {
+			System.out.println(key + " -> " + missileViewMap.get(key));
+		}
 		
 		// TODO add explodes
 		
@@ -95,7 +135,9 @@ public class Session implements Serializable {
 			addTankView(id, session.getTankView(id));
 		}
 		
-		//TODO add missiles
+		for(String id : session.getMissileViewMap().keySet()) {
+			addMissileView(id, session.getMissileView(id));
+		}
 		
 		// TODO add explodes
 	}

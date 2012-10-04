@@ -8,18 +8,17 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
-import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.log4j.Logger;
 
-import com.kylin.tankwar.Direction;
 import com.kylin.tankwar.jgroups.AsychCommunication;
 import com.kylin.tankwar.jgroups.Communication;
-import com.kylin.tankwar.jgroups.Session;
+import com.kylin.tankwar.jgroups.handler.CommHandler;
 
 public class MainFrame extends Frame {
 
@@ -32,14 +31,49 @@ public class MainFrame extends Frame {
 	
 	private Communication comm;
 	
+	public Communication getComm() {
+		return comm;
+	}
+
+	CommHandler handler = new CommHandler();
+	
+	public CommHandler getHandler() {
+		return handler;
+	}
+
 	private Tank myTank ;
+	
+	public Tank getMyTank() {
+		return myTank;
+	}
 	
 	private boolean isGood ;
 	
+	Wall w1 = new Wall(100, 200, 20, 200);
+	Wall w2 = new Wall(300, 100, 200, 20);
+	Wall w3 = new Wall(650, 200, 20, 200);
+	Wall w4 = new Wall(300, 500, 200, 20);
+	
 	private Image offScreenImage = null;
 	
-	Map<String,Tank> tankMap = new HashMap<String,Tank>();
+	Map<String,Tank> tankMap = new ConcurrentHashMap<String,Tank>();
+
+	public Map<String, Tank> getTankMap() {
+		return tankMap;
+	}
 	
+	Map<String, Missile> missileMap = new ConcurrentHashMap<String, Missile>();
+	Set<Missile> myMissiles = new HashSet<Missile>();
+	
+
+	public Map<String, Missile> getMissileMap() {
+		return missileMap;
+	}
+	
+//	private boolean isReplicateTank = true ;
+//	private boolean isReplicateMissile = true ;
+//	private boolean isReplicateExplode = true ;
+
 	public MainFrame() {
 		
 	}
@@ -53,11 +87,12 @@ public class MainFrame extends Frame {
 		initTank();
 		
 		launchFrame();
+
 	}
 
 	private void initTank() {
 		
-		String id = UUID.randomUUID().toString();
+		String id = comm.getChannelName();
 		
 		if(comm != null && comm.getMemberSize() % 2 == 0) {
 			isGood = false ;
@@ -68,14 +103,14 @@ public class MainFrame extends Frame {
 		int x = getRandom(GAME_WIDTH - 100);
 		int y = getRandom(GAME_HEIGHT - 100);
 		
-		myTank = new Tank(id, isGood, true, 100, x, y, Direction.STOP, Direction.D);
+		myTank = new Tank(id, isGood, true, 100, x, y, Direction.STOP, Direction.D, this);
 		tankMap.put(id, myTank);
 		logger.info("initialized a Tank, " + myTank.getView());
+		
+		replicateTank(Event.TN);
 	}
 	
-	
-
-	private int getRandom(int max) {
+	public int getRandom(int max) {
 		
 		int r = new Random().nextInt(max);
 		
@@ -90,7 +125,7 @@ public class MainFrame extends Frame {
 		
 		logger.info("initialize communication");
 		
-		comm = new AsychCommunication();
+		comm = new AsychCommunication(this);
 		
 		comm.connect(props, name);
 	}
@@ -109,7 +144,20 @@ public class MainFrame extends Frame {
 		
 		this.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
-				System.exit(0);
+				myTank.setLive(false);
+				replicateTank(Event.TM);
+				
+				new Thread(new Runnable(){
+
+					public void run() {
+						try {
+							Thread.currentThread().sleep(2000);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+						
+						System.exit(1);
+					}}).start();
 			}
 		});
 		this.setResizable(false);
@@ -122,20 +170,53 @@ public class MainFrame extends Frame {
 		new Thread(new PaintThread()).start();
 	}
 	
+	public void replicateTank(Event event) {
+		handler.sendHandler(myTank, comm, event);
+	}
+	
+	public void replicateMissile(Event event) {
+		handler.sendHandler(myTank.getId(), missileMap.values(), comm, event);
+	}
 	
 	public void paint(Graphics g) {
 		
-		g.drawString("tanks    count:" + tankMap.keySet().size(), 10, 90);
-		g.drawString("tanks     life:" + myTank.getLife(), 10, 110);
-		
-		sendSession();
-		
-		receiveSession();
+		g.drawString("tanks count: " + tankMap.keySet().size() + ", missiles count: " + missileMap.size(), 10, 80);
+		g.drawString("tank     life:" + myTank.getLife(), 10, 100);
 		
 		for(Tank tank : tankMap.values()) {
 			tank.draw(g);
+			
+			if(myTank.getId().compareTo(tank.getId()) != 0 && myTank.getRect().intersects(tank.getRect())) {
+				
+				myTank.relocate();
+				
+				if(myTank.isGood() != tank.isGood()) {
+					myTank.setLife(myTank.getLife() - 20);
+				}
+				
+				replicateTank(Event.TM);
+			}
 		}
+			
+		for(Missile missile : missileMap.values()) {
+			
+			missile.hitWall(w1);
+			missile.hitWall(w2);
+			missile.hitWall(w3);
+			missile.hitWall(w4);
+			
+			missile.hitTank(myTank);
+			
+			missile.draw(g);
+			
+		}
+		
+		w1.draw(g);
+		w2.draw(g);
+		w3.draw(g);
+		w4.draw(g);
 	}
+	
 	
 	public void update(Graphics g) {
 				
@@ -150,41 +231,6 @@ public class MainFrame extends Frame {
 		gOffScreen.setColor(c);
 		paint(gOffScreen);
 		g.drawImage(offScreenImage, 0, 0, null);
-	}
-
-
-
-	private void sendSession() {
-
-		logger.debug("Send session");
-		
-		Session session = new Session();
-		
-		for(Tank tank : tankMap.values()) {
-			session.addTankView(tank.getId(), tank.getView());
-		}
-		
-		//TODO
-		
-		//TODO
-		
-		comm.asychSend(session);
-	}
-
-	private void receiveSession() {
-		
-		logger.debug("Receive Session");
-		
-		Session session = comm.getSession();
-		
-		Set<String> tankIds = tankMap.keySet();
-		for(String id : session.tankIdSet()) {
-			if(tankIds.contains(id)) {
-				tankMap.get(id).updateTank(session.getTankView(id));
-			} else {
-				tankMap.put(id, new Tank(session.getTankView(id)));
-			}
-		}
 	}
 
 	public static void main(String[] args) {

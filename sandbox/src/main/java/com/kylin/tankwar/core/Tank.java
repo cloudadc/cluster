@@ -3,15 +3,17 @@ package com.kylin.tankwar.core;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
-import com.kylin.tankwar.Direction;
+import com.kylin.tankwar.Missile_;
 import com.kylin.tankwar.TankFrame;
 import com.kylin.tankwar.Tank_;
 
@@ -31,6 +33,8 @@ public class Tank {
 	private boolean bU = false;
 	private boolean bR = false;
 	private boolean bD = false;
+	
+	private MainFrame mainFrame;
 	
 	private static Toolkit tk = Toolkit.getDefaultToolkit();
 	private static Image[] tankImages = null;
@@ -74,7 +78,7 @@ public class Tank {
 	
 	private Direction ptDir;
 
-	public Tank(String id, boolean isGood, boolean isLive, int life, int x, int y, Direction dir, Direction ptDir) {
+	public Tank(String id, boolean isGood, boolean isLive, int life, int x, int y, Direction dir, Direction ptDir, MainFrame mainFrame) {
 		super();
 		this.id = id;
 		this.isGood = isGood;
@@ -84,6 +88,10 @@ public class Tank {
 		this.y = y;
 		this.dir = dir;
 		this.ptDir = ptDir;
+		this.mainFrame = mainFrame;
+		
+		this.oldX = x;
+		this.oldY = y;
 	}
 	
 	public Tank(TankView view) {
@@ -102,6 +110,10 @@ public class Tank {
 		return id;
 	}
 
+	public void setId(String id) {
+		this.id = id;
+	}
+
 	/**
 	 * Update Tank status after either synchronous or asychronous session replication finished
 	 * @param tankView
@@ -116,6 +128,9 @@ public class Tank {
 		this.y = tankView.getY();
 		this.dir = tankView.getDir();
 		this.ptDir = tankView.getPtDir();
+		
+		this.oldX = tankView.getX();
+		this.oldY = tankView.getY();
 	}
 
 	public boolean isGood() {
@@ -251,7 +266,7 @@ public class Tank {
 		
 		switch (key) {
 		case KeyEvent.VK_SPACE:
-//			fire(ptDir);
+			fire(ptDir);
 			break;
 		case KeyEvent.VK_LEFT:
 			bL = false;
@@ -271,6 +286,41 @@ public class Tank {
 		}
 		
 		locateDirection();
+	}
+
+	private void superFire() {
+
+		Direction[] dirs = Direction.values();
+		for(int i=0; i<8; i++) {
+			fire(dirs[i]);
+		}
+	}
+
+	private void fire(Direction dir) {
+
+		if(!isLive) {
+			return ;
+		}
+		
+		int x = 0, y = 0;
+		
+		if(dir == Direction.LU || dir == Direction.RU || dir == Direction.RD || dir == Direction.LD) {
+			x = this.x + Tank_.WIDTH/2 - Missile_.WIDTH/2 + 20;
+			y = this.y + Tank_.HEIGHT/2 - Missile_.HEIGHT/2 + 20;
+		} else if(dir == Direction.U) {
+			x = this.x + Tank_.WIDTH/2 - Missile_.WIDTH/2 + 10;
+			y = this.y + Tank_.HEIGHT/2 - Missile_.HEIGHT/2 + 10;
+		} else if(dir == Direction.R || dir == Direction.L) {
+			x = this.x + Tank_.WIDTH/2 - Missile_.WIDTH/2 + 10;
+			y = this.y + Tank_.HEIGHT/2 - Missile_.HEIGHT/2 + 13;
+		} else if(dir == Direction.D) {
+			x = this.x + Tank_.WIDTH/2 - Missile_.WIDTH/2 + 8;
+			y = this.y + Tank_.HEIGHT/2 - Missile_.HEIGHT/2 + 10;
+		}
+		
+		String id = mainFrame.getComm().getChannelName() + "-missile-" + Counter.MISSILE_ID_GEN.getAndIncrement();
+		Missile missile = new Missile(id, getId(),x, y, dir, isGood, true, mainFrame);
+		mainFrame.getMissileMap().put(id, missile);
 	}
 
 	public void keyPressed(KeyEvent e) {
@@ -293,6 +343,7 @@ public class Tank {
 		}
 		
 		locateDirection();
+		
 	}
 	
 	private void locateDirection() {
@@ -320,6 +371,17 @@ public class Tank {
 		}
 		
 		logger.debug("Tank direction: " + dir);
+		
+		mainFrame.replicateTank(Event.TM);
+	}
+	
+	public Rectangle getRect() {
+		return new Rectangle(x, y, WIDTH, HEIGHT);
+	}
+	
+	public void relocate() {
+		x = mainFrame.getRandom(MainFrame.GAME_WIDTH - 100);
+		y = mainFrame.getRandom(MainFrame.GAME_HEIGHT - 100);
 	}
 
 }

@@ -9,8 +9,18 @@ import org.jgroups.blocks.RequestOptions;
 import org.jgroups.blocks.ResponseMode;
 import org.jgroups.util.RspList;
 
+import com.kylin.tankwar.core.MainFrame;
+
 
 public class SynchCommunication extends Communication implements RequestHandler {
+
+	public SynchCommunication(MainFrame mainFrame) {
+		super(mainFrame);
+	}
+
+	public SynchCommunication() {
+		super(null);
+	}
 
 	private static final Logger logger = Logger.getLogger(SynchCommunication.class);
 	

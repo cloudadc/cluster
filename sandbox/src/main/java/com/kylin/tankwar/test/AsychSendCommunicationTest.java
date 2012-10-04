@@ -5,7 +5,7 @@ import java.util.UUID;
 
 import org.jgroups.util.Util;
 
-import com.kylin.tankwar.Direction;
+import com.kylin.tankwar.core.Direction;
 import com.kylin.tankwar.core.TankView;
 import com.kylin.tankwar.jgroups.AsychCommunication;
 import com.kylin.tankwar.jgroups.Session;
@@ -43,6 +43,8 @@ public class AsychSendCommunicationTest {
 
 			exit();
 		}
+		
+		//150 0957 1763
 		
 		AsychCommunication comm = new AsychCommunication();
 		comm.connect(props, name);

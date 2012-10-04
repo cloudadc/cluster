@@ -13,6 +13,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import com.kylin.tankwar.core.Direction;
 import com.kylin.tankwar.core.TankView;
 import com.kylin.tankwar.jgroups.Session;
 import com.kylin.tankwar.jgroups.SynchCommunication;
@@ -29,17 +30,17 @@ public class TankFrame extends Frame {
 	
 	Tank_ myTank = new Tank_(50, 50, true, Direction.STOP, this);
 	
-	Wall w1 = new Wall(100, 200, 20, 150, this);
-	Wall w2 = new Wall(300, 100, 300, 20, this);
+	Wall_ w1 = new Wall_(100, 200, 20, 150, this);
+	Wall_ w2 = new Wall_(300, 100, 300, 20, this);
 	
-	List<Explode> explodes = new ArrayList<Explode>();
-	List<Missile> missiles = new ArrayList<Missile>();
+	List<Explode_> explodes = new ArrayList<Explode_>();
+	List<Missile_> missiles = new ArrayList<Missile_>();
 	List<Tank_> tanks = new ArrayList<Tank_>();
 	Image offScreenImage = null;
 	
 	Blood b = new Blood();
 	
-	SynchCommunication comm = new SynchCommunication();
+	SynchCommunication comm = new SynchCommunication(null);
 
 	public void paint(Graphics g) {
 		
@@ -65,7 +66,7 @@ public class TankFrame extends Frame {
 		
 		
 		for (int i = 0; i < missiles.size(); i++) {
-			Missile m = missiles.get(i);
+			Missile_ m = missiles.get(i);
 			m.hitTanks(tanks);
 			m.hitTank(myTank);
 			m.hitWall(w1);
@@ -76,7 +77,7 @@ public class TankFrame extends Frame {
 		}
 		
 		for (int i = 0; i < explodes.size(); i++) {
-			Explode e = explodes.get(i);
+			Explode_ e = explodes.get(i);
 			e.draw(g);
 		}
 		

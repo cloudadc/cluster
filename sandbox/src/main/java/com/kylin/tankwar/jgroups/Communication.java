@@ -2,12 +2,25 @@ package com.kylin.tankwar.jgroups;
 
 import org.jgroups.JChannel;
 
+import com.kylin.tankwar.core.MainFrame;
+
 public abstract class Communication implements ICommunication{
 	
 	protected static final String CLUSTER_NAME = "TankWarCluster";
 
 	protected JChannel channel;
 	
+	protected MainFrame mainFrame;
+
+	public MainFrame getMainFrame() {
+		return mainFrame;
+	}
+
+	public Communication(MainFrame mainFrame) {
+		super();
+		this.mainFrame = mainFrame;
+	}
+
 	/**
 	 * The session keep all group instance, sessions received from any member in group will be merged to this session.
 	 */

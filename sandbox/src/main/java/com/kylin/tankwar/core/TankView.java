@@ -2,7 +2,6 @@ package com.kylin.tankwar.core;
 
 import java.io.Serializable;
 
-import com.kylin.tankwar.Direction;
 
 public class TankView implements Serializable {
 
@@ -102,7 +101,7 @@ public class TankView implements Serializable {
 
 	@Override
 	public String toString() {
-		return "TankDraw [id=" + id + ", good=" + good + ", live=" + live
+		return "TankView [id=" + id + ", good=" + good + ", live=" + live
 				+ ", life=" + life + ", x=" + x + ", y=" + y + ", dir=" + dir
 				+ ", ptDir=" + ptDir + "]";
 	}

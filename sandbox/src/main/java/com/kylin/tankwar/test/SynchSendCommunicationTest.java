@@ -5,7 +5,7 @@ import java.util.UUID;
 
 import org.jgroups.util.Util;
 
-import com.kylin.tankwar.Direction;
+import com.kylin.tankwar.core.Direction;
 import com.kylin.tankwar.core.TankView;
 import com.kylin.tankwar.jgroups.Session;
 import com.kylin.tankwar.jgroups.SynchCommunication;

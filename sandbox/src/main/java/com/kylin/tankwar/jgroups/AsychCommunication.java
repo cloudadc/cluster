@@ -3,12 +3,19 @@ package com.kylin.tankwar.jgroups;
 import org.apache.log4j.Logger;
 import org.jgroups.JChannel;
 
+import com.kylin.tankwar.core.MainFrame;
+import com.kylin.tankwar.jgroups.handler.IHandler;
+
 public class AsychCommunication extends Communication {
 	
 	private static final Logger logger = Logger.getLogger(AsychCommunication.class);
 	
+	public AsychCommunication(MainFrame mainFrame) {
+		super(mainFrame);
+	}
+
 	public AsychCommunication() {
-		super();
+		super(null);
 	}
 
 	public void connect(String props, String name) {
@@ -22,7 +29,7 @@ public class AsychCommunication extends Communication {
 				channel.setName(name);
 			}
 			
-			channel.setReceiver(new AsychReceiver(getSession()));
+			channel.setReceiver(new AsychReceiver(getSession(), getMainFrame()));
 			channel.setDiscardOwnMessages(true);
 			channel.connect(CLUSTER_NAME);
 		} catch (Exception e) {
