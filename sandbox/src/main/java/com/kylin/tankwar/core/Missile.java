@@ -4,6 +4,7 @@ import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -89,11 +90,7 @@ public class Missile {
 		return tankId;
 	}
 
-	public void draw(Graphics g) {
-		
-		if(!isLive) {
-			return ;
-		}
+	public void draw(Graphics g, boolean isSelf) {
 		
 		switch(dir) {
 		
@@ -123,7 +120,9 @@ public class Missile {
 			break;
 		}
 		
-		move();
+		if(isSelf) {
+			move();
+		}
 
 	}
 
@@ -164,31 +163,14 @@ public class Missile {
 		
 		if(x < 0 || y < 0 || y > MainFrame.GAME_HEIGHT || x > MainFrame.GAME_WIDTH) {
 			isLive = false;
-			mainFrame.replicateMissile(Event.MM);
-			mainFrame.getComm().getSession().romoveMissileView(id);
-			mainFrame.getMissileMap().remove(id);
+			mainFrame.vactor.add(getId());
 		}
 		
-		mainFrame.replicateMissile(Event.MM);
+		mainFrame.replicateMissile(this, Event.MM);
 	}
 	
 	public Rectangle getRect() {
 		return new Rectangle(x, y, WIDTH, HEIGHT);
-	}
-	
-	public boolean hitWall(Wall wall) {
-		
-		if(isLive && getRect().intersects(wall.getRect())) {
-			isLive = false ;
-			
-			mainFrame.replicateMissile(Event.MM);
-			mainFrame.getComm().getSession().romoveMissileView(id);
-			mainFrame.getMissileMap().remove(id);
-			
-			return true ;
-		}
-		
-		return false ;
 	}
 	
 	public MissileView getMissileView() {
@@ -206,17 +188,45 @@ public class Missile {
 		this.isLive = view.isLive();
 	}
 
-	public void hitTank(Tank tank) {
+	public boolean hitTank(Tank tank) {
 		
 		if(tank.isGood() != isGood && getRect().intersects(tank.getRect())) {
 			tank.setLife(tank.getLife() - 20);
-			isLive = false ;
-			mainFrame.getHandler().sendHandler(this, tank, mainFrame.getComm());
+			logger.debug("Missile " + getMissileView() + " hit Tank"  + tank.getView());
+			return true ;
 		}
 		
-		logger.debug("hit tank - " + tank.getView());
+		return false ;
+	}
+
+	public boolean hitTank(Collection<Tank> values) {
 		
+		boolean isHit = false ;
 		
+		for(Tank tank : values) {
+			
+			if(tank.getId().compareTo(getTankId()) == 0) {
+				continue;
+			}
+			
+			if(tank.isGood() != isGood && getRect().intersects(tank.getRect())) {
+				isLive = false ;
+				isHit = true ;
+				break;
+			}
+		}
+		
+		return isHit;
+	}
+	
+	public boolean hitWall(Wall wall) {
+	
+		if(isLive && getRect().intersects(wall.getRect())) {
+			isLive = false ;			
+			return true ;
+		}
+		
+		return false ;
 	}
 
 }

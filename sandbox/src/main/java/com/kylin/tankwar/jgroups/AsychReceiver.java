@@ -7,7 +7,6 @@ import org.jgroups.View;
 
 import com.kylin.tankwar.core.Event;
 import com.kylin.tankwar.core.MainFrame;
-import com.kylin.tankwar.jgroups.handler.IHandler;
 
 public class AsychReceiver extends ReceiverAdapter {
 	
@@ -32,12 +31,11 @@ public class AsychReceiver extends ReceiverAdapter {
 		}
 		
 		Session rec = (Session) msg.getObject();
-		session.merge(rec);
 		
 		if(rec.getEvent() == Event.TM || rec.getEvent() == Event.TN) {
-			mainFrame.getHandler().recieveHandler(mainFrame.getMyTank(), mainFrame.getTankMap(), session, mainFrame, rec.getEvent());
-		} else if(rec.getEvent() == Event.MM || rec.getEvent() == Event.MN) {
-			mainFrame.getHandler().recieveHandler(mainFrame.getMyTank().getId(), mainFrame.getMissileMap(), session, mainFrame);
+			mainFrame.getHandler().recieveHandler(mainFrame, session, rec);
+		} else if(rec.getEvent() == Event.MM ) {
+			mainFrame.getHandler().recieveHandler(mainFrame.getMissileMap(), session, rec);
 		} else if(rec.getEvent() == Event.DEATH) {
 			String missileId = rec.missileIdSet().iterator().next() ;
 			String tankId = rec.tankIdSet().iterator().next() ;

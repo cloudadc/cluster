@@ -27,4 +27,8 @@ public class Wall {
 		return new Rectangle(x, y, w, h);
 	}
 
+	public String toString() {
+		return "Wall [x=" + x + ", y=" + y + ", w=" + w + ", h=" + h + "]";
+	}
+
 }

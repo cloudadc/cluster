@@ -8,10 +8,11 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.Set;
+import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.log4j.Logger;
@@ -19,6 +20,7 @@ import org.apache.log4j.Logger;
 import com.kylin.tankwar.jgroups.AsychCommunication;
 import com.kylin.tankwar.jgroups.Communication;
 import com.kylin.tankwar.jgroups.handler.CommHandler;
+import com.kylin.tankwar.jgroups.handler.IHandler;
 
 public class MainFrame extends Frame {
 
@@ -35,16 +37,10 @@ public class MainFrame extends Frame {
 		return comm;
 	}
 
-	CommHandler handler = new CommHandler();
+	IHandler handler = new CommHandler();
 	
-	public CommHandler getHandler() {
+	public IHandler getHandler() {
 		return handler;
-	}
-
-	private Tank myTank ;
-	
-	public Tank getMyTank() {
-		return myTank;
 	}
 	
 	private boolean isGood ;
@@ -56,23 +52,31 @@ public class MainFrame extends Frame {
 	
 	private Image offScreenImage = null;
 	
+	
+	Tank myTank ;
 	Map<String,Tank> tankMap = new ConcurrentHashMap<String,Tank>();
 
 	public Map<String, Tank> getTankMap() {
 		return tankMap;
 	}
 	
+	public Tank getMyTank() {
+		return myTank;
+	}
+	
 	Map<String, Missile> missileMap = new ConcurrentHashMap<String, Missile>();
-	Set<Missile> myMissiles = new HashSet<Missile>();
 	
 
 	public Map<String, Missile> getMissileMap() {
 		return missileMap;
 	}
 	
-//	private boolean isReplicateTank = true ;
-//	private boolean isReplicateMissile = true ;
-//	private boolean isReplicateExplode = true ;
+	Explode myExplode = null;
+	List<Explode> explodes = new ArrayList<Explode>();
+
+	public List<Explode> getExplodes() {
+		return explodes;
+	}
 
 	public MainFrame() {
 		
@@ -178,16 +182,56 @@ public class MainFrame extends Frame {
 		handler.sendHandler(myTank.getId(), missileMap.values(), comm, event);
 	}
 	
+	public void replicateMissile(Missile missile, Event event) {
+		handler.sendHandler(missile, comm, event);
+	}
+	
+	/**
+	 *  keep each time death missiles
+	 */
+	Vector<String> vactor = new Vector<String>(2, 2);
+	
 	public void paint(Graphics g) {
 		
 		g.drawString("tanks count: " + tankMap.keySet().size() + ", missiles count: " + missileMap.size(), 10, 80);
 		g.drawString("tank     life:" + myTank.getLife(), 10, 100);
+			
+		vactor.clear();
+		
+		for(Missile missile : missileMap.values()) {
+			
+			if(missile.getTankId().compareTo(myTank.getId()) == 0) {
+				
+				if(hitWall(missile) || missile.hitTank(getTankMap().values())){
+					vactor.add(missile.getId());
+				}
+				
+				missile.draw(g, true);
+			} else {
+				
+				if(missile.hitTank(myTank)) {
+					replicateTank(Event.TM);
+				}
+				
+				missile.draw(g, false);
+			}				
+		}
+		
+		for(String id : vactor) {
+			missileMap.remove(id);
+			getComm().getSession().romoveMissileView(id);
+		}
 		
 		for(Tank tank : tankMap.values()) {
-			tank.draw(g);
 			
-			if(myTank.getId().compareTo(tank.getId()) != 0 && myTank.getRect().intersects(tank.getRect())) {
-				
+			if(!tank.isLive()) {
+				continue;
+			} else if(myTank.getId().compareTo(tank.getId()) == 0 && myTank.getLife() <= 0) {
+				myTank.setLive(false);
+				replicateTank(Event.TM);
+				continue;
+			} else if(myTank.getId().compareTo(tank.getId()) != 0 && myTank.getRect().intersects(tank.getRect())) {
+
 				myTank.relocate();
 				
 				if(myTank.isGood() != tank.isGood()) {
@@ -196,28 +240,56 @@ public class MainFrame extends Frame {
 				
 				replicateTank(Event.TM);
 			}
+			
+			tank.draw(g);
 		}
+		
+//		if(!myTank.isLive() && myTank.isExplode()){
+//			myExplode = new Explode(myTank.getX(), myTank.getY(), myTank.getId());
+//			myTank.setExplode(false);
+//		}
+//		
+//		paintExplode(g);
+		
+		paintWall(g);
+	}
+	
+	
+	private void paintExplode(Graphics g) {
+
+		if(null != myExplode) {
 			
-		for(Missile missile : missileMap.values()) {
-			
-			missile.hitWall(w1);
-			missile.hitWall(w2);
-			missile.hitWall(w3);
-			missile.hitWall(w4);
-			
-			missile.hitTank(myTank);
-			
-			missile.draw(g);
-			
+			if(myExplode.isLive()) {
+				myExplode.draw(g);
+			} else {
+				myExplode = null;
+			}
 		}
+		
+//		for(int i = 0 ; i < getExplodes().size() ; i ++ ) {
+//			Explode e = explodes.get(i);
+//			e.draw(g);
+//			
+//			if(!e.isLive()) {
+//				explodes.remove(i);
+//			}
+//		}
+		
+	}
+
+	private void paintWall(Graphics g) {
 		
 		w1.draw(g);
 		w2.draw(g);
 		w3.draw(g);
 		w4.draw(g);
 	}
-	
-	
+
+	private boolean hitWall(Missile missile) {
+		
+		return missile.hitWall(w1) || missile.hitWall(w2) || missile.hitWall(w3) || missile.hitWall(w4);
+	}
+
 	public void update(Graphics g) {
 				
 		if(offScreenImage == null) {

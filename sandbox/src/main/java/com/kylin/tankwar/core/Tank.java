@@ -114,6 +114,24 @@ public class Tank {
 		this.id = id;
 	}
 
+	public int getX() {
+		return x;
+	}
+
+	public int getY() {
+		return y;
+	}
+	
+	boolean isExplode = true;
+
+	public boolean isExplode() {
+		return isExplode;
+	}
+
+	public void setExplode(boolean isExplode) {
+		this.isExplode = isExplode;
+	}
+
 	/**
 	 * Update Tank status after either synchronous or asychronous session replication finished
 	 * @param tankView
@@ -287,6 +305,38 @@ public class Tank {
 		
 		locateDirection();
 	}
+		
+	public void keyPressed(KeyEvent e) {
+
+		int key = e.getKeyCode();
+
+		switch (key) {
+		case KeyEvent.VK_LEFT :
+			bL = true;
+			break;
+		case KeyEvent.VK_UP :
+			bU = true;
+			break;
+		case KeyEvent.VK_RIGHT :
+			bR = true;
+			break;
+		case KeyEvent.VK_DOWN :
+			bD = true;
+			break;
+		}
+		
+		locateDirection();
+		
+	}
+	
+	private boolean isFire() {
+		
+		for(Missile view : mainFrame.getMissileMap().values()) {
+			
+		}
+		
+		return false;
+	}
 
 	private void superFire() {
 
@@ -321,28 +371,6 @@ public class Tank {
 		String id = mainFrame.getComm().getChannelName() + "-missile-" + Counter.MISSILE_ID_GEN.getAndIncrement();
 		Missile missile = new Missile(id, getId(),x, y, dir, isGood, true, mainFrame);
 		mainFrame.getMissileMap().put(id, missile);
-	}
-
-	public void keyPressed(KeyEvent e) {
-
-		int key = e.getKeyCode();
-
-		switch (key) {
-		case KeyEvent.VK_LEFT :
-			bL = true;
-			break;
-		case KeyEvent.VK_UP :
-			bU = true;
-			break;
-		case KeyEvent.VK_RIGHT :
-			bR = true;
-			break;
-		case KeyEvent.VK_DOWN :
-			bD = true;
-			break;
-		}
-		
-		locateDirection();
 		
 	}
 	
@@ -382,6 +410,22 @@ public class Tank {
 	public void relocate() {
 		x = mainFrame.getRandom(MainFrame.GAME_WIDTH - 100);
 		y = mainFrame.getRandom(MainFrame.GAME_HEIGHT - 100);
+	}
+
+	public boolean hitTank(Tank myTank) {
+
+		if(myTank.getRect().intersects(getRect())) {
+			
+			myTank.relocate();
+			
+			if(myTank.isGood() != isGood()) {
+				myTank.setLife(myTank.getLife() - 20);
+			}
+			
+			return true;
+		}
+		
+		return false;
 	}
 
 }

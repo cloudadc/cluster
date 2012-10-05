@@ -14,7 +14,14 @@ public interface IHandler {
 
 	public void sendHandler(Tank tank, Communication comm, Event event);
 	
-	public void recieveHandler(Tank tank, Map<String,Tank> tankMap, Session session, MainFrame mainFrame, Event event);
+	public void sendHandler(Missile missile, Communication comm, Event event);
+	
+	public void recieveHandler(MainFrame mainFrame, Session session, Session rec);
+	
+	public void recieveHandler(Map<String, Missile> missileMap, Session session, Session rec);
+	
+	
+	
 	
 	public void sendHandler(String id, Collection<Missile> missiles, Communication comm, Event event);
 	
@@ -29,4 +36,6 @@ public interface IHandler {
 	 *  For death missile
 	 */
 	public void recieveHandler(String missileId, String tankId, Session session, MainFrame mainFrame);
+	
+	
 }
