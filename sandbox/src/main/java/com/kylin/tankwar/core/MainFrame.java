@@ -17,6 +17,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.log4j.Logger;
 
+import com.kylin.tankwar.Explode_;
 import com.kylin.tankwar.jgroups.AsychCommunication;
 import com.kylin.tankwar.jgroups.Communication;
 import com.kylin.tankwar.jgroups.handler.CommHandler;
@@ -182,6 +183,10 @@ public class MainFrame extends Frame {
 		handler.sendHandler(myTank.getId(), missileMap.values(), comm, event);
 	}
 	
+	public void replicateExplode(Event event) {
+		handler.sendHandler(myExplode, comm, event);
+	}
+	
 	public void replicateMissile(Missile missile, Event event) {
 		handler.sendHandler(missile, comm, event);
 	}
@@ -191,6 +196,7 @@ public class MainFrame extends Frame {
 	 */
 	Vector<String> vactor = new Vector<String>(2, 2);
 	
+	Explode_ e = new Explode_(200, 200, null);
 	public void paint(Graphics g) {
 		
 		g.drawString("tanks count: " + tankMap.keySet().size() + ", missiles count: " + missileMap.size(), 10, 80);
@@ -244,12 +250,13 @@ public class MainFrame extends Frame {
 			tank.draw(g);
 		}
 		
-//		if(!myTank.isLive() && myTank.isExplode()){
-//			myExplode = new Explode(myTank.getX(), myTank.getY(), myTank.getId());
-//			myTank.setExplode(false);
-//		}
-//		
-//		paintExplode(g);
+		if(!myTank.isLive() && myTank.isExplode()){
+			myExplode = new Explode(myTank.getX(), myTank.getY(), myTank.getId());
+			replicateExplode(Event.EM);
+			myTank.setExplode(false);
+		}
+		
+		paintExplode(g);
 		
 		paintWall(g);
 	}
@@ -266,14 +273,14 @@ public class MainFrame extends Frame {
 			}
 		}
 		
-//		for(int i = 0 ; i < getExplodes().size() ; i ++ ) {
-//			Explode e = explodes.get(i);
-//			e.draw(g);
-//			
-//			if(!e.isLive()) {
-//				explodes.remove(i);
-//			}
-//		}
+		for(int i = 0 ; i < getExplodes().size() ; i ++ ) {
+			Explode e = explodes.get(i);
+			e.draw(g);
+			
+			if(!e.isLive()) {
+				explodes.remove(i);
+			}
+		}
 		
 	}
 

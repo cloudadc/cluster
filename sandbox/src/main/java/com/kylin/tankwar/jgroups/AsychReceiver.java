@@ -36,7 +36,9 @@ public class AsychReceiver extends ReceiverAdapter {
 			mainFrame.getHandler().recieveHandler(mainFrame, session, rec);
 		} else if(rec.getEvent() == Event.MM ) {
 			mainFrame.getHandler().recieveHandler(mainFrame.getMissileMap(), session, rec);
-		} else if(rec.getEvent() == Event.DEATH) {
+		} else if(rec.getEvent() == Event.EM) {
+			mainFrame.getHandler().recieveHandler(mainFrame.getExplodes(), session, rec);
+		}else if(rec.getEvent() == Event.DEATH) {
 			String missileId = rec.missileIdSet().iterator().next() ;
 			String tankId = rec.tankIdSet().iterator().next() ;
 			mainFrame.getHandler().recieveHandler(missileId, tankId, session, mainFrame);

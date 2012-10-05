@@ -49,7 +49,16 @@ public class Explode {
 		this.id = view.getId();
 	}
 
+	private static boolean init = false;
+	
 	public void draw(Graphics g) {
+		
+		if(!init) {
+			for (int i = 0; i < imgs.length; i++) {
+				g.drawImage(imgs[i], -100, -100, null);
+			}			
+			init = true;
+		}
 		
 		if(step == imgs.length) {
 			isLive = false;

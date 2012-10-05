@@ -1,12 +1,15 @@
 package com.kylin.tankwar.jgroups.handler;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import org.apache.log4j.Logger;
 
 import com.kylin.tankwar.core.Event;
+import com.kylin.tankwar.core.Explode;
+import com.kylin.tankwar.core.ExplodeView;
 import com.kylin.tankwar.core.MainFrame;
 import com.kylin.tankwar.core.Missile;
 import com.kylin.tankwar.core.MissileView;
@@ -45,6 +48,20 @@ public class CommHandler implements IHandler {
 		Session session = new Session();
 		session.setEvent(event);
 		session.addMissileView(missile.getId(), missile.getMissileView());
+		
+		// use asych currently
+		comm.asychSend(session);
+	}
+	
+	public void sendHandler(Explode explode, Communication comm, Event event) {
+		
+		if(logger.isDebugEnabled()) {
+			logger.debug("Send Explode<" + explode.getView() + "> to group members");
+		}
+		
+		Session session = new Session();
+		session.setEvent(event);
+		session.setExplodeView(explode.getView());
 		
 		// use asych currently
 		comm.asychSend(session);
@@ -108,6 +125,15 @@ public class CommHandler implements IHandler {
 		
 		logAfterSession(session);
 	}
+	
+	public void recieveHandler(List<Explode> explodes, Session session, Session rec) {
+
+		ExplodeView view = rec.getExplodeView();
+		
+		Explode explode = new Explode(view);
+		
+		explodes.add(explode);
+	}	
 	
 	private void logAfterSession(Session session) {
 
@@ -214,6 +240,8 @@ public class CommHandler implements IHandler {
 		session.romoveMissileView(missileId);
 		
 		logAfterSession(session);
-	}	
+	}
+
+	
 
 }

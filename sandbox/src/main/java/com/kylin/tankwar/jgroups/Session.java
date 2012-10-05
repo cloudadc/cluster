@@ -9,6 +9,7 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 
 import com.kylin.tankwar.core.Event;
+import com.kylin.tankwar.core.ExplodeView;
 import com.kylin.tankwar.core.MissileView;
 import com.kylin.tankwar.core.TankView;
 
@@ -42,6 +43,8 @@ public class Session implements Serializable {
 	Map<String, TankView> tankViewMap = new HashMap<String, TankView>();
 	
 	Map<String, ExplodeDraw> explodeDrawMap = new HashMap<String, ExplodeDraw>();
+
+	ExplodeView explodeView;
 	
 	public void addTankView(String key, TankView value) {
 		tankViewMap.put(key, value);
@@ -85,6 +88,14 @@ public class Session implements Serializable {
 		return missileViewMap ;
 	}
 	
+	public ExplodeView getExplodeView() {
+		return explodeView;
+	}
+
+	public void setExplodeView(ExplodeView explodeView) {
+		this.explodeView = explodeView;
+	}
+
 	public void logSession() {
 		
 		if(!logger.isDebugEnabled()) {

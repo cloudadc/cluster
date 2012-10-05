@@ -46,10 +46,10 @@ public class Explode_ {
 			init = true;
 		}
 		
-		if(!live) {
-			tc.explodes.remove(this);
-			return;
-		}
+//		if(!live) {
+//			tc.explodes.remove(this);
+//			return;
+//		}
 		
 		if(step == imgs.length) {
 			live = false;

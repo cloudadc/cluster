@@ -1,6 +1,10 @@
 package com.kylin.tankwar.core;
 
-public class ExplodeView {
+import java.io.Serializable;
+
+public class ExplodeView implements Serializable{
+
+	private static final long serialVersionUID = 662346405657410579L;
 
 	private int x, y;
 	
