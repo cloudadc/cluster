@@ -13,6 +13,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import com.kylin.tankwar.core.Blood;
 import com.kylin.tankwar.core.Direction;
 import com.kylin.tankwar.core.TankView;
 import com.kylin.tankwar.jgroups.Session;

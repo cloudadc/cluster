@@ -1,11 +1,11 @@
-package com.kylin.tankwar;
+package com.kylin.tankwar.core;
 import java.awt.*;
 
 import org.apache.log4j.Logger;
 
 public class Blood {
-	int x, y, w, h;
-	TankFrame tc; 
+	
+	private int x, y, w, h;
 	
 	private static final Logger logger = Logger.getLogger(Blood.class);
 	
@@ -25,15 +25,39 @@ public class Blood {
 		logger.info("initialize a Blood instance");
 	}
 	
+	private int count = 0 ;
+	
 	public void draw(Graphics g) {
-		if(!live) return;
+	
+		if(!live) {
+			
+			count ++ ;
+			
+			if(count == 100) {
+				count = 0;
+				live = true;
+			}
+			
+			return;
+		}
 		
 		Color c = g.getColor();
-		g.setColor(Color.MAGENTA);
-		g.fillRect(x, y, w, h);
+		g.setColor(Color.WHITE);
+		g.fillOval(x, y, 25, 25);
+		g.setColor(Color.RED);
+		g.fillRect(x + 5, y + 10, 15, 5);
+		g.fillRect(x + 10, y + 5, 5, 15);
 		g.setColor(c);
 		
 		move();
+	}
+
+	public int getStep() {
+		return step;
+	}
+
+	public void setStep(int step) {
+		this.step = step;
 	}
 
 	private void move() {

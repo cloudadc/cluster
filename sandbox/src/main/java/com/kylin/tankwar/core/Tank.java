@@ -9,7 +9,6 @@ import java.awt.event.KeyEvent;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
-import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
@@ -311,6 +310,9 @@ public class Tank {
 		int key = e.getKeyCode();
 
 		switch (key) {
+		case KeyEvent.VK_F2:
+			recover();
+			break;
 		case KeyEvent.VK_LEFT :
 			bL = true;
 			break;
@@ -329,13 +331,22 @@ public class Tank {
 		
 	}
 	
-	private boolean isFire() {
+//	private boolean isFire() {
+//		
+//		for(Missile view : mainFrame.getMissileMap().values()) {
+//			
+//		}
+//		
+//		return false;
+//	}
+
+	private void recover() {
 		
-		for(Missile view : mainFrame.getMissileMap().values()) {
-			
+		if(!isLive) {
+			isLive = true ;
+			life = 100 ;
+			this.setExplode(true);
 		}
-		
-		return false;
 	}
 
 	private void superFire() {

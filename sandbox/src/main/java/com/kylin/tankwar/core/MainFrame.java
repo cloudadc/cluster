@@ -1,6 +1,7 @@
 package com.kylin.tankwar.core;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Image;
@@ -78,6 +79,8 @@ public class MainFrame extends Frame {
 	public List<Explode> getExplodes() {
 		return explodes;
 	}
+	
+	Blood blood = new Blood();
 
 	public MainFrame() {
 		
@@ -232,7 +235,11 @@ public class MainFrame extends Frame {
 			
 			if(!tank.isLive()) {
 				continue;
-			} else if(myTank.getId().compareTo(tank.getId()) == 0 && myTank.getLife() <= 0) {
+			} else if(myTank.getId().compareTo(tank.getId()) == 0 && myTank.getLife() > 0 && myTank.getRect().intersects(blood.getRect())) {
+				myTank.setLife(100);
+				replicateTank(Event.TM);
+				blood.setLive(false);
+			}else if(myTank.getId().compareTo(tank.getId()) == 0 && myTank.getLife() <= 0) {
 				myTank.setLive(false);
 				replicateTank(Event.TM);
 				continue;
@@ -246,6 +253,8 @@ public class MainFrame extends Frame {
 				
 				replicateTank(Event.TM);
 			}
+			
+			blood.draw(g);
 			
 			tank.draw(g);
 		}
