@@ -2,12 +2,12 @@ package com.kylin.tankwar.jgroups;
 
 import java.io.Serializable;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
 
+import com.kylin.tankwar.core.BloodView;
 import com.kylin.tankwar.core.Event;
 import com.kylin.tankwar.core.ExplodeView;
 import com.kylin.tankwar.core.MissileView;
@@ -45,6 +45,8 @@ public class Session implements Serializable {
 	Map<String, ExplodeDraw> explodeDrawMap = new HashMap<String, ExplodeDraw>();
 
 	ExplodeView explodeView;
+	
+	BloodView bloodView;
 	
 	public void addTankView(String key, TankView value) {
 		tankViewMap.put(key, value);
@@ -94,6 +96,14 @@ public class Session implements Serializable {
 
 	public void setExplodeView(ExplodeView explodeView) {
 		this.explodeView = explodeView;
+	}
+
+	public BloodView getBloodView() {
+		return bloodView;
+	}
+
+	public void setBloodView(BloodView bloodView) {
+		this.bloodView = bloodView;
 	}
 
 	public void logSession() {

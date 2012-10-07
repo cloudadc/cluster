@@ -12,10 +12,6 @@ import java.util.Random;
 
 import org.apache.log4j.Logger;
 
-import com.kylin.tankwar.Missile_;
-import com.kylin.tankwar.TankFrame;
-import com.kylin.tankwar.Tank_;
-
 public class Tank {
 	
 	public static final int WIDTH = 30;
@@ -40,14 +36,14 @@ public class Tank {
 	private static Map<String, Image> imgs = new HashMap<String, Image>();
 	static {
 		tankImages = new Image[] {
-				tk.getImage(Tank_.class.getClassLoader().getResource("images/tankL.gif")),
-				tk.getImage(Tank_.class.getClassLoader().getResource("images/tankLU.gif")),
-				tk.getImage(Tank_.class.getClassLoader().getResource("images/tankU.gif")),
-				tk.getImage(Tank_.class.getClassLoader().getResource("images/tankRU.gif")),
-				tk.getImage(Tank_.class.getClassLoader().getResource("images/tankR.gif")),
-				tk.getImage(Tank_.class.getClassLoader().getResource("images/tankRD.gif")),
-				tk.getImage(Tank_.class.getClassLoader().getResource("images/tankD.gif")),
-				tk.getImage(Tank_.class.getClassLoader().getResource("images/tankLD.gif"))
+				tk.getImage(Tank.class.getClassLoader().getResource("images/tankL.gif")),
+				tk.getImage(Tank.class.getClassLoader().getResource("images/tankLU.gif")),
+				tk.getImage(Tank.class.getClassLoader().getResource("images/tankU.gif")),
+				tk.getImage(Tank.class.getClassLoader().getResource("images/tankRU.gif")),
+				tk.getImage(Tank.class.getClassLoader().getResource("images/tankR.gif")),
+				tk.getImage(Tank.class.getClassLoader().getResource("images/tankRD.gif")),
+				tk.getImage(Tank.class.getClassLoader().getResource("images/tankD.gif")),
+				tk.getImage(Tank.class.getClassLoader().getResource("images/tankLD.gif"))
 		};
 		
 		imgs.put("L", tankImages[0]);
@@ -272,8 +268,8 @@ public class Tank {
 		
 		if(x < 0) x = 0;
 		if(y < 30) y = 30;
-		if(x + Tank_.WIDTH > TankFrame.GAME_WIDTH) x = TankFrame.GAME_WIDTH - Tank_.WIDTH;
-		if(y + Tank_.HEIGHT > TankFrame.GAME_HEIGHT) y = TankFrame.GAME_HEIGHT - Tank_.HEIGHT;
+		if(x + Tank.WIDTH > MainFrame.GAME_WIDTH) x = MainFrame.GAME_WIDTH - Tank.WIDTH;
+		if(y + Tank.HEIGHT > MainFrame.GAME_HEIGHT) y = MainFrame.GAME_HEIGHT - Tank.HEIGHT;
 		
 	}
 
@@ -366,17 +362,17 @@ public class Tank {
 		int x = 0, y = 0;
 		
 		if(dir == Direction.LU || dir == Direction.RU || dir == Direction.RD || dir == Direction.LD) {
-			x = this.x + Tank_.WIDTH/2 - Missile_.WIDTH/2 + 20;
-			y = this.y + Tank_.HEIGHT/2 - Missile_.HEIGHT/2 + 20;
+			x = this.x + Tank.WIDTH/2 - Missile.WIDTH/2 + 20;
+			y = this.y + Tank.HEIGHT/2 - Missile.HEIGHT/2 + 20;
 		} else if(dir == Direction.U) {
-			x = this.x + Tank_.WIDTH/2 - Missile_.WIDTH/2 + 10;
-			y = this.y + Tank_.HEIGHT/2 - Missile_.HEIGHT/2 + 10;
+			x = this.x + Tank.WIDTH/2 - Missile.WIDTH/2 + 10;
+			y = this.y + Tank.HEIGHT/2 - Missile.HEIGHT/2 + 10;
 		} else if(dir == Direction.R || dir == Direction.L) {
-			x = this.x + Tank_.WIDTH/2 - Missile_.WIDTH/2 + 10;
-			y = this.y + Tank_.HEIGHT/2 - Missile_.HEIGHT/2 + 13;
+			x = this.x + Tank.WIDTH/2 - Missile.WIDTH/2 + 10;
+			y = this.y + Tank.HEIGHT/2 - Missile.HEIGHT/2 + 13;
 		} else if(dir == Direction.D) {
-			x = this.x + Tank_.WIDTH/2 - Missile_.WIDTH/2 + 8;
-			y = this.y + Tank_.HEIGHT/2 - Missile_.HEIGHT/2 + 10;
+			x = this.x + Tank.WIDTH/2 - Missile.WIDTH/2 + 8;
+			y = this.y + Tank.HEIGHT/2 - Missile.HEIGHT/2 + 10;
 		}
 		
 		String id = mainFrame.getComm().getChannelName() + "-missile-" + Counter.MISSILE_ID_GEN.getAndIncrement();

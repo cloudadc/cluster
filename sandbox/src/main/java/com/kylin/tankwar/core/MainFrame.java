@@ -18,7 +18,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.log4j.Logger;
 
-import com.kylin.tankwar.Explode_;
 import com.kylin.tankwar.jgroups.AsychCommunication;
 import com.kylin.tankwar.jgroups.Communication;
 import com.kylin.tankwar.jgroups.handler.CommHandler;
@@ -80,7 +79,11 @@ public class MainFrame extends Frame {
 		return explodes;
 	}
 	
-	Blood blood = new Blood();
+	Blood blood = new Blood(this);
+	
+	public Blood getBlood() {
+		return blood ;
+	}
 
 	public MainFrame() {
 		
@@ -116,6 +119,7 @@ public class MainFrame extends Frame {
 		logger.info("initialized a Tank, " + myTank.getView());
 		
 		replicateTank(Event.TN);
+		replicateBlood(Event.B);
 	}
 	
 	public int getRandom(int max) {
@@ -190,6 +194,10 @@ public class MainFrame extends Frame {
 		handler.sendHandler(myExplode, comm, event);
 	}
 	
+	public void replicateBlood(Event event) {
+		handler.sendHandler(blood, comm, event);
+	}
+	
 	public void replicateMissile(Missile missile, Event event) {
 		handler.sendHandler(missile, comm, event);
 	}
@@ -199,12 +207,10 @@ public class MainFrame extends Frame {
 	 */
 	Vector<String> vactor = new Vector<String>(2, 2);
 	
-	Explode_ e = new Explode_(200, 200, null);
 	public void paint(Graphics g) {
 		
-		g.drawString("tanks count: " + tankMap.keySet().size() + ", missiles count: " + missileMap.size(), 10, 80);
-		g.drawString("tank     life:" + myTank.getLife(), 10, 100);
-			
+		g.drawString("Tanks count: " + tankMap.keySet().size() + ", Missiles count: " + missileMap.size() + ", Life: " + myTank.getLife() + ", Rank: 1", 10, 50);
+		
 		vactor.clear();
 		
 		for(Missile missile : missileMap.values()) {
@@ -235,10 +241,11 @@ public class MainFrame extends Frame {
 			
 			if(!tank.isLive()) {
 				continue;
-			} else if(myTank.getId().compareTo(tank.getId()) == 0 && myTank.getLife() > 0 && myTank.getRect().intersects(blood.getRect())) {
+			} else if(myTank.getId().compareTo(tank.getId()) == 0 && myTank.getLife() > 0 && myTank.getRect().intersects(blood.getRect()) && blood.isLive()) {
 				myTank.setLife(100);
 				replicateTank(Event.TM);
 				blood.setLive(false);
+				replicateBlood(Event.B);
 			}else if(myTank.getId().compareTo(tank.getId()) == 0 && myTank.getLife() <= 0) {
 				myTank.setLive(false);
 				replicateTank(Event.TM);

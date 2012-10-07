@@ -12,19 +12,40 @@ public class Blood {
 	int step = 0;
 	private boolean live = true;
 	
-	private int[][] pos = {
-			          {350, 300}, {355, 295}, {360, 290}, {365, 285}, {370, 280}, {375, 275}, {380, 270}, {385, 265}, {390, 260}, {395, 255}, {400, 250}, {405, 245}, {410, 240}, {415, 235},
-			          {415, 235}, {410, 240}, {405, 245}, {400, 250}, {395, 255}, {390, 260}, {385, 265}, {380, 270}, {375, 275}, {370, 280}, {365, 285}, {360, 290}, {355, 295}, {350, 300}
-					  };
+	Point[] array = null;
+	
+	MainFrame mainFrame;
 	
 	public Blood() {
-		x = pos[0][0];
-		y = pos[0][1];
+		
+	}
+	
+	public Blood(MainFrame mainFrame) {
+		initArray() ;
+		x = array[0].x;
+		y = array[0].y;
 		w = h = 15;
+		this.mainFrame = mainFrame;
 		
 		logger.info("initialize a Blood instance");
 	}
 	
+	private void initArray() {
+
+		Point[] tmp = new Point[75];
+		array = new Point[150];
+		
+		for(int i = 0 ; i < 75 ; i ++){
+			Point p = new Point(350 + i, 300 - i);
+			tmp[i] = p;
+			array[i] = p;
+		}
+		
+		for(int i = 75 ; i > 0 ; i --) {
+			array[150 - i] = tmp[i - 1];
+		}
+	}
+
 	private int count = 0 ;
 	
 	public void draw(Graphics g) {
@@ -33,9 +54,10 @@ public class Blood {
 			
 			count ++ ;
 			
-			if(count == 100) {
+			if(count == 1000) {
 				count = 0;
 				live = true;
+				mainFrame.replicateBlood(Event.B);
 			}
 			
 			return;
@@ -62,11 +84,11 @@ public class Blood {
 
 	private void move() {
 		step ++;
-		if(step == pos.length){
+		if(step == array.length){
 			step = 0;
 		}
-		x = pos[step][0];
-		y = pos[step][1];
+		x = array[step].x ;
+		y = array[step].y ;
 	}
 	
 	public Rectangle getRect() {
@@ -79,6 +101,15 @@ public class Blood {
 
 	public void setLive(boolean live) {
 		this.live = live;
+	}
+	
+	public BloodView getBooldView() {
+		return new BloodView(step, live);
+	}
+	
+	public void updateBlood(BloodView view) {
+		this.step = view.getStep();
+		this.live = view.isLive();		
 	}
 	
 }

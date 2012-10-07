@@ -7,6 +7,8 @@ import java.util.Map.Entry;
 
 import org.apache.log4j.Logger;
 
+import com.kylin.tankwar.core.Blood;
+import com.kylin.tankwar.core.BloodView;
 import com.kylin.tankwar.core.Event;
 import com.kylin.tankwar.core.Explode;
 import com.kylin.tankwar.core.ExplodeView;
@@ -62,6 +64,20 @@ public class CommHandler implements IHandler {
 		Session session = new Session();
 		session.setEvent(event);
 		session.setExplodeView(explode.getView());
+		
+		// use asych currently
+		comm.asychSend(session);
+	}
+	
+	public void sendHandler(Blood blood, Communication comm, Event event) {
+
+		if(logger.isDebugEnabled()) {
+			logger.debug("Send Blood<" + blood.getBooldView() + "> to group members");
+		}
+		
+		Session session = new Session();
+		session.setEvent(event);
+		session.setBloodView(blood.getBooldView());
 		
 		// use asych currently
 		comm.asychSend(session);
@@ -130,10 +146,22 @@ public class CommHandler implements IHandler {
 
 		ExplodeView view = rec.getExplodeView();
 		
+		session.setExplodeView(view);
+		
 		Explode explode = new Explode(view);
 		
 		explodes.add(explode);
 	}	
+	
+	
+	public void recieveHandler(Blood blood, Session session, Session rec) {
+
+		BloodView view = rec.getBloodView();
+		
+		session.setBloodView(view);
+		
+		blood.updateBlood(view);
+	}
 	
 	private void logAfterSession(Session session) {
 
@@ -241,6 +269,10 @@ public class CommHandler implements IHandler {
 		
 		logAfterSession(session);
 	}
+
+	
+
+	
 
 	
 
