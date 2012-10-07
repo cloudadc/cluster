@@ -2,7 +2,9 @@ TankWar
 =======
 
 * JGroups usage demo
- img:docs/img/tank-1.png[how to plan TankWar game]
+
+image::docs/img/tank-1.png[how to plan TankWar game]
+
 * Original TankWar Code I have written when  was a college student
 
 Project Agenda 
