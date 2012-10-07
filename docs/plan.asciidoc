@@ -1,0 +1,6 @@
+
+image::img/tank-1.png[How to plan TankWar]
+
+. Use arrow(up, down, left. right) move Tank, Tank can move to 8 direction
+. Use `space` emit missile
+. Use `F2` for generating a new Tank if current Tank exploded
