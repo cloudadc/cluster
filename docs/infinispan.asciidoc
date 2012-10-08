@@ -1,0 +1,29 @@
+How to run clustered cache demo?
+--------------------------------
+
+* compile, build the project:
+----
+mvn clean compile dependency:copy-dependencies -DstripVersion
+----
+
+* `replication` demo
+----
+java -cp target/classes/:target/dependency/* com.kylin.infinispan.clusteredcache.replication.Node0
+----
+
+----
+java -cp target/classes/:target/dependency/* com.kylin.infinispan.clusteredcache.replication.Node1
+----
+
+* `distribution` demo
+----
+java -cp target/classes/:target/dependency/* com.kylin.infinispan.clusteredcache.distribution.Node0
+----
+
+----
+java -cp target/classes/:target/dependency/* com.kylin.infinispan.clusteredcache.distribution.Node1
+----
+
+----
+java -cp target/classes/:target/dependency/* com.kylin.infinispan.clusteredcache.distribution.Node2
+----
