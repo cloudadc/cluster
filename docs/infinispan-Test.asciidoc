@@ -1,4 +1,4 @@
-How to run clustered cache demo?
+How to run clustered cache test?
 --------------------------------
 
 * compile, build the project:
