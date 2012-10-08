@@ -1,11 +1,12 @@
 TankWar
 =======
 
-* JGroups usage demo
+* A JGroups usage demo, TankWar need a group of members plan together, JGroups be used to replicate each member's status to other group members
 
-image::docs/img/tank-1.png[how to plan TankWar game]
+* How to plan?
+https://github.com/kylinsoong/TankWar/blob/master/docs/how_to_plan.asciidoc
 
-* Original TankWar Code I have written when  was a college student
+* Original Code came from my college homework
 
 Project Agenda 
 ===============
