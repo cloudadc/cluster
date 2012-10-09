@@ -9,3 +9,36 @@ Infinispan's four modes
 * *Distribution*, where entries are distributed to a subset of the nodes only. In this mode Infinispan is typically operating as a data grid providing an increased heap space
 
 NOTE:Invalidation, Replication and Distribution can all use synchronous or asynchronous communication.
+
+Linux maximum send and recieve buffer size
+-------------------------------------------
+
+* check max send buffer size
+----
+sysctl -a |grep net.core.wmem_max
+----
+
+* check max receive buffer size
+----
+sysctl -a |grep net.core.rmem_max
+----
+
+* modify max send and receive buffer size
+----
+vim /etc/sysctl.conf
+----
+
+add the following 2 lines:
+----
+net.core.wmem_max = 640000
+----
+
+----
+net.core.rmem_max = 25000000
+----
+
+execute the below command for make above configuring take effect:
+----
+sysctl -p
+----
+
