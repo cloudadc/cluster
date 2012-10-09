@@ -9,7 +9,7 @@ Agenda
 |enable jGroups replicate session     |Done         | use JGroups replicate session
 |reconstruct whole code architecture  |Done         | rewrite previous mainFrame code
 |jgroups advanced concept study       |Pending      | How to use other transport protoco replace default udp
-|Infinispan study                     |Pending      | basic knowledge
+|Infinispan study                     |Pending      | basic knowledge, API study
 |enable Infinispan replicate session  |Scheduled    | come soon
 |=========================================================
 
