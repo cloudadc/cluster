@@ -20,6 +20,7 @@
     <modules>
         <module>clustered-cache</module>
         <module>embedded-cache</module>
+	<module>api-stu</module>
     </modules>
 
 </project>

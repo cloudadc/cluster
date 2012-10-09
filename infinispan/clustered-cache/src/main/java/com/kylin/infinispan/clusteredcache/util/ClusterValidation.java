@@ -8,7 +8,6 @@ import org.infinispan.util.logging.LogFactory;
 /**
  * Utility class that knows how to wait until a cluster forms
  * 
- * 
  */
 public class ClusterValidation {
 

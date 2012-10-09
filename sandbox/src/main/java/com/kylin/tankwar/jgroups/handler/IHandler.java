@@ -33,19 +33,22 @@ public interface IHandler {
 	
 	
 	
-	
+	@Deprecated
 	public void sendHandler(String id, Collection<Missile> missiles, Communication comm, Event event);
 	
+	@Deprecated
 	public void recieveHandler(String id, Map<String, Missile> missileMap, Session session, MainFrame mainFrame);
 
 	/**
 	 *  For death missile
 	 */
+	@Deprecated
 	public void sendHandler(Missile missile, Tank tank, Communication comm);
 	
 	/**
 	 *  For death missile
 	 */
+	@Deprecated
 	public void recieveHandler(String missileId, String tankId, Session session, MainFrame mainFrame);
 
 	
