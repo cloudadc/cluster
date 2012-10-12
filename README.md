@@ -1,8 +1,7 @@
 TankWar
 =======
 
-* A JGroups Usage Demo
-** TankWar need a group of members plan together, JGroups be used to replicate each member's status to other group members
+* *A JGroups Usage Demo:* TankWar need a group of members plan together, JGroups be used to replicate each member's status to other group members
 
 * A Infinispan Usage Demo
 ** Each gourp member need share game data to whole group and fetch other group members' game data
