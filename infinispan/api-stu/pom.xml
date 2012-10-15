@@ -29,6 +29,13 @@
          <artifactId>infinispan-core</artifactId>
          <version>${infinispan.version}</version>
       </dependency>
+       
+       <dependency>
+	<groupId>org.hibernate</groupId>
+	<artifactId>hibernate-search</artifactId>
+	<version>4.0.0.Final</version>
+      </dependency>
+
    </dependencies>
 
    <build>

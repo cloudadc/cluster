@@ -19,7 +19,7 @@
 
    <properties>
       <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-      
+  
       <infinispan.version>5.2.0.Beta1</infinispan.version>
    </properties>
 
@@ -29,6 +29,7 @@
          <artifactId>infinispan-core</artifactId>
          <version>${infinispan.version}</version>
       </dependency>
+	
    </dependencies>
 
    <build>
