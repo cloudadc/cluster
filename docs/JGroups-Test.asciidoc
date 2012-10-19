@@ -36,7 +36,7 @@ mvn clean dependency:copy-dependencies install
 
 * Open multiple terminal, run `com.kylin.jgroups.blocks.MessageDispatcherTest` as bellow
 ----
-java -cp JGroups-stu.jar:jgroups-3.1.0.Final.jar:log4j-1.2.16.jar  -Djava.net.preferIPv4Stack=true com.kylin.jgroups.blocks.MessageDispatcherTest
+java -cp JGroups-stu.jar:jgroups-3.1.0.Final.jar:log4j-1.2.16.jar  -Djava.net.preferIPv4Stack=true com.kylin.jgroups.blocks.MessageDispatcherTest -n <name>
 ----
 
 * This Test will illustrate how to use MessageDispatcher
