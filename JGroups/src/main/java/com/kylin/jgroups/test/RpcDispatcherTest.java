@@ -3,7 +3,6 @@ package com.kylin.jgroups.test;
 import org.apache.log4j.Logger;
 import org.jgroups.Channel;
 import org.jgroups.JChannel;
-import org.jgroups.blocks.MethodCall;
 import org.jgroups.blocks.RequestOptions;
 import org.jgroups.blocks.ResponseMode;
 import org.jgroups.blocks.RpcDispatcher;

@@ -1,7 +1,6 @@
 package com.kylin.tankwar.core;
 
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Image;
@@ -186,6 +185,7 @@ public class MainFrame extends Frame {
 		handler.sendHandler(myTank, comm, event);
 	}
 	
+	@Deprecated
 	public void replicateMissile(Event event) {
 		handler.sendHandler(myTank.getId(), missileMap.values(), comm, event);
 	}

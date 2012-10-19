@@ -4,7 +4,6 @@ import org.apache.log4j.Logger;
 import org.jgroups.JChannel;
 
 import com.kylin.tankwar.core.MainFrame;
-import com.kylin.tankwar.jgroups.handler.IHandler;
 
 public class AsychCommunication extends Communication {
 	
