@@ -25,11 +25,24 @@ java -cp JGroups-stu.jar:jgroups-3.0.14.Final.jar -Djava.net.preferIPv4Stack=tru
 
 NOTE: difference between `SimplisticChat` and `ProgrammaticChat` is one use default *udp.xml* construct JChnnel, the other use *JGroups API*
 
-* `com.kylin.jgroups.test.MessageDispatcherTest`
+MessageDispather Test
+++++++++++++++++++++++
+* Use maven build `JGroups-stu` project 
 ----
-java -cp JGroups-stu.jar:jgroups-3.0.14.Final.jar:log4j-1.2.16.jar  -Djava.net.preferIPv4Stack=true com.kylin.jgroups.test.MessageDispatcherTest
+mvn clean dependency:copy-dependencies install
 ----
-This Test will illustrate how to use MessageDispatcher, open multiple terminal window, run MessageDispatcherTest as a sequence
+
+* Copy JGroups and log4j relevant jar to `target` from `dependency`
+
+* Open multiple terminal, run `com.kylin.jgroups.blocks.MessageDispatcherTest` as bellow
+----
+java -cp JGroups-stu.jar:jgroups-3.1.0.Final.jar:log4j-1.2.16.jar  -Djava.net.preferIPv4Stack=true com.kylin.jgroups.blocks.MessageDispatcherTest -n <name>
+----
+
+* This Test will illustrate how to use MessageDispatcher
+
+RpcDispatcher Test
+++++++++++++++++++
 
 * `com.kylin.jgroups.test.RpcDispatcherTest`
 ----
