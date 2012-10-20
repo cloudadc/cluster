@@ -60,7 +60,7 @@ java -cp JGroups-stu.jar:jgroups-3.1.0.Final.jar:log4j-1.2.16.jar  -Djava.net.pr
 
 * This Test will illustrate how to use RpcDispatcher
 
-2. RpcDispatcher Content Test With Future
+3. RpcDispatcher Content Test With Future
 +++++++++++++++++++++++++++++++++++++++++
 * Use maven build `JGroups-stu` project 
 ----
