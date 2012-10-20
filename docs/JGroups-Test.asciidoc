@@ -26,7 +26,7 @@ java -cp JGroups-stu.jar:jgroups-3.0.14.Final.jar -Djava.net.preferIPv4Stack=tru
 NOTE: difference between `SimplisticChat` and `ProgrammaticChat` is one use default *udp.xml* construct JChnnel, the other use *JGroups API*
 
 Block Layer Test
-~~~~~~~~~~~~~~~~
+-----------------
 
 1. MessageDispather Test
 ++++++++++++++++++++++++
@@ -74,7 +74,21 @@ mvn clean dependency:copy-dependencies install
 java -cp JGroups-stu.jar:jgroups-3.1.0.Final.jar:log4j-1.2.16.jar  -Djava.net.preferIPv4Stack=true com.kylin.jgroups.blocks.RpcDispatcherContentTestWithFuture -n <name>
 ----
 
-* This Test will illustrate how to use RpcDispatcher With Future
+4. RpcDispatcher Content Test With ResFilter
+++++++++++++++++++++++++++++++++++++++++++++
+* Use maven build `JGroups-stu` project 
+----
+mvn clean dependency:copy-dependencies install
+----
+
+* Copy JGroups and log4j relevant jar to `target` from `dependency`
+
+* Open multiple terminal, run `com.kylin.jgroups.blocks.RpcDispatcherContentTestWithRspFilter` as bellow
+----
+java -cp JGroups-stu.jar:jgroups-3.1.0.Final.jar:log4j-1.2.16.jar  -Djava.net.preferIPv4Stack=true com.kylin.jgroups.blocks.RpcDispatcherContentTestWithRspFilter -n <name>
+----
+
+* This Test will illustrate how to use RpcDispatcher With RspFilter
 
 RpcDispatcher Test
 ++++++++++++++++++
