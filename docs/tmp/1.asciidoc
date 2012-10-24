@@ -1,20 +1,23 @@
 1. 以嵌入式高速缓存的方式运行Infinispan
-------------------------------------------
+---------------------------------------
 
 Infinispan HelloWorld
 +++++++++++++++++++++
 
 * 使用DefaultCacheManager创建Cache
+
 ----
 Cache<Object, Object> cache = new DefaultCacheManager().getCache();
 ----
 
 * 以key-value的形式添加一个User实例到创建的Cache
+
 ----
 cache.put("key", new User(1, "Kylin Soong", "IT"));
 ----
 
 * 确认User实例在Cache中
+
 ----
 System.out.println(cache.size());
 System.out.println(cache.containsKey("key"));
@@ -22,6 +25,7 @@ System.out.println(cache.get("key"));
 ----
 
 * 从Cache中移除User实例
+
 ----
 Object obj = cache.remove("key");
 System.out.println(obj);
