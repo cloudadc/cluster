@@ -1,7 +1,9 @@
 1. 以嵌入式高速缓存的方式运行Infinispan
 ------------------------------------------
+
 Infinispan HelloWorld
 +++++++++++++++++++++
+
 * 使用DefaultCacheManager创建Cache
 ----
 Cache<Object, Object> cache = new DefaultCacheManager().getCache();
