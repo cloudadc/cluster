@@ -21,6 +21,7 @@
         <module>clustered-cache</module>
         <module>embedded-cache</module>
 	<module>api-stu</module>
+	<module>helloworld</module>
     </modules>
 
 </project>

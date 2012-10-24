@@ -1,0 +1,265 @@
+1. 以嵌入式高速缓存的方式运行Infinispan
+------------------------------------------
+Infinispan HelloWorld
++++++++++++++++++++++
+* 使用DefaultCacheManager创建Cache
+----
+Cache<Object, Object> cache = new DefaultCacheManager().getCache();
+----
+
+* 以key-value的形式添加一个User实例到创建的Cache
+----
+cache.put("key", new User(1, "Kylin Soong", "IT"));
+----
+
+* 确认User实例在Cache中
+----
+System.out.println(cache.size());
+System.out.println(cache.containsKey("key"));
+System.out.println(cache.get("key"));
+----
+
+* 从Cache中移除User实例
+----
+Object obj = cache.remove("key");
+System.out.println(obj);
+----
+
+* 替换之前的User实例
+----
+cache.put("key", new User(1, "Kylin Soong", "Software Engineer"));
+cache.put("key", new User(2, "Kobe Bryant", " Basketball Player"));
+System.out.println(cache.get("key"));
+----
+
+* 给Cache中User实例定义一个存活生命周期
+----
+cache.put("key", new User(1, "Kylin Soong", "Software Engineer"), 5, TimeUnit.SECONDS);
+System.out.println(cache.get("key"));
+Thread.sleep(5 * 1000);
+System.out.println(cache.get("key"));
+----
+
+NOTE：完整类参照infinispan/helloworld/src/main/java/com/kylin/infinispan/helloworld/HelloWorld.java
+
+创建一个RemoteCacheManager
+++++++++++++++++++++++++++
+* 使用如下申明双肩一个RemoteCacheManager
+----
+Properties props = new Properties();
+props.put("infinispan.client.hotrod.server_list", "127.0.0.1:11222");
+RemoteCacheManager cacheManager = new RemoteCacheManager(props);
+RemoteCache<Object, Object> cache = cacheManager.getCache();
+----
+
+* 操作RemoteCache
+----
+cache.put("key", new User(1, "Kylin Soong", "IT"));
+cache.get("key");
+cache.remove("key");
+----
+
+NOTE: 详细参照后面
+
+* 两种方式注册Cache
+** 通过编程接口的方式注册一个Cache
+----
+EmbeddedCacheManager manager = new DefaultCacheManager();
+manager.defineConfiguration("named-cache", new ConfigurationBuilder().eviction().strategy(EvictionStrategy.LIRS).maxEntries(10).build());
+Cache<Object, Object> cache = manager.getCache("named-cache");
+----
+
+** 通过XML配置文件的方式注册一个Cache
+----
+EmbeddedCacheManager manager = new DefaultCacheManager("infinispan.xml");
+Cache<Object, Object> cache = manager.getCache("xml-configured-cache");
+----
+
+2. 以嵌入式数据网格的方式运行Infinispan
+---------------------------------------
+Infinispan提供了一个简单易用的构建集群的模式，使用JGroups作为网络传输的工具，其结果是，JGroups管理构成集群所需要的初始操作。
+
+共享JGroups 通道
+++++++++++++++++
+* 一个单一的CacheManager的创建的所有缓存，默认情况下，共享相同的JGroups通道。JGroups通道用于多波复用复制/分发消息。
+
+如下cache1,cache2,chach3共享相同的JGroups 通道
+----
+Cache<Object, Object> cache1 = manager.getCache("replSyncCache");
+Cache<Object, Object> cache2 = manager.getCache("replAsyncCache");
+Cache<Object, Object> cache3 = manager.getCache("invalidationSyncCache");
+----
+
+以集群的形式运行Infinispan
+++++++++++++++++++++++++++
+
+* 以复制的模式运行集群的缓存
+要运行集群的缓存Infinispan的复制模式的例子，需要从不同的控制台启动两个节点：
+
+** 编译clustered-cache项目，打包生成jar文件：
+----
+mvn clean compile dependency:copy-dependencies -DstripVersion
+----
+
+** 使用如下命令运行第一个节点：
+----
+java -cp target/classes/:target/dependency/*  -Djava.net.preferIPv4Stack=true com.kylin.infinispan.clusteredcache.replication.Node0
+----
+
+** 使用如下命令运行第二个节点：
+----
+java -cp target/classes/:target/dependency/*  -Djava.net.preferIPv4Stack=true com.kylin.infinispan.clusteredcache.replication.Node1
+----
+
+** 结果分析
+JGroups和Infinispan在两个节点上初始化。约十秒钟后，高速缓存条目的日志消息将显示在控制台上的第一个节点。
+----
+INFO: Cache entry with key key added in cache Cache 'Demo'@localhost-4993
+----
+
+* 以分发的模式运行集群的缓存
+要运行集群的缓存Infinispan的复制模式的例子，需要从不同的控制台启动三个节点：
+** 编译clustered-cache项目，打包生成jar文件：
+----
+mvn clean compile dependency:copy-dependencies -DstripVersion
+----
+
+** 使用如下命令运行第一个节点：
+----
+java -cp target/classes/:target/dependency/*  -Djava.net.preferIPv4Stack=true com.kylin.infinispan.clusteredcache.distribution.Node0
+----
+
+** 使用如下命令运行第二个节点：
+----
+java -cp target/classes/:target/dependency/*  -Djava.net.preferIPv4Stack=true com.kylin.infinispan.clusteredcache.distribution.Node1
+----
+
+** 使用如下命令运行第三个节点：
+----
+java -cp target/classes/:target/dependency/*  -Djava.net.preferIPv4Stack=true com.kylin.infinispan.clusteredcache.distribution.Node3
+----
+
+** 结果分析
+JGroups和Infinispan在三个节点上初始化。约十秒钟后，高速缓存条目的日志消息将显示在控制台上的第一个节点和第二个节点。
+
+Infinispan集群配置
+++++++++++++++++++
+
+* 使用如下步骤添加或配置您的集群	
+
+. 添加一个新的群集的默认配置
+. 根据您的网络的要求自定义默认的群集配置。这可以通过声明方式（使用XML）或编程方式。
+. 配置复制或分布式数据网格
+
+* 添加默认的集群配置
+添加集群配置，以确保Infinispan知道一个集群存在或已经被定义，下面是一个默认的配置，为实现于这一目的：
+----
+Configuration Configuration = new ConfigurationBuilder().clustering().cacheMode(CacheMode.REPL_SYNC).build();
+----
+
+NOTE: 使用*GlobalConfiguration.clusteredDefault()*可以快速创建一个已经配置好的集群的*GlobalConfiguration*，当然这个配置也可以被定制。
+
+
+* 根据自己的需求自定制默认的配置
+根据对网络的要求，您可能需要自定义您的JGroups配置。
+
+** 以编程的方式定制默认配置
+使用以下GlobalConfiguration代码到指定JGroups配置时使用的文件名：
+----
+GlobalConfiguration globalConfiguration = new GlobalConfigurationBuilder().transport().addProperty("configurationFile", "jgroups.xml").build();
+----
+当然您可以根据你具体应用的需求替换jgroups.xml，本测试项目中jgroups.xml在clustered-cache/src/main/resources目录下面
+
+** 通过声明方式（使用XML）的方式定制配置
+
+----
+<global>
+      <transport transportClass="org.infinispan.remoting.transport.jgroups.JGroupsTransport">
+         <properties>
+            <property name="configurationFile" value="jgroups.xml"/>
+         </properties>
+      </transport>
+   </global>
+----
+
+* 配置复制模式的数据网格
+
+** 以编程的方式
+----
+EmbeddedCacheManager cacheManager = new DefaultCacheManager(globalConfiguration, Configuration);
+----
+
+** 以XML申明的方式：
+----
+<?xml version="1.0" encoding="UTF-8"?>
+<infinispan xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="urn:infinispan:config:5.1 http://www.infinispan.org/schemas/infinispan-config-5.1.xsd"
+   xmlns="urn:infinispan:config:5.1">
+    
+   <global>
+      <transport>
+         <properties>
+            <property name="configurationFile" value="jgroups.xml"/>
+         </properties>
+      </transport>
+   </global>
+    
+   <default>
+      <clustering mode="replication">
+         <sync/>
+      </clustering>
+   </default>
+   
+</infinispan>
+----
+
+使用下面的代码来初始化，并返回一个DefaultCacheManager：
+----
+EmbeddedCacheManager cacheManager = new DefaultCacheManager("infinispan-replication.xml");
+----
+
+NOTE: 同样infinispan-replication.xml可以在clustered-cache/src/main/resources目录下面找到
+
+* 配置分发模式的数据网格
+Infinispan的分布式模式可以确保每个条目被存储在数据网格中的总节点的一个子集上。控制节点的子集的numOwners参数说明有多少“业主”每个条目都有。
+
+
+分布式模式提供了更高的存储容量，但访问时间的增加和耐久性（防止节点故障）。调整的numOwners值设置所需的空间，耐用性和可用性之间的权衡。 Infinispan的的拓扑感知的一致性哈希，它位于进入跨越各种数据中心，机架和节点的业主耐久性进一步提高。
+
+** 以编程的方式
+类似与复制模式，但创建默认配置时选取缓存模式不同及需要指定控制节点的子集的numOwners参数
+----
+Configuration Configuration = new ConfigurationBuilder().clustering().cacheMode(CacheMode.DIST_SYNC).hash().numOwners(2).build();
+----
+
+** 以XML申明的方式
+类似与复制模式，但创建默认配置时配置缓存模式不同及需要指定控制节点的子集的numOwners参数
+----
+<default>
+      <clustering mode="distribution">
+         <sync/>
+         <hash numOwners="2"/>
+      </clustering>
+   </default>
+----
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

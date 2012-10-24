@@ -16,7 +16,7 @@ public class HelloWorld {
 		cache.put("key", new User(1, "Kylin Soong", "IT"));
 		
 		System.out.println(cache.size());
-		
+		System.out.println(cache.containsKey("key"));
 		System.out.println(cache.get("key"));
 		
 		Object obj = cache.remove("key");
