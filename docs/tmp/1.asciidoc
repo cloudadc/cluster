@@ -227,12 +227,14 @@ EmbeddedCacheManager cacheManager = new DefaultCacheManager("infinispan-replicat
 NOTE: 同样infinispan-replication.xml可以在clustered-cache/src/main/resources目录下面找到
 
 * 配置分发模式的数据网格
-Infinispan的分布式模式可以确保每个条目被存储在数据网格中的总节点的一个子集上。控制节点的子集的numOwners参数说明有多少“业主”每个条目都有。
+
+Infinispan的分布式模式可以确保每个缓存实例被存储在数据网格中的总节点的一个子集上。控制节点的子集的numOwners参数说明有多少节点存储缓存实例。
 
 
-分布式模式提供了更高的存储容量，但访问时间的增加和耐久性（防止节点故障）。调整的numOwners值设置所需的空间，耐用性和可用性之间的权衡。 Infinispan的的拓扑感知的一致性哈希，它位于进入跨越各种数据中心，机架和节点的业主耐久性进一步提高。
+分布式模式提供了更高的存储容量，降低访问时间的增加，增强耐久性（防止节点故障）。通过调整numOwners的值，设置所需的空间，耐用性和可用性等。 Infinispan的乃用性可进一步提高通过节点拓扑及一致性哈希的哈希算法，这样可以横跨多个数据中心，机房，节点来访问缓存实体。
 
 ** 以编程的方式
+
 类似与复制模式，但创建默认配置时选取缓存模式不同及需要指定控制节点的子集的numOwners参数
 ----
 Configuration Configuration = new ConfigurationBuilder().clustering().cacheMode(CacheMode.DIST_SYNC).hash().numOwners(2).build();

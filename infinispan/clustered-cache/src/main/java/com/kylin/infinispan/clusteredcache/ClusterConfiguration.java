@@ -1,4 +1,4 @@
-package com.kylin.infinispan.clusteredcache.distribution;
+package com.kylin.infinispan.clusteredcache;
 
 import java.io.IOException;
 
