@@ -19,8 +19,8 @@
 
     <modules>
         <module>JGroups</module>
+        <module>jbosscache</module>
         <module>infinispan</module>
-	<module>jbosscache</module>
 	<module>sandbox</module>
     </modules>
 
