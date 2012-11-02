@@ -63,8 +63,8 @@ import java.util.concurrent.Executors;
  * @author <a href="mailto:galder.zamarreno@jboss.com">Galder Zamarreno</a>
  */
 @CacheListener
-public class JBossCacheGUI extends JFrame implements WindowListener, TreeSelectionListener, TableModelListener
-{
+public class JBossCacheGUI extends JFrame implements WindowListener, TreeSelectionListener, TableModelListener {
+	
    private static final long serialVersionUID = -1242167331988194987L;
 
    private transient CacheModelDelegate cacheModelDelegate;
@@ -151,8 +151,7 @@ public class JBossCacheGUI extends JFrame implements WindowListener, TreeSelecti
 
          interpreter.println(welcomeMessage);
         
-         //TODO
-//         interpreter.setShowResults(!interpreter.getShowResults());// show() in beanShell
+         interpreter.setShowResults(!interpreter.getShowResults());// show() in beanShell
          System.setOut(bshConsole.getOut());
          System.setErr(bshConsole.getErr());
          Thread t = new Thread(interpreter);
@@ -648,8 +647,7 @@ public class JBossCacheGUI extends JFrame implements WindowListener, TreeSelecti
       }
    }
 
-   private void setTableColumnWidths()
-   {
+	private void setTableColumnWidths() {
       table.sizeColumnsToFit(JTable.AUTO_RESIZE_NEXT_COLUMN);
       TableColumn column;
       column = table.getColumnModel().getColumn(0);
@@ -714,31 +712,24 @@ public class JBossCacheGUI extends JFrame implements WindowListener, TreeSelecti
       dataModificationsPopup.add(removeLastRow);
    }
 
-   private Object getLocalAddress()
-   {
-      try
-      {
-         return cache.getLocalAddress();
-      }
-      catch (Throwable t)
-      {
-         log.error("JBossCacheGUI.getLocalAddress(): ", t);
-         return null;
-      }
-   }
+	private Object getLocalAddress() {
+		try {
+			return cache.getLocalAddress();
+		} catch (Throwable t) {
+			log.error("JBossCacheGUI.getLocalAddress(): ", t);
+			return null;
+		}
+	}
 
-   private void load(Fqn fqn)
-   {
-      try
-      {
-         // this will cause the cache to load the relevant node from a cache loader.
-         cache.getRoot().getChild(fqn);
-      }
-      catch (Throwable t)
-      {
-         log.error("JBossCacheGUI.load(): " + t);
-      }
-   }
+	private void load(Fqn fqn) {
+		try {
+			// this will cause the cache to load the relevant node from a cache
+			// loader.
+			cache.getRoot().getChild(fqn);
+		} catch (Throwable t) {
+			log.error("JBossCacheGUI.load(): " + t);
+		}
+	}
 
    private List<Address> getMembers()
    {
@@ -770,454 +761,366 @@ public class JBossCacheGUI extends JFrame implements WindowListener, TreeSelecti
       return new String[]{placeHolderKey, placeHolderValue};
    }
 
-   private boolean isPlaceHolder(String s)
-   {
-      if (s.startsWith("{ --- Add Key ") && s.endsWith(" --- }")) return true;
-      if (s.startsWith("{ --- Add Value ") && s.endsWith(" --- }")) return true;
-      return false;
-   }
+	private boolean isPlaceHolder(String s) {
+		if (s.startsWith("{ --- Add Key ") && s.endsWith(" --- }"))
+			return true;
+		if (s.startsWith("{ --- Add Value ") && s.endsWith(" --- }"))
+			return true;
+		return false;
+	}
 
-   private Collection extractKeys(Vector<Vector> v)
-   {
-      // very odd data structure.  Entire table is represented as a Vector.  Each row (element in the Vector) is a Vector of 2 elements (key and value)
-      List l = new LinkedList();
-      for (Vector row : v)
-      {
-         // just add keys
-         l.add(row.get(0));
-      }
-      return l;
-   }
+	private Collection extractKeys(Vector<Vector> v) {
+		// very odd data structure. Entire table is represented as a Vector.
+		// Each row (element in the Vector) is a Vector of 2 elements (key and
+		// value)
+		List l = new LinkedList();
+		for (Vector row : v) {
+			// just add keys
+			l.add(row.get(0));
+		}
+		return l;
+	}
 
-   private void printAndLogStacktrace(String message, Throwable t)
-   {
-      t.printStackTrace();
-      log.error(message, t);
-   }
+	private void printAndLogStacktrace(String message, Throwable t) {
+		t.printStackTrace();
+		log.error(message, t);
+	}
 
    /* -------------------------- End of Private Methods ------------------------------ */
 
    /*----------------------- Actions ---------------------------*/
 
-   class ExitAction extends AbstractAction
-   {
-      private static final long serialVersionUID = -5364163916172148038L;
+	class ExitAction extends AbstractAction {
+		private static final long serialVersionUID = -5364163916172148038L;
 
-      public void actionPerformed(ActionEvent e)
-      {
-         stopGui();
-      }
-   }
+		public void actionPerformed(ActionEvent e) {
+			stopGui();
+		}
+	}
 
 
-   public void stopGui()
-   {
-      if (cache != null)
-      {
-         try
-         {
-            cache.stop();
-            cache.destroy();
-            cache = null;
-         }
-         catch (Throwable t)
-         {
-            printAndLogStacktrace("Stopping and destroying cache failed: ", t);
-         }
-      }
-      dispose();
-      System.exit(0);
-   }
+	public void stopGui() {
+		if (cache != null) {
+			try {
+				cache.stop();
+				cache.destroy();
+				cache = null;
+			} catch (Throwable t) {
+				printAndLogStacktrace("Stopping and destroying cache failed: ", t);
+			}
+		}
+		dispose();
+		System.exit(0);
+	}
 
 
-   class InsertRowAction extends AbstractAction
-   {
-      private static final long serialVersionUID = 7084928639244438800L;
+	class InsertRowAction extends AbstractAction {
+		private static final long serialVersionUID = 7084928639244438800L;
 
-      public void actionPerformed(ActionEvent e)
-      {
-         tableModel.addRow(getRowPlaceHolderData());
-      }
-   }
+		public void actionPerformed(ActionEvent e) {
+			tableModel.addRow(getRowPlaceHolderData());
+		}
+	}
 
-   class RemoveLastRowAction extends AbstractAction
-   {
-      private static final long serialVersionUID = 7084928639244438800L;
+	class RemoveLastRowAction extends AbstractAction {
+		private static final long serialVersionUID = 7084928639244438800L;
 
-      public void actionPerformed(ActionEvent e)
-      {
-         int lastRow = tableModel.getRowCount() - 1;
-         if (lastRow > -1)
-         {
-            String keyToRemove = (String) tableModel.getValueAt(lastRow, 0);
-            tableModel.removeRow(lastRow);
-            selected_node.remove(keyToRemove);
-         }
-      }
-   }
+		public void actionPerformed(ActionEvent e) {
+			int lastRow = tableModel.getRowCount() - 1;
+			if (lastRow > -1) {
+				String keyToRemove = (String) tableModel.getValueAt(lastRow, 0);
+				tableModel.removeRow(lastRow);
+				selected_node.remove(keyToRemove);
+			}
+		}
+	}
 
+	class AddNodeAction extends AbstractAction {
+		
+		private static final long serialVersionUID = 7084928639244438800L;
 
-   class AddNodeAction extends AbstractAction
-   {
-      private static final long serialVersionUID = 7084928639244438800L;
+		public void actionPerformed(ActionEvent e) {
+			JTextField fqnTextField = new JTextField();
+			if (selected_node != null) {
+				fqnTextField.setText(selected_node.getFqn().toString());
+			} else {
+				fqnTextField.setText(Fqn.SEPARATOR);
+			}
+			Object[] information = { "Enter fully qualified name", fqnTextField };
+			final String btnString1 = "OK";
+			final String btnString2 = "Cancel";
+			Object[] options = { btnString1, btnString2 };
+			int userChoice = JOptionPane.showOptionDialog(null, information,
+					"Add DataNode", JOptionPane.YES_NO_OPTION,
+					JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
+			if (userChoice == 0) {
+				String userInput = fqnTextField.getText();
+				cache.put(Fqn.fromString(userInput), null);
+			}
+		}
+	}
 
-      public void actionPerformed(ActionEvent e)
-      {
-         JTextField fqnTextField = new JTextField();
-         if (selected_node != null)
-         {
-            fqnTextField.setText(selected_node.getFqn().toString());
-         }
-         else
-         {
-            fqnTextField.setText(Fqn.SEPARATOR);
-         }
-         Object[] information = {"Enter fully qualified name",
-                                 fqnTextField};
-         final String btnString1 = "OK";
-         final String btnString2 = "Cancel";
-         Object[] options = {btnString1, btnString2};
-         int userChoice = JOptionPane.showOptionDialog(null,
-               information,
-               "Add DataNode",
-               JOptionPane.YES_NO_OPTION,
-               JOptionPane.PLAIN_MESSAGE,
-               null,
-               options,
-               options[0]);
-         if (userChoice == 0)
-         {
-            String userInput = fqnTextField.getText();
-            cache.put(Fqn.fromString(userInput), null);
-         }
-      }
-   }
+	class LoadAction extends AbstractAction {
+		
+		private static final long serialVersionUID = -6998760732995584428L;
 
-   class LoadAction extends AbstractAction
-   {
-      private static final long serialVersionUID = -6998760732995584428L;
+		public void actionPerformed(ActionEvent e) {
+			JTextField fqnTextField = new JTextField();
+			if (selected_node != null) {
+				fqnTextField.setText(selected_node.getFqn().toString());
+			} else {
+				fqnTextField.setText(Fqn.SEPARATOR);
+			}
 
-      public void actionPerformed(ActionEvent e)
-      {
-         JTextField fqnTextField = new JTextField();
-         if (selected_node != null)
-         {
-            fqnTextField.setText(selected_node.getFqn().toString());
-         }
-         else
-         {
-            fqnTextField.setText(Fqn.SEPARATOR);
-         }
+			Object[] information = { "Enter fully qualified name", fqnTextField };
+			final String btnString1 = "OK";
+			final String btnString2 = "Cancel";
+			Object[] options = { btnString1, btnString2 };
+			int userChoice = JOptionPane.showOptionDialog(null, information,
+					"Load DataNode", JOptionPane.YES_NO_OPTION,
+					JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
+			if (userChoice == 0) {
+				String userInput = fqnTextField.getText();
+				load(Fqn.fromString(userInput));
+			}
+		}
+	}
 
-         Object[] information = {"Enter fully qualified name",
-                                 fqnTextField};
-         final String btnString1 = "OK";
-         final String btnString2 = "Cancel";
-         Object[] options = {btnString1, btnString2};
-         int userChoice = JOptionPane.showOptionDialog(null,
-               information,
-               "Load DataNode",
-               JOptionPane.YES_NO_OPTION,
-               JOptionPane.PLAIN_MESSAGE,
-               null,
-               options,
-               options[0]);
-         if (userChoice == 0)
-         {
-            String userInput = fqnTextField.getText();
-            load(Fqn.fromString(userInput));
-         }
-      }
-   }
+	class EvictAction extends AbstractAction {
+		
+		private static final long serialVersionUID = 6007500908549034215L;
 
-   class EvictAction extends AbstractAction
-   {
-      private static final long serialVersionUID = 6007500908549034215L;
+		public void actionPerformed(ActionEvent e) {
+			JTextField fqnTextField = new JTextField();
+			if (selected_node != null) {
+				fqnTextField.setText(selected_node.getFqn().toString());
+			} else {
+				fqnTextField.setText(Fqn.SEPARATOR);
+			}
+			Object[] information = { "Enter fully qualified name", fqnTextField };
+			final String btnString1 = "OK";
+			final String btnString2 = "Cancel";
+			Object[] options = { btnString1, btnString2 };
+			int userChoice = JOptionPane.showOptionDialog(null, information,
+					"Evict DataNode", JOptionPane.YES_NO_OPTION,
+					JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
+			if (userChoice == 0) {
+				String userInput = fqnTextField.getText();
+				cache.evict(Fqn.fromString(userInput), true);
+			}
+		}
+	}
 
-      public void actionPerformed(ActionEvent e)
-      {
-         JTextField fqnTextField = new JTextField();
-         if (selected_node != null)
-         {
-            fqnTextField.setText(selected_node.getFqn().toString());
-         }
-         else
-         {
-            fqnTextField.setText(Fqn.SEPARATOR);
-         }
-         Object[] information = {"Enter fully qualified name",
-                                 fqnTextField};
-         final String btnString1 = "OK";
-         final String btnString2 = "Cancel";
-         Object[] options = {btnString1, btnString2};
-         int userChoice = JOptionPane.showOptionDialog(null,
-               information,
-               "Evict DataNode",
-               JOptionPane.YES_NO_OPTION,
-               JOptionPane.PLAIN_MESSAGE,
-               null,
-               options,
-               options[0]);
-         if (userChoice == 0)
-         {
-            String userInput = fqnTextField.getText();
-            cache.evict(Fqn.fromString(userInput), true);
-         }
-      }
-   }
+	class StartTransaction extends AbstractAction {
+		
+		private static final long serialVersionUID = 7059131008813144857L;
 
+		public void actionPerformed(ActionEvent e) {
+			if (tx_mgr == null) {
+				log.error("no TransactionManager specified");
+				return;
+			}
+			if (tx != null) {
+				log.error("transaction is already running: " + tx);
+				return;
+			}
+			try {
+				tx_mgr.begin();
+				tx = tx_mgr.getTransaction();
+			} catch (Throwable t) {
+				printAndLogStacktrace("Creating transaction failed: ", t);
+			}
+		}
+	}
 
-   class StartTransaction extends AbstractAction
-   {
-      private static final long serialVersionUID = 7059131008813144857L;
+	class CommitTransaction extends AbstractAction {
+		
+		private static final long serialVersionUID = 5426108920883879873L;
 
-      public void actionPerformed(ActionEvent e)
-      {
-         if (tx_mgr == null)
-         {
-            log.error("no TransactionManager specified");
-            return;
-         }
-         if (tx != null)
-         {
-            log.error("transaction is already running: " + tx);
-            return;
-         }
-         try
-         {
-            tx_mgr.begin();
-            tx = tx_mgr.getTransaction();
-         }
-         catch (Throwable t)
-         {
-            printAndLogStacktrace("Creating transaction failed: ", t);
-         }
-      }
-   }
+		public void actionPerformed(ActionEvent e) {
+			if (tx == null) {
+				log.error("transaction is not running");
+				return;
+			}
+			try {
+				tx.commit();
+			} catch (Throwable t) {
+				printAndLogStacktrace("Commiting transaction failed: ", t);
+			} finally {
+				tx = null;
+			}
+		}
+	}
 
-   class CommitTransaction extends AbstractAction
-   {
-      private static final long serialVersionUID = 5426108920883879873L;
+	class RollbackTransaction extends AbstractAction {
+		
+		private static final long serialVersionUID = -4836748411400541430L;
 
-      public void actionPerformed(ActionEvent e)
-      {
-         if (tx == null)
-         {
-            log.error("transaction is not running");
-            return;
-         }
-         try
-         {
-            tx.commit();
-         }
-         catch (Throwable t)
-         {
-            printAndLogStacktrace("Commiting transaction failed: ", t);
-         }
-         finally
-         {
-            tx = null;
-         }
-      }
-   }
+		public void actionPerformed(ActionEvent e) {
+			if (tx == null) {
+				log.error("transaction is not running");
+				return;
+			}
+			try {
+				tx.rollback();
+			} catch (Throwable t) {
+				printAndLogStacktrace("Transaction rollback failed: ", t);
+			} finally {
+				tx = null;
+			}
+		}
+	}
 
-   class RollbackTransaction extends AbstractAction
-   {
-      private static final long serialVersionUID = -4836748411400541430L;
+	class PrintLockInfoAction extends AbstractAction {
+		
+		private static final long serialVersionUID = -2171307516592250436L;
 
-      public void actionPerformed(ActionEvent e)
-      {
-         if (tx == null)
-         {
-            log.error("transaction is not running");
-            return;
-         }
-         try
-         {
-            tx.rollback();
-         }
-         catch (Throwable t)
-         {
-            printAndLogStacktrace("Transaction rollback failed: ", t);
-         }
-         finally
-         {
-            tx = null;
-         }
-      }
-   }
+		public void actionPerformed(ActionEvent e) {
+			if (bshConsole != null) {
+				new Thread() {
+					public void run() {
+						bshConsole.getOut().println("\n*** lock information ****\n" + CachePrinter.printCacheLockingInfo(cache));
+					}
+				}.start();
 
-   class PrintLockInfoAction extends AbstractAction
-   {
-      private static final long serialVersionUID = -2171307516592250436L;
+			} else {
+				new Thread() {
+					public void run() {
+						System.out.println("\n*** lock information ****\n" + CachePrinter.printCacheLockingInfo(cache));
+					}
+				}.start();
+			}
+		}
+	}
 
-      public void actionPerformed(ActionEvent e)
-      {
-         if (bshConsole != null)
-         {
-            new Thread()
-            {
-               public void run()
-               {
-                  bshConsole.getOut().println("\n*** lock information ****\n" + CachePrinter.printCacheLockingInfo(cache));
-               }
-            }.start();
+	class RemoveNodeAction extends AbstractAction {
+		
+		private static final long serialVersionUID = 3746013603940497991L;
 
-         }
-         else
-         {
-            new Thread()
-            {
-               public void run()
-               {
-                  System.out.println("\n*** lock information ****\n" + CachePrinter.printCacheLockingInfo(cache));
-               }
-            }.start();
-         }
-      }
-   }
+		public void actionPerformed(ActionEvent e) {
+			try {
+				cache.removeNode(selected_node.getFqn());
+			} catch (Throwable t) {
+				log.error("RemoveNodeAction.actionPerformed(): " + t);
+			}
+		}
+	}
 
-   class RemoveNodeAction extends AbstractAction
-   {
-      private static final long serialVersionUID = 3746013603940497991L;
+	class AddModifyDataForNodeAction extends AbstractAction {
+		
+		private static final long serialVersionUID = -7656592171312920825L;
 
-      public void actionPerformed(ActionEvent e)
-      {
-         try
-         {
-            cache.removeNode(selected_node.getFqn());
-         }
-         catch (Throwable t)
-         {
-            log.error("RemoveNodeAction.actionPerformed(): " + t);
-         }
-      }
-   }
+		public void actionPerformed(ActionEvent e) {
+			if (log.isTraceEnabled()) {
+				log.trace("node added/modified, updating GUI: " + e);
+			}
+			if (selected_node == null)
+				return;
 
-   class AddModifyDataForNodeAction extends AbstractAction
-   {
-      private static final long serialVersionUID = -7656592171312920825L;
+			clearTable();
+			Map<String, String> data = selected_node.getData();
+			if (data == null || data.isEmpty()) {
+				data = new HashMap<String, String>();
+				String[] placeHolder = getRowPlaceHolderData();
+				data.put(placeHolder[0], placeHolder[1]);
+			}
 
-      public void actionPerformed(ActionEvent e)
-      {
-         if (log.isTraceEnabled())
-         {
-            log.trace("node added/modified, updating GUI: " + e);
-         }
-         if (selected_node == null) return;
+			populateTable(data);
 
-         clearTable();
-         Map<String, String> data = selected_node.getData();
-         if (data == null || data.isEmpty())
-         {
-            data = new HashMap<String, String>();
-            String[] placeHolder = getRowPlaceHolderData();
-            data.put(placeHolder[0], placeHolder[1]);
-         }
+			mainPanel.add(tablePanel, BorderLayout.SOUTH);
+			validate();
+		}
+	}
 
-         populateTable(data);
-
-         mainPanel.add(tablePanel, BorderLayout.SOUTH);
-         validate();
-      }
-   }
+	class DisplayNode extends DefaultMutableTreeNode {
+		
+		private static final long serialVersionUID = 4882445905140460053L;
+		String name = "<unnamed>";
 
 
-   class DisplayNode extends DefaultMutableTreeNode
-   {
-      private static final long serialVersionUID = 4882445905140460053L;
-      String name = "<unnamed>";
+		DisplayNode(String name) {
+			this.name = name;
+		}
 
+		/**
+		 * Adds a new node to the view. Intermediary nodes will be created if
+		 * they don't yet exist. Returns the first node that was created or null
+		 * if node already existed
+		 */
+		public JBossCacheGUI.DisplayNode add(Fqn fqn) {
+         
+			JBossCacheGUI.DisplayNode curr, n, ret = null;
 
-      DisplayNode(String name)
-      {
-         this.name = name;
-      }
+			if (fqn == null)
+				return null;
+			curr = this;
 
-
-      /**
-       * Adds a new node to the view. Intermediary nodes will be created if they don't yet exist.
-       * Returns the first node that was created or null if node already existed
-       */
-      public JBossCacheGUI.DisplayNode add(Fqn fqn)
-      {
-         JBossCacheGUI.DisplayNode curr, n, ret = null;
-
-         if (fqn == null) return null;
-         curr = this;
-
-         for (Object childName : fqn.peekElements())
-         {
-            n = curr.findChild((String) childName);
-            if (n == null)
-            {
-               n = new JBossCacheGUI.DisplayNode((String) childName);
-               if (ret == null) ret = n;
-               curr.add(n);
-            }
-            curr = n;
-         }
-         return ret;
-      }
+			for (Object childName : fqn.peekElements()) {
+				n = curr.findChild((String) childName);
+				if (n == null) {
+					n = new JBossCacheGUI.DisplayNode((String) childName);
+					if (ret == null)
+						ret = n;
+					curr.add(n);
+				}
+				curr = n;
+			}
+			return ret;
+		}
 
 
       /**
        * Removes a node from the view. Child nodes will be removed as well
        */
-      public void remove()
-      {
-         removeFromParent();
-      }
+		public void remove() {
+			removeFromParent();
+		}
 
 
-      private JBossCacheGUI.DisplayNode findNode(Fqn fqn)
-      {
-         JBossCacheGUI.DisplayNode curr, n;
+		private JBossCacheGUI.DisplayNode findNode(Fqn fqn) {
+			
+			JBossCacheGUI.DisplayNode curr, n;
 
-         if (fqn == null) return null;
-         curr = this;
+			if (fqn == null)
+				return null;
+			curr = this;
 
-         for (Object childName : fqn.peekElements())
-         {
-            n = curr.findChild((String) childName);
-            if (n == null)
-            {
-               return null;
-            }
-            curr = n;
-         }
-         return curr;
-      }
+			for (Object childName : fqn.peekElements()) {
+				n = curr.findChild((String) childName);
+				if (n == null) {
+					return null;
+				}
+				curr = n;
+			}
+			return curr;
+		}
 
 
-      private JBossCacheGUI.DisplayNode findChild(String relative_name)
-      {
-         JBossCacheGUI.DisplayNode child;
+		private JBossCacheGUI.DisplayNode findChild(String relative_name) {
+			
+			JBossCacheGUI.DisplayNode child;
 
-         if (relative_name == null || getChildCount() == 0)
-         {
-            return null;
-         }
-         for (int i = 0; i < getChildCount(); i++)
-         {
-            child = (JBossCacheGUI.DisplayNode) getChildAt(i);
-            if (child.name == null)
-            {
-               continue;
-            }
+			if (relative_name == null || getChildCount() == 0) {
+				return null;
+			}
+			
+			for (int i = 0; i < getChildCount(); i++) {
+				
+				child = (JBossCacheGUI.DisplayNode) getChildAt(i);
+				
+				if (child.name == null) {
+					continue;
+				}
 
-            if (child.name.equals(relative_name))
-            {
-               return child;
-            }
-         }
-         return null;
-      }
+				if (child.name.equals(relative_name)) {
+					return child;
+				}
+			}
+			return null;
+		}
 
-      public String toString()
-      {
-         return name;
-      }
-
-   }
+		public String toString() {
+			return name;
+		}
+	}
 }

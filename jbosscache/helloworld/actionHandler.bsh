@@ -1,0 +1,7 @@
+import java.awt.event.ActionListener;
+
+actionPerformed( e ) {
+    print("Hello BeanShell, More details please refer to http://www.beanshell.org");
+}
+
+return (ActionListener)this;

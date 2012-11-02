@@ -1,0 +1,362 @@
+JBoss Cache 简介
+----------------
+这部分的主要目的是介​绍​JBossCache​基​本​概​念​、​API、​配​置​和部​署，是用户或开发人员能够在​其​项​目​中​快​速​开​始​使​用​JBossCache
+
+1 概 ​述
++++++++
+
+* 1.1 什​么​是JBoss Cache?
+
+  JBoss Cache 是​一​个​树​型​结​构​的​群​集​事​务​性​缓​存​。​它​可​以​用​于​独​立​的​、​非​群​集​的​环​境​里​以​缓​存​内​存​里​被​频​繁访​问​的​数​据​,在​提​供​企​业​级​功​能​如​ JTA 兼​容​性​、​逐​出​和​持​久​化​的​同​时​消​除​了​数​据​提​取​或​计​算​的​瓶​颈​。
+
+  JBoss Cache 也​是​一​个​群​集​缓​存​,它​在​群​集​里​复​制​状​态​,从​而​提​供​高​度​的​失​效​切​换​。​它​支​持​不​同​的​复​制​模​式, 包​括​失​效​和​ Buddy 复​制​,其​网​络​通​讯​既​可​以​是​同​步​也​可​以​是​异​步​的​。
+
+  当​用​于​群​集​模​式​时​, 它​是​在​自​定​义​应​用​程​序​和​框​架​里​构​建​高​可​用​性​、​容​错​和​负​载​平​衡​的​有​效​机​制​。​例​如 JBoss 应​用​服​务​器​在​群​集​服​务​(如 HTTP 和​ EJB 会​话​)里​广​泛​使​用​ JBoss Cache,并​为​ ​JPA ​提​供​了​分​布​式​的​实​体​缓​存​。
+
+  JBoss Cache 要​求​ Java 5.0(或​更​新​版​本​)兼​容​的​虚​拟​机​和​库，除​了​ Java 5.0 以​外​,JBoss Cache 最​少​还​需​要​ JGroups 和​ Apache 的​ commons-logging。​JBoss Cache 附​带​开​箱​即​用​所​需​的​所​有​依​赖​库​,以​及​用​于​可​选​功​能​的​几​个​ JAR 文​件​。
+
+* 1.1.1. 什​么​是 ​POJO Cache?
+
+  POJO Cache 是​核​心​ JBoss Cache API 的​扩​展​。​POJO Cache 提​供​如​下​的​额​外​功​能​:
+
+. 即​使​在​复​制​或​持​久​化​后​仍​维​护​对​象​引​用
+. 细​颗​粒​度​的​复​制​,只​复​制​有​改​动​的​对​象​字​段​
+. "API-less" 群​集​模​型​,POJO 简​单​地​注​解​为​群​集​
+
+* 1.2. 功能总结
+
+* 1.2.1. 缓存对​象 
+
+  JBoss Cache 提​供​一​个​简​单​和​直​观​的​ API,数​据​ - 简​单​的​ Java 对​象​都​可​以​置​于​缓​存​里​。​基​于​所​选​的​配​置​选项​,这​个​数​据​可​以​是​下​面​的​其​中​一​个​或​全​部​:
+
+. 缓​存​到​内​存​里​以​供​高​效​的​、​线​程​安​全​的​访​问
+. 复​制​到​群​集​里​某​些​或​全​部​的​缓​存​实​例​里
+. 持​久​化​到​磁​盘​和​/或​远​程​的​内​存​缓​存​群​集​("far-cache")
+. 当​空​闲​内​存​过​低​时​进​行​垃​圾​收​集​,并​钝​化​到​磁​盘​以​保​存​状​态​。
+
+  此​外​,JBoss Cache 提​供​一​系​列​丰​富​的​企​业​级​功​能​:
+
+. 能​够​参​与​ JT A 事​务​(和​大​多​数​ Java EE 兼​容​的​事​务​管​理​者​一​起​工​作​)
+. 连​接​至​ JMX 控​制​台​并​提​供​缓​存​状​态​的​运​行​时​统​计​信​息​
+. 允​许​客​户​代​码​附​加​ listener 并​接​收​缓​存​事​件​的​通​知
+. 为​了​高​效​地​复​制​,允​许​缓​存​操​作​分​组​至​批​次
+
+* 1.2.2 本​地​和​群​集​模​式
+
+  缓​存​按​树​型​结​构​组​织​,具​有​唯​一​的​根​。​树​里​的​每​个​节​点​基​本​上​都​包​含​一​个​表​以​存​储​键​/值​对​。​对​缓​存​对​象​的​唯一​要​求​是​它​们​必​须​实​现​ java.io.Serializable。
+
+  JBoss Cache 可​以​是​本​地​的​,也​可​以​是​复​制​性​的​。​本​地​树​只​存​在​创​建​它​们​的​ Java 虚​拟​机​里​,而​复​制​性​树​则把​任​何​修​改​传​递​到​同​一​群​集​里​的​其​他​复​制​性​树​中​。​群​集​可​以​跨​越​网​络​里​的​多​个​主​机​或​者​是​单​个​主​机​里​的​不​同虚​拟​机​。
+
+* 1.2.3 群​集​缓​存​和​事​务
+
+  当​缓​存​里​的​对​象​出​现​修​改​并​发​生​在​事​务​的​上​下​文​里​时​,我​们​会​把​对​修​改​的​复​制​推​迟​,直​到​事​务​成​功​提​交​。​所有​的​修​改​都​保​存​在​一​个​和​调​用​者​使​用​的​事​务​相​关​的​列​表​里​。​当​这​个​事​务​提​交​时​,我​们​将​进​行​复​制​。​否​则​(如回​滚​时​),我​们​只​是​简​单​地​在​本​地​取​消​修​改​并​释​放​任​何​锁​,这​样​就​不​会​有​复​制​相​关​的​通​讯​和​开​销​。例​如​,如果​调​用​者​进​行​了​ 100 个​修​改​然​后​回​滚​事​务​,我​们​不​会​复​制​任​何​数​据​,从​而​不​会​增​加​任​何​网​络​负​载​。
+
+  如​果​调​用​者​没​有​使​用​事​务​或​者​没​有​批​次​与​之​关​联​,我​们​将​在​每​次​修​改​后​马​上​复​制​,例​如​,在​上​面​的​例​子​里​,我​们​将​发​送​ 100 条​消​息​,加​上​一​条​关​于​回​滚​的​额​外​消​息​。​这​样​,不​带​事​务​的​运​行​可​以​被​认​为​和​ JDBC 术​语里​的​启​用​自​动​提​交​类​似​,此​时​的​操​作​都​会​被​自​动​提​交​。
+
+  JBoss Cache 不​做​任​何​修​改​即​可​与​多​数​流​行​的​事​务​管​理​者​一​起​使​用​,它​甚​至​提​供​编​写​自​定​义​事​务​管​理​者​的API。
+
+  上​面​的​内​容​对​于​批​次​也​适​用​,它​具​有​类​似​的​行​为​
+
+* 1.2.4 线程的安全​性 
+
+  JBoss Cache 是​完​全​地​线​程​安​全​的​。​它​使​用​了​多​重​版​本​并​行​控​制​(multi-versioned concurrency control,MVCC)来​确​保​读​取​者​和​写​入​者​间​的​线​程​安​全​性​,同​时​保​持​着​高​度​的​并​行​性​。JBoss Cache 里​使​用的​专​有​ MVCC 实​现​运​行​读​取​者​线​程​完​全​独​立​于​锁​和​同​步​阻​塞​,确​保​了​多​读​应​用​程​序​的​高​性​能​。JBoss Cache 也​使​用​自​定​义​的​、​高​性​能​的​锁​实​现​,它​将​现​代​的​ compare-and-swap 技​术​应​用​于​写​入​者​线​程​,从​而为​多​核​ CPU 架​构​进​行​了​优​化​。
+
+  多​重​版​本​并​行​控​制​(multi-versioned concurrency control,MVCC)是​ JBoss Cache 3.x 之​后​版​本​的​缺​省​锁模​式​。​旧​版​本​的​乐​观​和​悲​观​的​锁​模​式​仍​然​可​用​,但​会​被​ MVCC 所​替​代​,以​后​也​会​从​新​版​本​里​删​除​，不​鼓​励​使​用​这​些​已​取​消​的​锁​模​式​。
+
+  JBoss Cache 的​ MVCC 实​现​只​支​持​ READ_COMMIT T ED 和​ REPEAT ABLE_READ 隔​离​级​别​,分​别​对​应​其数​据​库​里​的​级​别​。​关​于​ MVCC 的​详​情我将在后面介绍。
+
+
+2. User API
++++++++++++
+
+* 2.1. API 类
+
+Cache 接​口​是​和​ JBoss Cache 交​互​的​主​要​机​制​。​它​是​用​ CacheFactory 构​建​并​可​选​择​地​启​动​的​。CacheFactory 允​许​你​从​ Configuration 对​象​或​ XML 文​件​创​建​ Cache。​缓​存​将​数​据​组​织​到​由​节​点​组成​的​树​型​结​构​里​。​一​旦​你​具​有​了​到​ Cache 的​引​用​,你​可​以​用​它​来​在​树​型​结​构​里​查​找​ Node 对​象​,并​存​储​数据​。
+
+  Figure 3.1
+
+  请​注​意​,上​面​的​图​表​只​是​描​述​了​一​些​流​行​的​ API 方​法​。​阅​读​上​述​接​口​的​ Javadoc 是​学​习​ API 的​最​近​途​径​。
+
+* 2.2. 初始化和启动缓​存 
+
+  Cache 接​口​的​实​例​只​能​通​过​ CacheFactory 创​建​。​这​和​ JBoss Cache 1.x 不​同​,旧​的​ T reeCache 可​以直​接​初​始​化​。
+
+  CacheFactory 提​供​了​用​于​创​建​ Cache 的​大​量​重​载​方​法​,但​它​们​基​本​上​都​是​做​的​同​一​件​事​情​:
+
+. 获​取​对​ Configuration 的​访​问​,或​者​是​作​为​方​法​参​数​传​入​或​通​过​解​析​ XML 内​容​并​进​行​构​建​。​XML 内容​可​以​来​自​输​入​流​、​classpath 或​文​件​系​统​位​置​。​关​于​获​取​ Configuration 的​更​多​信​息​随后将会有详细描述。
+. 初​始​化​ Cache 并​为​其​提​供​一​个​对​ Configuration 的​引​用
+. 可​选​择​地​调​用​缓​存​的​ create() 和​ start() 方​法​
+
+  下​面​的​例​子​是​使​用​缺​省​配​置​值​创​建​和​启​动​缓​存​的​最​简​单​机​制​:
+----
+CacheFactory factory = new DefaultCacheFactory();
+Cache cache = factory.createCache();
+----
+
+  在​这​个​例​子​里​,我​们​告​诉​ CacheFactory 来​查​找​并​解​析​ classpath 上​的​配​置​文​件​:
+----
+CacheFactory factory = new DefaultCacheFactory();
+Cache cache = factory.createCache("cache-configuration.xml");
+----
+
+  在​这​个​例​子​里​,我​们​通​过​文​件​配​置​缓​存​,但​希​望​通​过​程​序​修​改​配​置​元​素​。​所​以​,我​们​通​知​工​厂​不​要​启​动​缓​存, 而​是​自​己​来​启​动​:
+----
+CacheFactory factory = new DefaultCacheFactory();
+Cache cache = factory.createCache("/opt/configurations/cache-configuration.xml",
+false);
+Configuration config = cache.getConfiguration();
+config.setClusterName(this.getClusterName());
+// Have to create and start cache before using it
+cache.create();
+cache.start();
+----
+
+* 2.3. 缓​存​和​获​取​数​据
+
+  然​后​,让​我​们​使​用​ Cache API 来​访​问​缓​存​里​的​ Node 然​后​对​这​个​节​点​做​一​些​简​单​的​读​和​写​。
+
+----
+// Let's get a hold of the root node.
+Node rootNode = cache.getRoot();
+// Remember, JBoss Cache stores data in a tree structure.
+// All nodes in the tree structure are identified by Fqn objects.
+Fqn peterGriffinFqn = Fqn.fromString("/griffin/peter");
+// Create a new Node
+Node peterGriffin = rootNode.addChild(peterGriffinFqn);
+// let's store some data in the node
+peterGriffin.put("isCartoonCharacter", Boolean.TRUE);
+peterGriffin.put("favoriteDrink", new Beer());
+// some tests (just assume this code is in a JUnit test case)
+assertTrue(peterGriffin.get("isCartoonCharacter"));
+assertEquals(peterGriffinFqn, peterGriffin.getFqn());
+assertTrue(rootNode.hasChild(peterGriffinFqn));
+Set keys = new HashSet();
+keys.add("isCartoonCharacter");
+keys.add("favoriteDrink");
+assertEquals(keys, peterGriffin.getKeys());
+// let's remove some data from the node
+peterGriffin.remove("favoriteDrink");
+assertNull(peterGriffin.get("favoriteDrink");
+// let's remove the node altogether
+rootNode.removeChild(peterGriffinFqn);
+assertFalse(rootNode.hasChild(peterGriffinFqn));
+----
+
+  为​了​便​于​使​用​,Cache 接​口​也​开​放​以​『​第 2.4 节 “Fqn 类​”』​参​数​的​ put/get/remove 操​作​:
+----
+Fqn peterGriffinFqn = Fqn.fromString("/griffin/peter");
+cache.put(peterGriffinFqn, "isCartoonCharacter", Boolean.TRUE);
+cache.put(peterGriffinFqn, "favoriteDrink", new Beer());
+assertTrue(peterGriffin.get(peterGriffinFqn, "isCartoonCharacter"));
+assertTrue(cache.getRootNode().hasChild(peterGriffinFqn));
+cache.remove(peterGriffinFqn, "favoriteDrink");
+assertNull(cache.get(peterGriffinFqn, "favoriteDrink");
+cache.removeNode(peterGriffinFqn);
+assertFalse(cache.getRootNode().hasChild(peterGriffinFqn));
+----
+
+* 2.3.1 组​织​数​据​并​使​用​节​点​结​构
+
+  节​点​应​该​被​看​作​一​个​命​名​逻​辑​数​据​组​。​节​点​应​该​用​来​包​含​单​个​数​据​记​录​里​的​数​据​,例​如​,某​个​人​或​帐​号​的​信息​。​它​应​该​具​有​缓​存​的​所​有​方​面​ - 锁​、​缓​存​加​载​、​复​制​和​逐​出​ - 对​于​每​个​节​点​设​置​。​因​此​,存​储​在​单​个​节​点里​任​何​分​组​信​息​都​将​被​当​作​单​个​的​原​子​单​元​。
+
+* 2.4. Fqn 类
+
+  前​面​的​部分​在​其​示​例​里​使​用​了​ Fqn 类​;现​在​让​我​们​对​其​进​行​进​一​步​的​了​解​。
+
+  Fully Qualified Name (Fqn) 封​装​了​代​表​对​应​缓​存​树​型​机​构​里​某​个​位​置​的​路​径​的​名​称​列​表​。​该​列​表​里​的​元​素​通常​是​ String 但​也​可​以​是​任​何​ Object 或​混​合​类​型​。
+
+  这​个​路​径​可​以​是​绝​对​的​(也​就​是​相​对​于​根​节​点​),也​可​以​相​对​于​缓​存​里​的​任​何​节​点​。​关​于​使​用​ Fqn 的​ API调​用​的​文​档​里​会​告​诉​你​该​ API 是​否​使​用​相​对​还​是​绝​对​的​ Fqn。
+
+  Fqn 提​供​了​大​量​的​工​厂​方​法​;详​情​请​参​考​ Javadoc。​下​面​的​例​子​解​释​了​创​建​ FQN 最​常​用​的​途​径​:
+----
+// Create an Fqn pointing to node 'Joe' under parent node 'Smith'
+// under the 'people' section of the tree
+// Parse it from a String
+Fqn abc = Fqn.fromString("/people/Smith/Joe/");
+// Here we want to use types other than String
+Fqn acctFqn = Fqn.fromElements("accounts", "NY", new Integer(12345));
+----
+
+  请​注​意​:
+----
+Fqn f = Fqn.fromElements("a", "b", "c");
+----
+  相​等​于​:
+----
+Fqn f = Fqn.fromString("/a/b/c");
+----
+
+* 2.5. 停​止​和​销​毁​缓​存
+
+  使​用​完​毕​后​停​止​并​销​毁​缓​存​是​一​个​好​的​做​法​,特​别​是​在​群​集​缓​存​并​加​上​对​ JGroups 频​道​的​使​用​的​情​况​下​。停​止​并​销​毁​缓​存​确​保​了​能​够​正​确​地​清​理​网​络​套​接​字​和​维​护​线​程​等​资​源​。
+----
+cache.stop();
+cache.destroy();
+----
+
+  请​注​意​,已​调​用​ stop() 的​缓​存​可​以​用​ start() 重​启​启​动​。​类​似​地​,已​调​用​ destroy() 的​缓​存​也​可​以​用 create() 重​新​创​建​(并​可​用​ start() 调​用​重​启​启​动​)。
+
+* 2.6. 缓存模式 
+
+  虽​然​从​技​术​上​来​说​并​非​ API 的​一​部​分​,但​缓​存​所​操​作​的模式​可​影​响​到​任​何​ put 或​ remove 操​作​的​行​为​,所以​在​这​里​我​们​将​简​单​地​提​及​这​些​模​式​。
+
+  JBoss Cache 是​通​过​ org.jboss.cache.config.Configuration.CacheMode 枚​举​的​。它​们​是​:
+
+. LOCAL - 本​地​的​、​非​群​集​的​缓​存​。​本​地​缓​存​不​加​入​群​集​也​不​和​群​集​里​的​其​他​节​点​通​讯​。
+. REPL_SYNC - 同​步​复​制​。​缓​存​复​制​群​集​里​其​他​缓​存​的​修​改​。​同​步​复​制​意​味​着​修​改​被​复​制​且​调​用​者​阻​塞​, 直​至​接​收​到​复​制​确​认​
+. REPL_ASYNC - 异​步​复​制​。​和​上​面​的​ REPL_SYNC 类​似​,缓​存​复​制​群​集​里​其​他​缓​存​的​修​改​。​但​调​用​者​不会​阻​塞​到​接​收​到​复​制​确​认​为​止​。
+. INVALIDATION_SYNC - 如​果​缓​存​被​配​置​为​失​效​而​不​是​复​制​,每​次​数​据​有​修​改​时​,群​集​里​的​其​他​缓​存​将收​到​一​条​消​息​来​通​知​它​们​这​个​数​据​已​经​陈​旧​且​应​该​从​内​存​逐​出​。​这​样​做​减​少​了​复​制​负​载​,同​时​还​可​以​使远​程​缓​存​里​的​陈​旧​数​据​失​效​。
+. INVALIDATION_ASYNC - 和​上​面​的​一​样​,除​了​这​个​失​效​模​式​会​导​致​失​效​信​息​的​异​步​广​播​
+
+* 2.7. 添​加​缓​存​Listener-注​册​缓​存​事​件
+
+  JBoss Cache 提​供​一​个​方​便​的​机​制​以​注​册​缓​存​事​件​的​通​知​。
+----
+Object myListener = new MyCacheListener();
+cache.addCacheListener(myListener);
+----
+
+  删​除​或​查​询​注​册​的​ listener 也​有​类​似​的​方​法​。​详​情​请​参​考​ Cache 接​口​的​ Javadoc
+
+  如​果​用​ @CacheListener 进​行​注​解​,基​本​上​任​何​的​公​用​类​都​可​用​作​ listener。​此​外​,类​的​一​个​或​多​个​方​法需​要​进​行​方​法​级​别​的​注​解​(在​ org.jboss.cache.notifications.annotation 软​件​包​里​)。​被​注解​方​法​需​要​是​ public 的​,并​具​有​ void 返​回​类​型​,还​得​接​受org.jboss.cache.notifications.event.Event 类​型​或​其​子​类​型​为​唯​一​的​参​数​。
+
+. @CacheStarted - 注​解​方​法​以​在​缓​存​启​动​时​接​收​通​知​。​这​些​方​法​需​要​接​受​一​个​属​于 CacheStartedEvent 的​参​数​类​型​。
+. @CacheStopped - 注​解​方​法​以​在​缓​存​停​止​时​接​收​通​知​。​这​些​方​法​需​要​接​受​一​个​属​于 CacheStoppedEvent 的​参​数​类​型​。
+. @NodeCreated - 注​解​方​法​以​在​节​点​创​建​时​接​收​通​知​。​这​些​方​法​需​要​接​受​一​个​属​于 NodeCreatedEvent 的​参​数​类​型​。
+. @NodeRemoved - 注​解​方​法​以​在​删​除​节​点​时​接​收​通​知​。​这​些​方​法​需​要​接​受​一​个​属​于 NodeRemovedEvent 的​参​数​类​型​。
+. @NodeModified - 注​解​方​法​以​在​修​改​节​点​时​接​收​通​知​。​这​些​方​法​需​要​接​受​一​个​属​于 NodeModifiedEvent 的​参​数​类​型​。
+. @NodeMoved - 注​解​方​法​以​在​移​动​节​点​时​接​收​通​知​。​这​些​方​法​需​要​接​受​一​个​属​于​ NodeMovedEvent 的参​数​类​型​。
+. @NodeVisited - 注​解​方​法​以​在​访​问​节​点​时​接​收​通​知​。​这​些​方​法​需​要​接​受​一​个​属​于 NodeVisitedEvent 的​参​数​类​型​。
+. @NodeLoaded - 注​解​方​法​以​在​从​ CacheLoader 里​加​载​节​点​时​接​收​通​知​。​这​些​方​法​需​要​接​受​一​个​属​于 NodeLoadedEvent 的​参​数​类​型​。
+. @NodeEvicted - 注​解​方​法​以​在​节​点​从​内​存​里​逐​出​时​接​收​通​知​。​这​些​方​法​需​要​接​受​一​个​属​于 NodeEvictedEvent 的​参​数​类​型​。
+. @NodeInvalidated - 注​解​方​法​以​在​节​点​由​于​远​程​失​效​事​件​从​内​存​里​逐​出​时​接​收​通​知​。​这​些​方​法​需​要接​受​一​个​属​于​ NodeInvalidatedEvent 的​参​数​类​型​。
+. @NodeActivated - 注​解​方​法​以​在​节​点​被​激​活​时​接​收​通​知​。​这​些​方​法​需​要​接​受​一​个​属​于 NodeActivatedEvent 的​参​数​类​型​。
+. @NodePassivated - 注​解​方​法​以​在​节​点​被​钝​化​时​接​收​通​知​。​这​些​方​法​需​要​接​受​一​个​属​于 NodePassivatedEvent 的​参​数​类​型​。
+. @TransactionRegistered - 注​解​方​法​以​在​缓​存​在​已​注​册​的​事​务​管​理​者​里​注​册 javax.transaction.Synchronization 时​接​收​通​知​。​这​些​方​法​需​要​接​受​一​个​属​于  TransactionRegisteredEvent 的​参​数​类​型​。
+. @TransactionCom pleted - 注​解​方​法​以​在​缓​存​从​已​注​册​的​事​务​管​理​者​接​收​提​交​或​回​滚​调​用​时​接​收​通知​。​这​些​方​法​需​要​接​受​一​个​属​于​ TransactionCom pletedEvent 的​参​数​类​型​。
+. @ViewChanged - 注​解​方​法​以​在​群​集​的​组​结​构​改​变​时​接​收​通​知​。​这​些​方​法​需​要​接​受​一​个​属​于 ViewChangedEvent 的​参​数​类​型​。
+. @CacheBlocked - 注​解​方​法​以​在​缓​存​操​作​因​为​状​态​转​换​事​件​而​阻​塞​时​接​收​通​知​。​这​些​方​法​需​要​接​受​一个​属​于​ CacheBlockedEvent 的​参​数​类​型​。
+. @CacheUnblocked - 注​解​方​法​以​在​缓​存​操​作​因​为​状​态​转​换​事​件​而​取​消​阻​塞​时​接​收​通​知​。​这​些​方​法​需​要接​受​一​个​属​于​ CacheUnblockedEvent 的​参​数​类​型​。
+. @BuddyGroupChanged - 注​解​方​法​以​在​节​点​由​于​ Buddy 放​弃​群​集​或​更​新​、​更​近​的​ Buddy 加​入​而​修​改其​ Buddy 组​时​接​收​通​知​。​这​些​方​法​需​要​接​受​一​个​属​于​ BuddyGroupChangedEvent 的​参​数​类​型​。
+
+  请​参​考​ Javadocs 了​关​于​注​解​和​ Event 子​类​型​的​内​容​,如​传​入​方​法​里​的​参​数​是​什​么​、​何​时​传​入​等​。
+
+Demo 3.1
+----
+@CacheListener
+public class MyListener
+{
+@CacheStarted
+@CacheStopped
+public void cacheStartStopEvent(Event e)
+{
+switch (e.getType())
+{
+case CACHE_STARTED:
+System.out.println("Cache has started");
+break;
+case CACHE_STOPPED:
+System.out.println("Cache has stopped");
+break;
+}
+}
+@NodeCreated
+@NodeRemoved
+@NodeVisited
+@NodeModified
+@NodeMoved
+public void logNodeEvent(NodeEvent ne)
+{
+log("An event on node " + ne.getFqn() + " has occured");
+}
+}
+----
+
+* 2.7.1. 同​步​和​异​步​通​知
+  在​缺​省​情​况​下​,所​有​的​通​知​都​是​同​步​的​,因​此​它​们​在​产​生​事​件​的​调​用​者​线​程​里​发​生​。​确​保​缓​存​ listener 实​现不​会​占​用​需​长​时​间​运​行​的​任​务​中​的​线​程​是​一​个​好​的​办​法​。​或​者​,你​可​以​设​置​ CacheListener.sync 属​性为​ false,此​时​你​不​会​在​调​用​者​线​程​里​得​到​通​知​。
+
+* 2.8 用缓存加载​器
+
+  缓​存​加​载​器​是​ JBoss Cache 的​重​要​组​成​部​分​。​它​们​允​许​节​点​持​久​化​到​磁​盘​或​远​程​缓​存​群​集​里​,而​且​允​许​在缓​存​用​尽​内​存​时​进​行​钝​化​。​此​外​,缓​存​加​载​器​允​许​ JBoss Cache 执​行​“​warm starts”​,此​时​的​内​存​状​态​可​以从​持​久​性​存​储​中​预​加​载​。​JBoss Cache 附​带​了​大​量​的​缓​存​加​载​器​实​现​。
+
+. org.jboss.cache.loader.FileCacheLoader - 是​一​个​基​本​的​、​基​于​文​件​系​统​的​缓​存​加​载​器​,它将​数​据​持​久​化​到​磁​盘​。​它​是​非​事​务​性​的​,而​且​性​能​一​般​,单​确​实​非​常​简​单​的​方​案​。​它​主​要​用​于​测​试​,不​推​荐​将​其​用​在​产​品​环​境​中​。
+. org.jboss.cache.loader.JDBCCacheLoader - 它​使​用​ JDBC 连​接​来​存​储​状​态​。​连​接​可​从​一​个内​部​池​(使​用​ c3p0 pooling 库​)或​配​置​好​的​数​据​源​里​创​建​并​维​护​。​这​个​缓​存​加​载​器​连​接​的​数​据​库​可​以​是本​地​的​,也​可​以​是​远​程​的​。
+. org.jboss.cache.loader.BdbjeCacheLoader - 它​使​用​ Oracle 的​基​于​文​件​的​ BerkeleyDB 事务​性​数​据​库​来​持​久​化​数​据​。​它​是​事​务​性​的​,而​且​性​能​非​常​好​,但​可​能​具​有​受​限​的​许​可​证​。
+. org.jboss.cache.loader.Jdbm CacheLoader - BerkeleyDB 的​开​源​替​代​方​案​。
+. org.jboss.cache.loader.tcp.T cpCacheLoader - 通​过​『​一​种​ "far cache" 模​式​』​使​用​ TCP 套​接​字​来​“​持​久​化​”​数​据​到​远​程​群​集​里​。
+. org.jboss.cache.loader.ClusteredCacheLoader - 用​作​“​只​读​”​缓​存​加​载​器​,此​时​群​集​里​的​其他​节​点​按​状​态​查​询​。​当​完​整​状​态​转​移​的​代​价​过​高​时​,它​就​是​首​选​的​,此​时​状​态​是​ lazy 加​载​的​。
+
+* 2.9 使用逐出策略(Eviction Policy)
+
+  逐​出​策​略​是​缓​存​加​载​器​的​对​应​物​。​要​确​保​缓​存​在​填​充​时​不​会​用​尽​内​存​,使​用​逐​出​策​略​是​必​要​的​。​在​独​立​线​程里​运​行​的​逐​出​算​法​逐​出​内​存​状​态​并​释​放​内​存​。​如​果​配​有​缓​存​加​载​器​,在​需​要​时​状​态​可​以​从​缓​存​加​载​器​里​获​得。
+
+  逐​出​策​略​可​对​每​个​区​进​行​配​置​,所​以​缓​存​里​不​同​的​子​树​可​以​有​不​同​的​逐​出​首​选​项​。​JBoss Cache 附​带​几​个​注册​策​略​:
+
+. org.jboss.cache.eviction.LRUPolicy - 当​到​达​极​限​时​逐​出​最​近​最​少​使​用​的​节​点​。
+. org.jboss.cache.eviction.LFUPolicy - 当​到​达​极​限​时​逐​出​最​不​经​常​使​用​的​节​点​。
+. org.jboss.cache.eviction.MRUPolicy - 当​到​达​极​限​时​逐​出​最​近​使​用​最​多​的​节​点​。
+. org.jboss.cache.eviction.FIFOPolicy - 当​到​达​极​限​时​按​照​先​入​先​出​顺​序​逐​出​节​点​。
+. org.jboss.cache.eviction.ExpirationPolicy - 基​于​每​个​节​点​配​置​的​过​期​时​间​逐​出​节​点​的​策略​。
+. org.jboss.cache.eviction.Elem entSizePolicy - 根​据​节​点​保​持​的​键​/值​数​量​选​择​节​点​逐​出​的策​略​。
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
