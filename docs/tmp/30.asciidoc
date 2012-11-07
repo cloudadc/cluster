@@ -22,27 +22,8 @@ JBoss Cache 是 一 个 内 存 复 制 的 、 事 务 性 和 细 颗 粒 度 
 * ${JBOSSCACHE_HOME}/tutorial/build.xml 是我们使用到运行HelloWorldl例子的脚本。你需要安装Apache Ant在运行HelloWorldl例子之前。
 
 
-2.4 运 行 Tutorial GUI
-++++++++++++++++++++++
-这 个 GUI 是 这 样 运 行 的 ：
-
-    进 入 ${JBOSSCACHE_HOME}/tutorial 目 录 （如 cd ${JBOSSCACHE_HOME}/tutorial）。
-
-    然 后 运 行 ant 脚 本 （如 ant run）
-
-然 后 会 出 现 一 个 GUI 窗 口 ，在 顶 部 面 板 上 你 会 看 到 缓 存 的 树 型 视 图 ，而 在 下 面 的 面 板 上 你 会 看 到 JVM 的 BeanShell 视 图 。
-
-BeanShell 视 图 带 有 下 列 变 量 ：
-
-    cache：GUI 实 例 使 用 的 对 org.jboss.cache.Cache 接 口 的 引 用 。
-
-    root：上 面 缓 存 所 使 用 的 对 根 org.jboss.cache.Node 节 点 的 引 用 。
-
-    transactionManager：对 已 注 册 的 javax.transaction.TransactionManager 实 例 的 引 用 。
-
-这 些 引 用 都 为 指 向 上 面 的 GUI 里 的 树 型 视 图 使 用 的 相 同 缓 存 实 例 的 BeanShell 窗 口 视 图 可 用 。
-
-要 以 复 制 教 程 的 模 式 运 行 这 个 GUI，你 需 要 启 动 另 外 一 个 命 令 行 窗 口 并 再 次 运 行 Ant 脚 本 。 现 在 你 就 有 两 个 运 行 在 不 同 的 GUI 里 的 缓 存 实 例 了 ，它 们 彼 此 复 制 状 态
+2.4 运 行
+++++++++
  
 
 3. 测试
