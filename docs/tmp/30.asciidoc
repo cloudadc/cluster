@@ -1,9 +1,111 @@
-1. HelloWorldl例子
-------------------
-JBoss Cache 是 一 个 内 存 复 制 的 、 事 务 性 和 细 颗 粒 度 的 缓 存 。 本 教 程 着 重 核 心 的 Cach API。大致介绍缓存的创建和修改，状态复制，事务，详细介绍参见随后章节。
 
-2. 运行例子
------------
+JBoss Cache 是一个内存复制的、事务性和细颗粒度的缓存。本教程着重核心的 Cach API。大致介绍缓存的创建和修改，状态复制，事务，详细介绍参见随后章节。
+
+HelloWorldl 例子
+----------------
+
+1. 运行例子
++++++++++++
+
+1.1 使用 Maven 打包运行
+++++++++++++++++++++++++
+
+* 到 jbosscache/helloworld 下执行
+----
+mvn clean install dependency:copy-dependencies
+----
+
+* 打开两个终端窗口，分别执行如下命令：
+----
+java -cp target/jbosscache-helloworld-1.0.jar:target/dependency/*  -Djava.net.preferIPv4Stack=true com.kylin.jbosscache.Runner -console -config total-replication.xml
+----
+
+2. 测试
++++++++
+
+2.1 缓存和节点
+++++++++++++++
+
+这里我们启动单个实例。我们将在根节点下创建节点，递归地删除根节点下的节点，从节点添加和删除数据
+
+* 设置所需的FQN。在BeanSheel面板里，创建三个FQN变量：
+
+----
+childFqn1 = Fqn.fromString("/child1");
+childFqn2 = Fqn.fromString("/child2");
+childFqn3 = Fqn.fromString("/child2/child3");
+----
+
+* 在根节点下创建子节点。
+
+----
+child1 = root.addChild(childFqn1);
+child2 = root.addChild(childFqn2);
+child3 = root.addChild(childFqn3);
+----
+
+* 查询节点。
+
+----
+root.hasChild(childFqn1); // 返回 true
+child2.hasChild(childFqn3.getLastElement()); // 返回 true
+child3.getParent(); // 返回 child2
+child2.getParent(); // 返回 root
+----
+
+* 在节点里放入数据。通过在树视图里选择节点，你应该可以看到每个节点的内容
+
+----
+child1.put("key1","value1");
+child1.put("key2","value2");
+child2.put("key3","value3");
+child2.put("key4","value4");
+child3.put("key5","value5");
+child3.put("key6","value6");
+----
+
+* 查询数据。
+
+----
+child1.getKeys();
+child2.getData();
+----
+
+* 删除节点里的数据
+
+----
+child1.remove("key1");
+child2.remove("key3");
+child3.clearData();
+----
+
+* 删除节点
+
+----
+root.removeChild(childFqn1); // 将删除所有child1数据
+root.removeChild(childFqn2); // child3数据也将会被递归的删除
+----
+
+2.2. 复制
++++++++++
+
+本教程需要启动两个GUI实例。重复前一教程里的练习，只是在创建/删除节点或添加/删除数据时在两个GUI窗口间切换。这将演示两个GUI里的缓存实例是如何保持同步的。
+
+2.3. 事务
+++++++++
+
+这里需要启动两个实例窗口。重复前面的步骤，只是在创建/删除节点或添加/删除数据之前启动事务。这将描述复制是如何只发生在事务边界上的。你也可以回滚一些事务，看看在这样的情况下是如何不进行任何复制的。下面是管理事务的代码示例：
+
+----
+tm = cache.getTransactionManager();
+tm.begin();
+// do operations here
+tm.commit(); // or tm.rollback();
+----
+
+
+
+
 
 2.1 下载
 ++++++++
@@ -22,83 +124,5 @@ JBoss Cache 是 一 个 内 存 复 制 的 、 事 务 性 和 细 颗 粒 度 
 * ${JBOSSCACHE_HOME}/tutorial/build.xml 是我们使用到运行HelloWorldl例子的脚本。你需要安装Apache Ant在运行HelloWorldl例子之前。
 
 
-2.4 运 行
-++++++++
- 
-
-3. 测试
--------
-
-3.1 缓存和节点
-++++++++++++++
-
-这里我们启​动​单​个​实​例​。​我​们​将​: 在​根​节​点​下​创​建​节​点，递​归​地​删​除​根​节​点​下​的​节​点，从​节​点​添​加​和​删​除​数​据
-
-* 设置所需的FQN。在BeanSheel面板里，创建三个FQN变量：
-----
-childFqn1 = Fqn.fromString("/child1");
-childFqn2 = Fqn.fromString("/child2");
-childFqn3 = Fqn.fromString("/child2/child3");
-----
-
-* 在根节点下创建子节点。
-----
-child1 = root.addChild(childFqn1);
-child2 = root.addChild(childFqn2);
-child3 = root.addChild(childFqn3);
-----
-
-* 查询节点。
-----
-root.hasChild(childFqn1); // 返回 true
-child2.hasChild(childFqn3.getLastElement()); // 返回 true
-child3.getParent(); // 返回 child2
-child2.getParent(); // 返回 root
-----
-
-* 在节点里放入数据。通过在树视图里选择节点，你应该可以看到每个节点的内容
-----
-child1.put("key1","value1");
-child1.put("key2","value2");
-child2.put("key3","value3");
-child2.put("key4","value4");
-child3.put("key5","value5");
-child3.put("key6","value6");
-----
-
-* 查询数据。
-----
-child1.getKeys();
-child2.getData();
-----
-
-* 删除节点里的数据
-----
-child1.remove("key1");
-child2.remove("key3");
-child3.clearData();
-----
-
-* 删除节点
-----
-root.removeChild(childFqn1); // 将删除所有child1数据
-root.removeChild(childFqn2); // child3数据也将会被递归的删除
-----
-
-3.2. 复制
-+++++++++
-
-本教程需要启动两个GUI实例。重复前一教程里的练习，只是在创建/删除节点或添加/删除数据时在两个GUI窗口间切换。这将演示两个GUI里的缓存实例是如何保持同步的。
-
-3.3. 事务
-++++++++
-
-这里需要启动两个实例窗口。重复前面的步骤，只是在创建/删除节点或添加/删除数据之前启动事务。这将描述复制是如何只发生在事务边界上的。你也可以回滚一些事务，看看在这样的情况下是如何不进行任何复制的。下面是管理事务的代码示例：
-----
-tm = cache.getTransactionManager();
-tm.begin();
-// do operations here
-tm.commit(); // or tm.rollback();
-----
 
 
