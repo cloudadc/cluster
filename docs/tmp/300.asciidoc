@@ -1,0 +1,10 @@
+1 获取 JBoss Cache 代码
+-----------------------
+
+* 相关连接 
+https://community.jboss.org/wiki/JBossCache
+
+* SVN checkout，具体执行如下命令：
+----
+svn co http://anonsvn.jboss.org/repos/jbosscache/core/trunk/
+----

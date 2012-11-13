@@ -7,6 +7,10 @@ import org.jboss.cache.Cache;
 import org.jboss.cache.CacheFactory;
 import org.jboss.cache.DefaultCacheFactory;
 
+import com.kylin.jbosscache.demo.CacheModelDelegate;
+import com.kylin.jbosscache.demo.JBossCacheGUI;
+import com.kylin.jbosscache.demo.JBossCacheModelDelegate;
+
 
 /**
  * Graphical view of a JBoss Cache instance.  Think of it as a view in an MVC model.  An instance of this view

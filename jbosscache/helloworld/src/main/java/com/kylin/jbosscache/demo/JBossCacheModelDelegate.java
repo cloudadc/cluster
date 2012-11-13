@@ -1,4 +1,4 @@
-package com.kylin.jbosscache;
+package com.kylin.jbosscache.demo;
 
 import org.jboss.cache.Cache;
 

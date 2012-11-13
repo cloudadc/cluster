@@ -1,1 +1,16 @@
-add
+安装 JBoss Application Server 6
+--------------------------------
+
+* http://www.jboss.org/jbossas/downloads 选择版本 6 模块，点击相关版本下载，比如 6.1.0.Final
+
+* 解压下载的 .zip 文件
+----
+unzip jboss-as-distribution-6.1.0.Final.zip
+----
+
+* 启动 JBoss Application Server 6
+----
+./run.sh
+---- 
+
+* 测试，启动完成后点击 http://localhost:8080/ 查看 JBoss Application Server 6 欢迎页面
