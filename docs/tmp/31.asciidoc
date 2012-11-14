@@ -113,53 +113,52 @@ cache.create();
 cache.start();
 ----
 
-* 2.3. 缓​存​和​获​取​数​据
+* 2.3. 缓存和获取数据
 
-  然​后​,让​我​们​使​用​ Cache API 来​访​问​缓​存​里​的​ Node 然​后​对​这​个​节​点​做​一​些​简​单​的​读​和​写​。
-
+然后, 让我们使用 Cache API 来访问缓存里的 Node 然后对这个节点做一些简单的读和写。
 ----
-// Let's get a hold of the root node.
+ 28     Cache cache = createCacheUseDefault();
+ 29     Node rootNode = cache.getRoot();
+ 30     Fqn helloWorldFqn = Fqn.fromString("/root/helloWorld");
+ 31     Node helloWorld = rootNode.addChild(helloWorldFqn);
+ 32     helloWorld.put("isJBossCache", Boolean.TRUE);
+ 33     helloWorld.put("content", new Content("HelloWorld"));
+ 34 
+ 35     System.out.println(helloWorld.get("isJBossCache"));
+ 36     System.out.println(helloWorld.get("content"));
+ 37     System.out.println(helloWorld.getFqn());
+ 38     System.out.println(helloWorld.getKeys());
+ 39 
+ 40     helloWorld.remove("isJBossCache");
+ 41     helloWorld.remove("content");
+ 42 
+ 43     System.out.println(helloWorld.get("isJBossCache"));
+ 44     System.out.println(helloWorld.get("content"));
+ 45 
+ 46     rootNode.removeChild(helloWorldFqn);
+----
+如上 28-29 行创建默认 Cach 后获取一个跟节点； 30 行 JBoss Cache 用树状的结构存储数据，树状结构包含多个节点，所有节点都用 Fqn 来识别； 31-33 行创建一个新节点，并向该节点存储数据； 35-38 行测试读取存储的数据； 40-41 行移除添加的数据； 46 行将新创建的节点从跟节点移除。
+
+为了便于使用, Cache 接口也开放以 “Fqn 类” 作为参数执行 put/get/remove 操作​:
+----
+Cache cache = createCacheUseDefault();
 Node rootNode = cache.getRoot();
-// Remember, JBoss Cache stores data in a tree structure.
-// All nodes in the tree structure are identified by Fqn objects.
-Fqn peterGriffinFqn = Fqn.fromString("/griffin/peter");
-// Create a new Node
-Node peterGriffin = rootNode.addChild(peterGriffinFqn);
-// let's store some data in the node
-peterGriffin.put("isCartoonCharacter", Boolean.TRUE);
-peterGriffin.put("favoriteDrink", new Beer());
-// some tests (just assume this code is in a JUnit test case)
-assertTrue(peterGriffin.get("isCartoonCharacter"));
-assertEquals(peterGriffinFqn, peterGriffin.getFqn());
-assertTrue(rootNode.hasChild(peterGriffinFqn));
-Set keys = new HashSet();
-keys.add("isCartoonCharacter");
-keys.add("favoriteDrink");
-assertEquals(keys, peterGriffin.getKeys());
-// let's remove some data from the node
-peterGriffin.remove("favoriteDrink");
-assertNull(peterGriffin.get("favoriteDrink");
-// let's remove the node altogether
-rootNode.removeChild(peterGriffinFqn);
-assertFalse(rootNode.hasChild(peterGriffinFqn));
+Fqn helloWorldFqn = Fqn.fromString("/root/helloWorld");
+Node helloWorld = rootNode.addChild(helloWorldFqn);
+		
+cache.put(helloWorldFqn, "isJBossCache", Boolean.TRUE);
+cache.put(helloWorldFqn, "content", new Content("HelloWorld"));
+		
+System.out.println(helloWorld.get("isJBossCache"));
+System.out.println(helloWorld.get("content"));
+System.out.println(cache.getRoot().hasChild(helloWorldFqn));
+		
+cache.removeNode(helloWorldFqn);
 ----
 
-  为​了​便​于​使​用​,Cache 接​口​也​开​放​以​『​第 2.4 节 “Fqn 类​”』​参​数​的​ put/get/remove 操​作​:
-----
-Fqn peterGriffinFqn = Fqn.fromString("/griffin/peter");
-cache.put(peterGriffinFqn, "isCartoonCharacter", Boolean.TRUE);
-cache.put(peterGriffinFqn, "favoriteDrink", new Beer());
-assertTrue(peterGriffin.get(peterGriffinFqn, "isCartoonCharacter"));
-assertTrue(cache.getRootNode().hasChild(peterGriffinFqn));
-cache.remove(peterGriffinFqn, "favoriteDrink");
-assertNull(cache.get(peterGriffinFqn, "favoriteDrink");
-cache.removeNode(peterGriffinFqn);
-assertFalse(cache.getRootNode().hasChild(peterGriffinFqn));
-----
-
-* 2.3.1 组​织​数​据​并​使​用​节​点​结​构
-
-  节​点​应​该​被​看​作​一​个​命​名​逻​辑​数​据​组​。​节​点​应​该​用​来​包​含​单​个​数​据​记​录​里​的​数​据​,例​如​,某​个​人​或​帐​号​的​信息​。​它​应​该​具​有​缓​存​的​所​有​方​面​ - 锁​、​缓​存​加​载​、​复​制​和​逐​出​ - 对​于​每​个​节​点​设​置​。​因​此​,存​储​在​单​个​节​点里​任​何​分​组​信​息​都​将​被​当​作​单​个​的​原​子​单​元​。
+* 2.3.1 组织数据并使用节点结构
+  
+节点应该被看作一个命名逻辑数据组。节点应该用来包含单个数据记录里的数据, 例如, 某个人或帐号的信息。它应该具有缓存的所有方面 - 锁、缓存加载、复制和逐出 - 对于每个节点设置。因此, 存储在单个节点里任何分组信息都将被当作单个的原子单元。
 
 * 2.4. Fqn 类
 
