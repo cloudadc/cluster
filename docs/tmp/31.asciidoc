@@ -89,21 +89,23 @@ CacheFactory 提​供​了​用​于​创​建​ Cache 的​大​量​
 . 可选择地调用缓存的 create() 和 start() 方法
 
 下面的代码段例子是使用缺省配置值创建和启动缓存的最简单机制:
-
-CacheFactory factory = new DefaultCacheFactory();
-Cache cache = factory.createCache();
-
-  在​这​个​例​子​里​,我​们​告​诉​ CacheFactory 来​查​找​并​解​析​ classpath 上​的​配​置​文​件​:
 ----
 CacheFactory factory = new DefaultCacheFactory();
+
+Cache cache = factory.createCache();
+----
+
+在这个例子里, 我们告诉 CacheFactory 来查找并解析 classpath 上的配置文件:
+----
+CacheFactory factory = new DefaultCacheFactory();
+
 Cache cache = factory.createCache("cache-configuration.xml");
 ----
 
-  在​这​个​例​子​里​,我​们​通​过​文​件​配​置​缓​存​,但​希​望​通​过​程​序​修​改​配​置​元​素​。​所​以​,我​们​通​知​工​厂​不​要​启​动​缓​存, 而​是​自​己​来​启​动​:
+在这个例子里, 我们通过文件配置缓存, 但希望通过程序修改配置元素。所以, 我们通知工厂不要启动缓存, 而是自己来启动:
 ----
 CacheFactory factory = new DefaultCacheFactory();
-Cache cache = factory.createCache("/opt/configurations/cache-configuration.xml",
-false);
+Cache cache = factory.createCache("/opt/configurations/cache-configuration.xml",false);
 Configuration config = cache.getConfiguration();
 config.setClusterName(this.getClusterName());
 // Have to create and start cache before using it
