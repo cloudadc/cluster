@@ -74,25 +74,24 @@ JBoss Cache 的​ MVCC 实​现​只​支​持​ READ_COMMIT T ED 和​ R
 
 Cache 接​口​是​和​ JBoss Cache 交​互​的​主​要​机​制​。​它​是​用​ CacheFactory 构​建​并​可​选​择​地​启​动​的​。CacheFactory 允​许​你​从​ Configuration 对​象​或​ XML 文​件​创​建​ Cache。​缓​存​将​数​据​组​织​到​由​节​点​组成​的​树​型​结​构​里​。​一​旦​你​具​有​了​到​ Cache 的​引​用​,你​可​以​用​它​来​在​树​型​结​构​里​查​找​ Node 对​象​,并​存​储​数据​。
 
-  Figure 3.1
+image::img/3-1.png[Figure 3.1]
 
-  请​注​意​,上​面​的​图​表​只​是​描​述​了​一​些​流​行​的​ API 方​法​。​阅​读​上​述​接​口​的​ Javadoc 是​学​习​ API 的​最​近​途​径​。
+请​注​意​,上​面​的​图​表​只​是​描​述​了​一​些​流​行​的​ API 方​法​。​阅​读​上​述​接​口​的​ Javadoc 是​学​习​ API 的​最​近​途​径​。
 
 * 2.2. 初始化和启动缓​存 
 
-  Cache 接​口​的​实​例​只​能​通​过​ CacheFactory 创​建​。​这​和​ JBoss Cache 1.x 不​同​,旧​的​ T reeCache 可​以直​接​初​始​化​。
+Cache 接​口​的​实​例​只​能​通​过​ CacheFactory 创​建​。​这​和​ JBoss Cache 1.x 不​同​,旧​的​ TreeCache 可​以直​接​初​始​化​。
 
-  CacheFactory 提​供​了​用​于​创​建​ Cache 的​大​量​重​载​方​法​,但​它​们​基​本​上​都​是​做​的​同​一​件​事​情​:
+CacheFactory 提​供​了​用​于​创​建​ Cache 的​大​量​重​载​方​法​,但​它​们​基​本​上​都​是​做​的​同​一​件​事​情​:
 
-. 获​取​对​ Configuration 的​访​问​,或​者​是​作​为​方​法​参​数​传​入​或​通​过​解​析​ XML 内​容​并​进​行​构​建​。​XML 内容​可​以​来​自​输​入​流​、​classpath 或​文​件​系​统​位​置​。​关​于​获​取​ Configuration 的​更​多​信​息​随后将会有详细描述。
-. 初​始​化​ Cache 并​为​其​提​供​一​个​对​ Configuration 的​引​用
-. 可​选​择​地​调​用​缓​存​的​ create() 和​ start() 方​法​
+. 获取对 Configuration 的访问, 或者是作为方法参数传入或通过解析 XML 内容并进行构建。XML 内容可以来自输入流、classpath 或文件系统位置。关于获取 Configuration 的更多信息随后将会有详细描述。
+. 初始化 Cache 并为其提供一个对 Configuration 的引用
+. 可选择地调用缓存的 create() 和 start() 方法
 
-  下​面​的​例​子​是​使​用​缺​省​配​置​值​创​建​和​启​动​缓​存​的​最​简​单​机​制​:
-----
+下面的代码段例子是使用缺省配置值创建和启动缓存的最简单机制:
+
 CacheFactory factory = new DefaultCacheFactory();
 Cache cache = factory.createCache();
-----
 
   在​这​个​例​子​里​,我​们​告​诉​ CacheFactory 来​查​找​并​解​析​ classpath 上​的​配​置​文​件​:
 ----
