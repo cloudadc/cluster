@@ -207,66 +207,104 @@ Object myListener = new MyCacheListener();
 cache.addCacheListener(myListener);
 ----
 
-  删​除​或​查​询​注​册​的​ listener 也​有​类​似​的​方​法​。​详​情​请​参​考​ Cache 接​口​的​ Javadoc
+删除或查询注册的 listener 也有类似的方法。详情请参考 Cache 接口的 Javadoc。
 
-  如​果​用​ @CacheListener 进​行​注​解​,基​本​上​任​何​的​公​用​类​都​可​用​作​ listener。​此​外​,类​的​一​个​或​多​个​方​法需​要​进​行​方​法​级​别​的​注​解​(在​ org.jboss.cache.notifications.annotation 软​件​包​里​)。​被​注解​方​法​需​要​是​ public 的​,并​具​有​ void 返​回​类​型​,还​得​接​受org.jboss.cache.notifications.event.Event 类​型​或​其​子​类​型​为​唯​一​的​参​数​。
+如果用 @CacheListener 进行注解，基本上任何的公用类都可用作 listener。此外，类的一个或多个方法需要进行方法级别的注解(在 org.jboss.cache.notifications.annotation 软件包里)。被注解方法需要是 public 的，并具有 void 返回类型，还得接受 org.jboss.cache.notifications.event.Event 类型或其子类型为唯一的参数。
 
-. @CacheStarted - 注​解​方​法​以​在​缓​存​启​动​时​接​收​通​知​。​这​些​方​法​需​要​接​受​一​个​属​于 CacheStartedEvent 的​参​数​类​型​。
-. @CacheStopped - 注​解​方​法​以​在​缓​存​停​止​时​接​收​通​知​。​这​些​方​法​需​要​接​受​一​个​属​于 CacheStoppedEvent 的​参​数​类​型​。
-. @NodeCreated - 注​解​方​法​以​在​节​点​创​建​时​接​收​通​知​。​这​些​方​法​需​要​接​受​一​个​属​于 NodeCreatedEvent 的​参​数​类​型​。
-. @NodeRemoved - 注​解​方​法​以​在​删​除​节​点​时​接​收​通​知​。​这​些​方​法​需​要​接​受​一​个​属​于 NodeRemovedEvent 的​参​数​类​型​。
-. @NodeModified - 注​解​方​法​以​在​修​改​节​点​时​接​收​通​知​。​这​些​方​法​需​要​接​受​一​个​属​于 NodeModifiedEvent 的​参​数​类​型​。
-. @NodeMoved - 注​解​方​法​以​在​移​动​节​点​时​接​收​通​知​。​这​些​方​法​需​要​接​受​一​个​属​于​ NodeMovedEvent 的参​数​类​型​。
-. @NodeVisited - 注​解​方​法​以​在​访​问​节​点​时​接​收​通​知​。​这​些​方​法​需​要​接​受​一​个​属​于 NodeVisitedEvent 的​参​数​类​型​。
-. @NodeLoaded - 注​解​方​法​以​在​从​ CacheLoader 里​加​载​节​点​时​接​收​通​知​。​这​些​方​法​需​要​接​受​一​个​属​于 NodeLoadedEvent 的​参​数​类​型​。
-. @NodeEvicted - 注​解​方​法​以​在​节​点​从​内​存​里​逐​出​时​接​收​通​知​。​这​些​方​法​需​要​接​受​一​个​属​于 NodeEvictedEvent 的​参​数​类​型​。
-. @NodeInvalidated - 注​解​方​法​以​在​节​点​由​于​远​程​失​效​事​件​从​内​存​里​逐​出​时​接​收​通​知​。​这​些​方​法​需​要接​受​一​个​属​于​ NodeInvalidatedEvent 的​参​数​类​型​。
-. @NodeActivated - 注​解​方​法​以​在​节​点​被​激​活​时​接​收​通​知​。​这​些​方​法​需​要​接​受​一​个​属​于 NodeActivatedEvent 的​参​数​类​型​。
-. @NodePassivated - 注​解​方​法​以​在​节​点​被​钝​化​时​接​收​通​知​。​这​些​方​法​需​要​接​受​一​个​属​于 NodePassivatedEvent 的​参​数​类​型​。
-. @TransactionRegistered - 注​解​方​法​以​在​缓​存​在​已​注​册​的​事​务​管​理​者​里​注​册 javax.transaction.Synchronization 时​接​收​通​知​。​这​些​方​法​需​要​接​受​一​个​属​于  TransactionRegisteredEvent 的​参​数​类​型​。
-. @TransactionCom pleted - 注​解​方​法​以​在​缓​存​从​已​注​册​的​事​务​管​理​者​接​收​提​交​或​回​滚​调​用​时​接​收​通知​。​这​些​方​法​需​要​接​受​一​个​属​于​ TransactionCom pletedEvent 的​参​数​类​型​。
-. @ViewChanged - 注​解​方​法​以​在​群​集​的​组​结​构​改​变​时​接​收​通​知​。​这​些​方​法​需​要​接​受​一​个​属​于 ViewChangedEvent 的​参​数​类​型​。
-. @CacheBlocked - 注​解​方​法​以​在​缓​存​操​作​因​为​状​态​转​换​事​件​而​阻​塞​时​接​收​通​知​。​这​些​方​法​需​要​接​受​一个​属​于​ CacheBlockedEvent 的​参​数​类​型​。
-. @CacheUnblocked - 注​解​方​法​以​在​缓​存​操​作​因​为​状​态​转​换​事​件​而​取​消​阻​塞​时​接​收​通​知​。​这​些​方​法​需​要接​受​一​个​属​于​ CacheUnblockedEvent 的​参​数​类​型​。
-. @BuddyGroupChanged - 注​解​方​法​以​在​节​点​由​于​ Buddy 放​弃​群​集​或​更​新​、​更​近​的​ Buddy 加​入​而​修​改其​ Buddy 组​时​接​收​通​知​。​这​些​方​法​需​要​接​受​一​个​属​于​ BuddyGroupChangedEvent 的​参​数​类​型​。
+. @CacheStarted - 注解方法以在缓存启动时接收通知。这些方法需要接受一个属于 CacheStartedEvent 的参数类型。
+. @CacheStopped - 注解方法以在缓存停止时接收通知。这些方法需要接受一个属于 CacheStoppedEvent 的参数类型。
+. @NodeCreated - 注解方法以在节点创建时接收通知。这些方法需要接受一个属于 NodeCreatedEvent 的参数类型。
+. @NodeRemoved - 注解方法以在删除节点时接收通知。这些方法需要接受一个属于 NodeRemovedEvent 的参数类型。
+. @NodeModified - 注解方法以在修改节点时接收通知。这些方法需要接受一个属于 NodeModifiedEvent 的参数类型。
+. @NodeMoved - 注解方法以在移动节点时接收通知。这些方法需要接受一个属于 NodeMovedEvent 的参数类型。
+. @NodeVisited - 注解方法以在访问节点时接收通知。这些方法需要接受一个属于 NodeVisitedEvent 的参数类型。
+. @NodeLoaded - 注解方法以在从 CacheLoader 里加载节点时接收通知。这些方法需要接受一个属于 NodeLoadedEvent 的参数类型。
+. @NodeEvicted - 注解方法以在节点从内存里逐出时接收通知。这些方法需要接受一个属于 NodeEvictedEvent 的参数类型。
+. @NodeInvalidated - 注解方法以在节点由于远程失效事件从内存里逐出时接收通知。这些方法需要接受一个属于 NodeInvalidatedEvent 的参数类型。
+. @NodeActivated - 注解方法以在节点被激活时接收通知。这些方法需要接受一个属于 NodeActivatedEvent 的参数类型。
+. @NodePassivated - 注解方法以在节点被钝化时接收通知。这些方法需要接受一个属于 NodePassivatedEvent 的参数类型。
+. @TransactionRegistered - 注解方法以在缓存在已注册的事务管理者里注册 javax.transaction.Synchronization 时接收通知。这些方法需要接受一个属于 TransactionRegisteredEvent 的参数类型。
+. @TransactionCom pleted - 注解方法以在缓存从已注册的事务管理者接收提交或回滚调用时接收通知。这些方法需要接受一个属于 TransactionCompletedEvent 的参数类型。
+. @ViewChanged - 注解方法以在群集的组结构改变时接收通知。这些方法需要接受一个属于 ViewChangedEvent 的参数类型。
+. @CacheBlocked - 注解方法以在缓存操作因为状态转换事件而阻塞时接收通知。这些方法需要接受一个属于 CacheBlockedEvent 的参数类型。
+. @CacheUnblocked - 注解方法以在缓存操作因为状态转换事件而取消阻塞时接收通知。这些方法需要接受一个属于 CacheUnblockedEvent 的参数类型。
+. @BuddyGroupChanged - 注解方法以在节点由于 Buddy 放弃群集或更新、更近的 Buddy 加入而修改其 Buddy 组时接收通知。这些方法需要接受一个属于 BuddyGroupChangedEvent 的参数类型。
 
-  请​参​考​ Javadocs 了​关​于​注​解​和​ Event 子​类​型​的​内​容​,如​传​入​方​法​里​的​参​数​是​什​么​、​何​时​传​入​等​。
+请参考 Javadocs 了关于注解和 Event 子类型的内容，如传入方法里的参数是什么、何时传入等。
 
-Demo 3.1
 ----
-@CacheListener
-public class MyListener
-{
-@CacheStarted
-@CacheStopped
-public void cacheStartStopEvent(Event e)
-{
-switch (e.getType())
-{
-case CACHE_STARTED:
-System.out.println("Cache has started");
-break;
-case CACHE_STOPPED:
-System.out.println("Cache has stopped");
-break;
-}
-}
-@NodeCreated
-@NodeRemoved
-@NodeVisited
-@NodeModified
-@NodeMoved
-public void logNodeEvent(NodeEvent ne)
-{
-log("An event on node " + ne.getFqn() + " has occured");
-}
-}
+14 @CacheListener
+15 public class MyListener {
+16 
+17         @CacheStarted
+18         @CacheStopped
+19         public void cacheStartStopEvent(Event e) {
+20                 switch (e.getType()) {
+21                 case CACHE_STARTED:
+22                         System.out.println("Cache has started");
+23                         break;
+24                 case CACHE_STOPPED:
+25                         System.out.println("Cache has stopped");
+26                         break;
+27                 }
+28         }
+29 
+30         @NodeCreated
+31         @NodeRemoved
+32         @NodeVisited
+33         @NodeModified
+34         @NodeMoved
+35         public void logNodeEvent(NodeEvent e) {
+36                 System.out.println(e.getType() + " on node " + e.getFqn() + " has occured");
+37         }
+38 
+39 }
 ----
 
-* 2.7.1. 同​步​和​异​步​通​知
-  在​缺​省​情​况​下​,所​有​的​通​知​都​是​同​步​的​,因​此​它​们​在​产​生​事​件​的​调​用​者​线​程​里​发​生​。​确​保​缓​存​ listener 实​现不​会​占​用​需​长​时​间​运​行​的​任​务​中​的​线​程​是​一​个​好​的​办​法​。​或​者​,你​可​以​设​置​ CacheListener.sync 属​性为​ false,此​时​你​不​会​在​调​用​者​线​程​里​得​到​通​知​。
+如上 17-18 行在缓存启动或停止时 cacheStartStopEvent（）方法被调运，根据事件的类型打印输出相关提示信息；第 30-34 行在节点被创建，移除，访问，移动是 logNodeEvent（）方法被调运，详细的事件类型被打印输出。我们用如下代码端测试 MyListener：
 
-* 2.8 用缓存加载​器
+----
+13     CacheFactory factory = new DefaultCacheFactory();
+14     Cache cache = factory.createCache(false);
+15     MyListener myListener = new MyListener();
+16     cache.addCacheListener(myListener);
+17     cache.start();
+18 
+19     Node root = cache.getRoot();
+20     Fqn abcFqn = Fqn.fromString("/a/b/c");
+21     Node abc = root.addChild(abcFqn);
+22     abc.put("content", new Content("abc test"));
+23     abc.get("content");
+24     cache.removeNode(abcFqn);
+25     cache.stop();
+26      cache.destroy();
+----
+如上 13-14 行使用 DefaultCacheFactory 创建一个 Cache； 15-16 行注册缓存事件； 17 行启动 Cache； 19-23 行创建 abc 节点，并向该节点添加，查取，删除数据； 24-26 行移除节点，关闭 Cache，运行该代码端输出结果如下：
+
+----
+Cache has started
+NODE_CREATED on node /a has occured
+NODE_CREATED on node /a has occured
+NODE_CREATED on node /a/b has occured
+NODE_CREATED on node /a/b has occured
+NODE_CREATED on node /a/b/c has occured
+NODE_CREATED on node /a/b/c has occured
+NODE_MODIFIED on node /a/b/c has occured
+NODE_MODIFIED on node /a/b/c has occured
+NODE_MODIFIED on node /a/b/c has occured
+NODE_MODIFIED on node /a/b/c has occured
+NODE_VISITED on node /a/b/c has occured
+NODE_VISITED on node /a/b/c has occured
+NODE_REMOVED on node /a/b/c has occured
+NODE_REMOVED on node /a/b/c has occured
+Cache has stopped
+----
+
+
+* 2.7.1. 同步和异步通知
+  在缺省情况下，所有的通知都是同步的，因此它们在产生事件的调用者线程里发生。确保缓存 listener 实现不会占用需长时间运行的任务中的线程是一个好的办法。或者，你可以设置 CacheListener.sync 属性为 false，此时你不会在调用者线程里得到通知。
+
+* 2.8 用缓存加载器
 
   缓​存​加​载​器​是​ JBoss Cache 的​重​要​组​成​部​分​。​它​们​允​许​节​点​持​久​化​到​磁​盘​或​远​程​缓​存​群​集​里​,而​且​允​许​在缓​存​用​尽​内​存​时​进​行​钝​化​。​此​外​,缓​存​加​载​器​允​许​ JBoss Cache 执​行​“​warm starts”​,此​时​的​内​存​状​态​可​以从​持​久​性​存​储​中​预​加​载​。​JBoss Cache 附​带​了​大​量​的​缓​存​加​载​器​实​现​。
 
