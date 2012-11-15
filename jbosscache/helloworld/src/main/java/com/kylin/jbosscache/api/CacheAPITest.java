@@ -22,7 +22,16 @@ public class CacheAPITest {
 		test.cachingRetrieving();
 		
 		test.cachingRetrievingWithFqn();
+		
+		test.destroy();
 
+	}
+
+	private void destroy() {
+
+		Cache cache = createCacheUseDefault();
+		cache.stop();
+		cache.destroy();
 	}
 
 	private void cachingRetrievingWithFqn() {
