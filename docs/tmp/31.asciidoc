@@ -351,33 +351,29 @@ Cache has stopped
 
 org.jboss.cache.config.Configuration 类是一个简单的 Java Bean，它封装了 JBoss Cache 的所有配置信息及其所有构架元素(如类加载器、逐出策略等)。Configuration 开放了大量的属性，如 表-1 所示。每当你看到本书里讨论的配置选项，你可以假设 Configuration 类或其组件部分为该配置选项开放了简单的属性 setter/getter 方法。
 
-* 3.2. 创​建​ Configuration
+3.2. 创建​ Configuration
+^^^^^^^^^^^^^^^^^^^^^^^^^
 
-  如之前我们所​讨​论​的​,在​可​以​创​建​ Cache 之​前​,必​须​提​供​ CacheFactory 以及​ Configuration 对​象​或​文​件​名​称​或​输​入​流​以​从​ XML 里​解​析​ Configuration。​下​面​我们​讨​论​了​如何​来​实​现​这​一​点​。
+如之前我们所讨论的，在可以创建 Cache 之前，必须提供 CacheFactory 以及 Configuration 对象或文件名称或输入流以从 XML 里解析 Configuration。下面我们讨论如何来实现这一点。
 
-* 3.2.1 解​析​基​于​XML的​配​置​文​件
+* 3.2.1 解析基于 XML 的配置文件
 
-  配​置​ JBoss Cache 最​简​单​的​方​法​是​通​过​一​个​ XML 文​件​。​JBoss Cache 附​带​大​量​的​用​于​常​见​用​例​的​配​置​文件​。​我​们​推​荐​将​这​些​文​件​用​作​起​点​参​考​,并​进​行​调​整​以​满​足​特​殊​的​需​要​。
+配置 JBoss Cache 最简单的方法是通过一个 XML 文件。JBoss Cache 附带大量的用于常见用例的配置文件。我们推荐将这些文件用作起点参考，并进行调整以满足特殊的需要。
 
-  下​面​是​一​个​最​简​单​的​ XML 配​置​文​件​,它​配​置​缓​存​以​本​地​(LOCAL)模​式​运​行​:
+下面是一个最简单的 XML 配置文件，它配置缓存以本地(LOCAL)模式运行:
 ----
 <?xml version="1.0" encoding="UTF-8"?>
 <jbosscache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="urn:jboss:jbosscache-core:config:3.1">
 </jbosscache>
 ----
+对于隔离级别、锁获取超时、锁模式等这个文件使用缺省值。在 jbosscache/helloworld 或 jbosscache/helloworld/src/main/resources 目录下的 cache-configuration.xml 文件是一个更完整的 Configuration XML 文件。通常我们通过如下方法验证配置文件： 
 
-  对​于​隔​离​级​别​、​锁​获​取​超​时​、​锁​模​式​等​这​个​文​件​使​用​缺​省​值​。​本​书​的​『​第 12.1 节 “XML 配​置​文​件​示​例​”』​以及​『​第 12.2 节 “配​置​文​件​快​速​引​用​”』​章​节​里​包​括​的​另​外​一​个​更​完​整​的​ XML 文​件​解​释​了​不​同​的​选​项​。
+. 在缺省情况下，JBoss Cache 将根据 XML 模式检验你的 XML 文件，如果配置无效则抛出异常。这可以通过 -Djbosscache.config.validate=false JVM 参数覆盖。或者，你可以用 -Djbosscache.config.schem aLocation=url 参数定自己的模式来进行检验。
+. 而在缺省情况下，配置文件是根据 JBoss Cache 配置模式进行检验的，它位于 jbosscache-core.jar 或​ http://www.jboss.org/jbosscache/jbosscache-config-3.0.xsd 上。大多数的 XML 编辑工具可以和这个模式一起使用以确保你创建的配置文件是正确且有效的。
 
-* 3.2.2 检​验​配​置文​件 
+* 3.2.2 通过程序配置
 
-  在​缺​省​情​况​下​,JBoss Cache 将​根​据​ XML 模​式​检​验​你​的​ XML 文​件​,如​果​配​置​无​效​则​抛​出​异​常​。​这​可​以​通​过-Djbosscache.config.validate=false JVM 参​数​覆​盖​。​或​者​,你​可​以​用​ -Djbosscache.config.schem aLocation=url 参​数​定​自​己​的​模​式​来​进​行​检​验​。
-
-  而​在​缺​省​情​况​下​,配​置​文​件​是​根​据​ JBoss Cache 配​置​模​式​进​行​检​验​的​,它​位​于​ jbosscache-core.jar 或​ http://www.jboss.org/jbosscache/jbosscache-config-3.0.xsd 上​。​大​多​数​的​ XML 编​辑工​具​可​以​和​这​个​模​式​一​起​使​用​以​确​保​你​创​建​的​配​置​文​件​是​正​确​且​有​效​的​。
-
-* 3.2.3 通​过​程​序​配​置
-
-  除​了​上​面​的​基​于​ XML 配​置​外​, Configuration 也​可​以​使​用​ Configuration 和​其​组​件​开​放​的​简​单​属​性在​程​序​里​进​行​构​建​。​在​进​行​构​建​时​,Configuration 对​象​和​ JBoss Cache 缺​省​值​一​起​出​现​,甚​至​可​用​作快​速​启​动​配​置​。
-
+除了上面的基于 XML 配置外， Configuration 也可以使用 Configuration 和其组件开放的简单属性在程序里进行构建。在进行构建时，Configuration 对象和 JBoss Cache 缺省值一起出现，甚至可用作快速启动配置。
 ----
 Configuration config = new Configuration();
 config.setTransactionManagerLookupClass(
