@@ -13,17 +13,17 @@ public class CacheAPITest {
 
 		CacheAPITest test = new CacheAPITest();
 
-		// test.createCacheUseDefault();
+//		 test.createCacheUseDefault();
 
-		// test.createCacheUseClasspathXML();
+		 test.createCacheUseClasspathXML();
 
 		// test.createCacheUseFilepathXML();
 
-		test.cachingRetrieving();
+//		test.cachingRetrieving();
 		
-		test.cachingRetrievingWithFqn();
+//		test.cachingRetrievingWithFqn();
 		
-		test.destroy();
+//		test.destroy();
 
 	}
 
@@ -91,7 +91,7 @@ public class CacheAPITest {
 	private Cache createCacheUseClasspathXML() {
 
 		CacheFactory factory = new DefaultCacheFactory();
-		Cache cache = factory.createCache("total-replication.xml");
+		Cache cache = factory.createCache("cache-configuration.xml");
 
 		return cache;
 	}
