@@ -1,6 +1,6 @@
 JBoss Cache 简介
 ----------------
-这部分的主要目的是介​绍​JBossCache​基​本​概​念​、​API、​配​置​和部​署，是用户或开发人员能够在​其​项​目​中​快​速​开​始​使​用​JBossCache
+这部分的主要目的是介绍 JBossCache 基本概念、API、配置和部署，是用户或开发人员能够在其项目中快速开始使用 JBoss Cache。
 
 1. 概 ​述
 ~~~~~~~~~
@@ -325,6 +325,8 @@ Cache has stopped
 . org.jboss.cache.loader.tcp.TcpCacheLoader - 通过『一种 "far cache" 模式』使用 TCP 套接字来 “持久化” 数据到远程群集里。
 . org.jboss.cache.loader.ClusteredCacheLoader - 用作“只读”缓存加载器，此时群集里的其他节点按状态查询。当完整状态转移的代价过高时，它就是首选的，此时状态是 lazy 加载的。
 
+我们将会在随后的章节中详细的讨论这些缓存加载器及相关调优信息。
+
 2.9 使用逐出策略(Eviction Policy)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -339,15 +341,15 @@ Cache has stopped
 . org.jboss.cache.eviction.ExpirationPolicy - 基于每个节点配置的过期时间逐出节点的策略。
 . org.jboss.cache.eviction.Elem entSizePolicy - 根据节点保持的键/值数量选择节点逐出的策略。
 
+关于逐出策略的详细配置和实现我们将在随后的章节展开讨论。
 
 3. 配置
 ~~~~~~~
 
-* 3.1 配置概述
+3.1 配置概述
+^^^^^^^^^^^^
 
-  org.jboss.cache.config.Configuration 类​(及​其​第 3.3 节 “Configuration 对​象​的​构​成​”)是​封​装​了​ Cache 及​其​所​有​构​架​元​素​(类​加​载​器​、​逐​出​策​略​等​)的​ Java Bean。
-
-  Configuration 开​放​了​大​量​的​属​性​,本​书​的​后​续​章​节​里​讨​论​的内​容​对​此​进​行​了​总​结​。​每​当​你​看​到​本​书​里​讨​论​的​配​置​选​项​,你​可​以​假​设​ Configuration 类​或​其​组​件​部​分为​该​配​置​选​项​开​放​了​简​单​的​属​性​ setter/getter 方​法​。
+org.jboss.cache.config.Configuration 类是一个简单的 Java Bean，它封装了 JBoss Cache 的所有配置信息及其所有构架元素(如类加载器、逐出策略等)。Configuration 开放了大量的属性，如 表-1 所示。每当你看到本书里讨论的配置选项，你可以假设 Configuration 类或其组件部分为该配置选项开放了简单的属性 setter/getter 方法。
 
 * 3.2. 创​建​ Configuration
 
