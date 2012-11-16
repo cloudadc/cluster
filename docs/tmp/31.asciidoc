@@ -2,10 +2,11 @@ JBoss Cache 简介
 ----------------
 这部分的主要目的是介​绍​JBossCache​基​本​概​念​、​API、​配​置​和部​署，是用户或开发人员能够在​其​项​目​中​快​速​开​始​使​用​JBossCache
 
-1 概 ​述
-+++++++
+1. 概 ​述
+~~~~~~~~~
 
-* 1.1 什么是 JBoss Cache?
+1.1. 什么是 JBoss Cache?
+^^^^^^^^^^^^^^^^^^^^^^^^
 
 JBoss Cache 是一个树型结构的群集事务性缓存。它可以用于独立的、非群集的环境里以缓存内存里被频繁访问的数据,在提供企业级功能如 JTA 兼容性、逐出和持久化的同时消除了数据提取或计算的瓶颈。
 
@@ -24,7 +25,8 @@ POJO Cache 是核心 JBoss Cache API 的扩展。POJO Cache 提供如下的额�
 . "API-less" 群集模型，POJO 简单地注解为群集
 
 
-* 1.2. 功能总结
+1.2. 功能总结
+^^^^^^^^^^^^^
 
 * 1.2.1. 缓存对象 
 
@@ -68,9 +70,10 @@ JBoss Cache 的 MVCC 实现只支持 READ_COMMITTED 和 REPEATABLE_READ 隔离�
 
 
 2. User API
-+++++++++++
+~~~~~~~~~~~
 
-* 2.1. API 类
+2.1. API 类
+^^^^^^^^^^^
 
 Cache 接口是和 JBoss Cache 交互的主要机制。它是用 CacheFactory 构建并可选择地启动的。CacheFactory 允许你从 Configuration 对象或 XML 文件创建 Cache。缓存将数据组织到由节点组成的树型结构里。一旦你具有了到 Cache 的引用，你可以用它来在树型结构里查找 Node 对象，并存储数据。
 
@@ -78,7 +81,8 @@ image::img/3-1.png[Figure 3.1]
 
 请注意，上面的图表只是描述了一些流行的 API 方法。阅读上述接口的 Javadoc 是学习 API 的最近途径。
 
-* 2.2. 初始化和启动缓存 
+2.2. 初始化和启动缓存 
+^^^^^^^^^^^^^^^^^^^^^
 
 Cache 接口的实例只能通过 CacheFactory 创建。这和 JBoss Cache 1.x 不同，旧的 TreeCache 可以直接初始化。
 
@@ -113,7 +117,8 @@ cache.create();
 cache.start();
 ----
 
-* 2.3. 缓存和获取数据
+2.3. 缓存和获取数据
+^^^^^^^^^^^^^^^^^^^
 
 然后, 让我们使用 Cache API 来访问缓存里的 Node 然后对这个节点做一些简单的读和写。
 ----
@@ -160,7 +165,8 @@ cache.removeNode(helloWorldFqn);
   
 节点应该被看作一个命名逻辑数据组。节点应该用来包含单个数据记录里的数据, 例如, 某个人或帐号的信息。它应该具有缓存的所有方面 - 锁、缓存加载、复制和逐出 - 对于每个节点设置。因此, 存储在单个节点里任何分组信息都将被当作单个的原子单元。
 
-* 2.4. Fqn 类
+2.4. Fqn 类
+^^^^^^^^^^^
 
 前面的部分在其示例里使用了 Fqn 类; 现在让我们对其进行进一步的了解。
 
@@ -177,7 +183,8 @@ Fqn 提供了大量的工厂方法，详情请参考 Javadoc。下面的例子�
 
 NOTE: Fqn.fromElements("a", "b", "c") 与 Fqn.fromString("/a/b/c") 的等效的，它们都是创建了一个指向节点 c 的 Fqn。
 
-* 2.5. 停止和销毁缓存
+2.5. 停止和销毁缓存
+^^^^^^^^^^^^^^^^^^^
 
 使用完毕后停止并销毁缓存是一个好的做法，特别是在群集缓存并加上对 JGroups 频道的使用的情况下。停止并销毁缓存确保了能够正确地清理网络套接字和维护线程等资源。
 ----
@@ -187,7 +194,8 @@ cache.destroy();
 
 NOTE: 已调用 stop() 的缓存可以用 start() 重启启动。类似地，已调用 destroy() 的缓存也可以用 create() 重新创建(并可用 start() 调用重启启动)。
 
-* 2.6. 缓存模式 
+2.6. 缓存模式 
+^^^^^^^^^^^^^
 
 虽然从技术上来说并非 API 的一部分，但缓存所操作的模式可影响到任何 put 或 remove 操作的行为，所以在这里我们将简单的描述出这些模式。
 
@@ -199,7 +207,8 @@ JBoss Cache 模式是通过 org.jboss.cache.config.Configuration.CacheMode 枚�
 . INVALIDATION_SYNC - 非验证同步模式。如果缓存被配置为失效而不是复制，每次数据有修改时，群集里的其他缓存将收到一条消息来通知它们这个数据已经陈旧且应该从缓存逐出。这样做减少了复制负载，同时还可以使远程缓存里的陈旧数据失效。
 . INVALIDATION_ASYNC - 非验证异步模式。和上面的一样，除了这个失效模式会导致失效信息的异步广播。
 
-* 2.7. 添加缓存 Listener - 注册缓存事件
+2.7. 添加缓存 Listener - 注册缓存事件
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 JBoss Cache 提供一个方便的机制以注册缓存事件的通知​。
 ----
@@ -304,33 +313,35 @@ Cache has stopped
 * 2.7.1. 同步和异步通知
   在缺省情况下，所有的通知都是同步的，因此它们在产生事件的调用者线程里发生。确保缓存 listener 实现不会占用需长时间运行的任务中的线程是一个好的办法。或者，你可以设置 CacheListener.sync 属性为 false，此时你不会在调用者线程里得到通知。
 
-* 2.8 用缓存加载器
+2.8 用缓存加载器
+^^^^^^^^^^^^^^^^
 
-  缓​存​加​载​器​是​ JBoss Cache 的​重​要​组​成​部​分​。​它​们​允​许​节​点​持​久​化​到​磁​盘​或​远​程​缓​存​群​集​里​,而​且​允​许​在缓​存​用​尽​内​存​时​进​行​钝​化​。​此​外​,缓​存​加​载​器​允​许​ JBoss Cache 执​行​“​warm starts”​,此​时​的​内​存​状​态​可​以从​持​久​性​存​储​中​预​加​载​。​JBoss Cache 附​带​了​大​量​的​缓​存​加​载​器​实​现​。
+缓存加载器是 JBoss Cache 的重要组成部分。它们允许节点持久化到磁盘或远程缓存到群集里，而且允许在缓存用尽内存时进行钝化。此外，缓存加载器允许 JBoss Cache 执行 “warm starts”，此时的内存状态可以从持久性存储中预加载。JBoss Cache 附带了大量的缓存加载器的实现。
 
-. org.jboss.cache.loader.FileCacheLoader - 是​一​个​基​本​的​、​基​于​文​件​系​统​的​缓​存​加​载​器​,它将​数​据​持​久​化​到​磁​盘​。​它​是​非​事​务​性​的​,而​且​性​能​一​般​,单​确​实​非​常​简​单​的​方​案​。​它​主​要​用​于​测​试​,不​推​荐​将​其​用​在​产​品​环​境​中​。
-. org.jboss.cache.loader.JDBCCacheLoader - 它​使​用​ JDBC 连​接​来​存​储​状​态​。​连​接​可​从​一​个内​部​池​(使​用​ c3p0 pooling 库​)或​配​置​好​的​数​据​源​里​创​建​并​维​护​。​这​个​缓​存​加​载​器​连​接​的​数​据​库​可​以​是本​地​的​,也​可​以​是​远​程​的​。
-. org.jboss.cache.loader.BdbjeCacheLoader - 它​使​用​ Oracle 的​基​于​文​件​的​ BerkeleyDB 事务​性​数​据​库​来​持​久​化​数​据​。​它​是​事​务​性​的​,而​且​性​能​非​常​好​,但​可​能​具​有​受​限​的​许​可​证​。
-. org.jboss.cache.loader.Jdbm CacheLoader - BerkeleyDB 的​开​源​替​代​方​案​。
-. org.jboss.cache.loader.tcp.T cpCacheLoader - 通​过​『​一​种​ "far cache" 模​式​』​使​用​ TCP 套​接​字​来​“​持​久​化​”​数​据​到​远​程​群​集​里​。
-. org.jboss.cache.loader.ClusteredCacheLoader - 用​作​“​只​读​”​缓​存​加​载​器​,此​时​群​集​里​的​其他​节​点​按​状​态​查​询​。​当​完​整​状​态​转​移​的​代​价​过​高​时​,它​就​是​首​选​的​,此​时​状​态​是​ lazy 加​载​的​。
+. org.jboss.cache.loader.FileCacheLoader - 是一个基本的、基于文件系统的缓存加载器，它将数据持久化到磁盘。它是非事务性的，而且性能一般，但确实非常简单的方案。它主要用于测试，不推荐将其用在产品环境中。
+. org.jboss.cache.loader.JDBCCacheLoader - 它使用 JDBC 连接来存储状态。连接可从一个内部池(使用 c3p0 pooling 库)或配置好的数据源里创建并维护。这个缓存加载器连接的数据库可以是本地的，也可以是远程的。
+. org.jboss.cache.loader.BdbjeCacheLoader - 它使用 Oracle 的基于文件的 BerkeleyDB 事务性数据库来持久化数据。它是事务性的，而且性能非常好但可能具有受限的许可证。
+. org.jboss.cache.loader.JdbmCacheLoader - BerkeleyDB 的开源替代方案。
+. org.jboss.cache.loader.tcp.TcpCacheLoader - 通过『一种 "far cache" 模式』使用 TCP 套接字来 “持久化” 数据到远程群集里。
+. org.jboss.cache.loader.ClusteredCacheLoader - 用作“只读”缓存加载器，此时群集里的其他节点按状态查询。当完整状态转移的代价过高时，它就是首选的，此时状态是 lazy 加载的。
 
-* 2.9 使用逐出策略(Eviction Policy)
+2.9 使用逐出策略(Eviction Policy)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-  逐​出​策​略​是​缓​存​加​载​器​的​对​应​物​。​要​确​保​缓​存​在​填​充​时​不​会​用​尽​内​存​,使​用​逐​出​策​略​是​必​要​的​。​在​独​立​线​程里​运​行​的​逐​出​算​法​逐​出​内​存​状​态​并​释​放​内​存​。​如​果​配​有​缓​存​加​载​器​,在​需​要​时​状​态​可​以​从​缓​存​加​载​器​里​获​得。
+逐出策略是缓存加载器的对应物。要确保缓存在填充时不会用尽内存，使用逐出策略是必要的。在独立线程里运行的逐出算法逐出内存状态并释放内存。如果配有缓存加载器，在需要时状态可以从缓存加载器里获得。
 
-  逐​出​策​略​可​对​每​个​区​进​行​配​置​,所​以​缓​存​里​不​同​的​子​树​可​以​有​不​同​的​逐​出​首​选​项​。​JBoss Cache 附​带​几​个​注册​策​略​:
+逐出策略可对每个区进行配置，所以缓存里不同的子树可以有不同的逐出首选项。JBoss Cache 附带几个注册策略:
 
-. org.jboss.cache.eviction.LRUPolicy - 当​到​达​极​限​时​逐​出​最​近​最​少​使​用​的​节​点​。
-. org.jboss.cache.eviction.LFUPolicy - 当​到​达​极​限​时​逐​出​最​不​经​常​使​用​的​节​点​。
-. org.jboss.cache.eviction.MRUPolicy - 当​到​达​极​限​时​逐​出​最​近​使​用​最​多​的​节​点​。
-. org.jboss.cache.eviction.FIFOPolicy - 当​到​达​极​限​时​按​照​先​入​先​出​顺​序​逐​出​节​点​。
-. org.jboss.cache.eviction.ExpirationPolicy - 基​于​每​个​节​点​配​置​的​过​期​时​间​逐​出​节​点​的​策略​。
-. org.jboss.cache.eviction.Elem entSizePolicy - 根​据​节​点​保​持​的​键​/值​数​量​选​择​节​点​逐​出​的策​略​。
+. org.jboss.cache.eviction.LRUPolicy - 当到达极限时逐出最近最少使用的节点。
+. org.jboss.cache.eviction.LFUPolicy - 当到达极限时逐出最不经常使用的节点。
+. org.jboss.cache.eviction.MRUPolicy - 当到达极限时逐出最近使用最多的节点。
+. org.jboss.cache.eviction.FIFOPolicy - 当到达极限时按照先入先出顺序逐出节点。
+. org.jboss.cache.eviction.ExpirationPolicy - 基于每个节点配置的过期时间逐出节点的策略。
+. org.jboss.cache.eviction.Elem entSizePolicy - 根据节点保持的键/值数量选择节点逐出的策略。
 
 
 3. 配置
-+++++++
+~~~~~~~
 
 * 3.1 配置概述
 
