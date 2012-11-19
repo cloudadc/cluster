@@ -371,28 +371,30 @@ org.jboss.cache.config.Configuration 类是一个简单的 Java Bean，它封装
 . 在缺省情况下，JBoss Cache 将根据 XML 模式检验你的 XML 文件，如果配置无效则抛出异常。这可以通过 -Djbosscache.config.validate=false JVM 参数覆盖。或者，你可以用 -Djbosscache.config.schem aLocation=url 参数定自己的模式来进行检验。
 . 而在缺省情况下，配置文件是根据 JBoss Cache 配置模式进行检验的，它位于 jbosscache-core.jar 或​ http://www.jboss.org/jbosscache/jbosscache-config-3.0.xsd 上。大多数的 XML 编辑工具可以和这个模式一起使用以确保你创建的配置文件是正确且有效的。
 
+
 * 3.2.2 通过程序配置
 
 除了上面的基于 XML 配置外， Configuration 也可以使用 Configuration 和其组件开放的简单属性在程序里进行构建。在进行构建时，Configuration 对象和 JBoss Cache 缺省值一起出现，甚至可用作快速启动配置。
+
 ----
-Configuration config = new Configuration();
-config.setTransactionManagerLookupClass(
-GenericTransactionManagerLookup.class.getName()
-);
-config.setIsolationLevel(IsolationLevel.READ_COMMITTED);
-config.setCacheMode(CacheMode.LOCAL);
-config.setLockAcquisitionTimeout(15000);
-CacheFactory factory = new DefaultCacheFactory();
-Cache cache = factory.createCache(config);
+ 37    Configuration config = new Configuration();
+ 38    config.setTransactionManagerLookupClass(GenericTransactionManagerLookup.class.getName());
+ 39    config.setIsolationLevel(IsolationLevel.READ_COMMITTED);
+ 40    config.setCacheMode(CacheMode.LOCAL);
+ 41    config.setLockAcquisitionTimeout(15000);
+ 42 
+ 43    CacheFactory factory = new DefaultCacheFactory();
+ 44    Cache cache = factory.createCache(config);
 ----
 
-  甚​至​上​面​相​当​简​单​的​配​置​也​是​乏​味​的​编​程​; 因​此​使​用​基​于​ XML 配​置​是​首​选​的​办​法​。​然​而​,如​果​你​的​应​用​程序​需​要​它​, 那​没​有​理​由​对​大​部​分​属​性​不​使​用​基​于​ XML 配​置​, 然​后​访​问​ Configuration 对​象​在​程​序​里​修​改一​些​缺​省​值​、​添​加​逐​出​域​等​。
+如上 37 行实例化 Configuration 对象，38-41 通过 API 接口分别设定事务管理查询类，设定事务隔离的级别，设定缓存模式，设定获取锁等待时间。 很显然，通过程序配置 Configuration，相当简单的配置编程乏味的编程； 因此使用基于 XML 配置是首选的办法。然而，如果你的应用程序需要它，那没有理由对大部分属性不使用基于 XML 配置，然后访问 Configuration 对象在程序里修改一些缺省值、添加逐出域等。
 
-  请​注​意​,当​缓​存​在​运​行​时​,配​置​值​可​能​无​法​在​程​序​里​修​改​, 除​了​注​解​为​ @Dynamic 的​配​置​。​动​态​属​性​也​在『​第 12.2 节 “配​置​文​件​快​速​引​用​”』​表​里​进​行​标​注​。​试​图​修​改​非​动​态​属​性​将​导​致ConfigurationException。
+请注意，当缓存在运行时，配置值可能无法在程序里修改，除了注解为 @Dynamic 的配置。动态属性也在『第 12.2 节 “配置文件快速引用”』表里进行标注。试图修改非动态属性将导致 ConfigurationException。
 
-* 3.3 Configuration 对​象​的​构​成
+3.3 Configuration 对象的构成
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-  Configuration 由​大​量​的​子​对​象​构​成​:
+Configuration 由大量的子对象构成:
 
   Figure 3.2
 
