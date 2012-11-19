@@ -396,16 +396,17 @@ org.jboss.cache.config.Configuration 类是一个简单的 Java Bean，它封装
 
 Configuration 由大量的子对象构成:
 
-image::img/3-2.png
+image::img/3-2.png[Figure 3-2: JBoss Cache Configuration]
 
 下面是 Configuration 组件的简单概述。关于和每个组件相关的配置的详细解释，请参考 Javadoc 和本书相关的章节。
-. Configuration: 层次结构里的顶层对象; 它开放本书『第 12.2 节 “配置文件快速引用”』章节里列出详细的配置属性。
-. BuddyReplicationConfig: 仅当使用『第 8.1.2.2 节 “Buddy 复制”』时才相关。它是常用的复制配置选项。它必须包括:
+
+. Configuration: 层次结构里的顶层对象; 它包含 BuddyReplicationConfig，EvictionConfig，CacheLoaderConfig，RuntimeConfig。
+. BuddyReplicationConfig: 仅当使用 “Buddy 复制” 时才相关，本书下一章将详细介绍 “Buddy 复制”。它是常用的复制配置选项。它必须包括:
 .. BuddyLocatorConfig: 用于 BuddyLocator 实现的专有配置对象。开放哪些配置元素取决于 BuddyLocator 实现的需要。
-. EvictionConfig: 只在使用『第 10 章 逐出(Eviction)』时才相关。它是常用的逐出配置选项。它必须包含至少一个下面的元素:
+. EvictionConfig: 只在使用逐出(Eviction)时才相关，本书下一章将详细介绍逐出(Eviction)。它是常用的逐出配置选项。它必须包含至少一个下面的元素:
 .. EvictionRegionConfig: 每个逐出区具有一个；它为区命名。它必须包括:
 ... EvictionAlgorithmConfig: 用于所使用的 EvictionAlgorithm 实现的专有配置对象。开放哪些配置元素取决于 EvictionAlgorithm 实现的需要。
-. CacheLoaderConfig: 只有使用『第 9 章 缓存加载器』时才相关。它是通用的缓存加载器配置选项。它必须包括至少一个下面的配置:
+. CacheLoaderConfig: 只有使用缓存加载器时才相关，本书下一章将详细介绍缓存加载器。它是通用的缓存加载器配置选项。它必须包括至少一个下面的配置:
 .. IndividualCacheLoaderConfig: 用于所使用的 CacheLoader 实现的专有配置对象。开放哪些配置元素取决于 CacheLoader 实现的需要。
 . RuntimeConfig: 向缓存客户开放关于运行环境(使用『​xref linkend="br" />』时 Buddy 复制组里的成员资格)的信息。它也允许对所需的外部服务如 JTA TransactionManager 或 JGroups ChannelFactory 的缓存进行直接注入。
 
@@ -444,49 +445,53 @@ node.put("localCounter", new Integer(2));
 
 
 4 Batching API
-++++++++++++++
+~~~~~~~~~~~~~~
 
-* 4.1 简介 
+4.1 简介 
+^^^^^^^^
 
-  JBoss Cache 3.x 里​引​入​的​ Batching API,是​批​处​理​独​立​于​ JTA 事​务​的​调​用​的​一​个​机​制​。
+JBoss Cache 3.x 里引入的 Batching API，是一个不依赖 JTA 事务的调用的批处理机制。当你想在比正在运行的 JTA 事务更细的作用域里批处理复制调用时，这是很有用的。
 
-  当​你​想​在​比​正​在​运​行​的​ JT A 事​务​更​细​的​作​用​域​里​批​处​理​复​制​调​用​时​,这​是​很​有​用​的​。
+4.2 配置批处理 
+^^^^^^^^^^^^^^
+  
+要使用批处理，你需要在缓存配置或 Configuration 对象里启用调用批处理:
 
-* 4.2 配置批处理 
-
-  要​使​用​批​处​理​,你​需​要​在​缓​存​配​置​或​ Configuration 对​象​里​启​用​调​用​批​处​理​:
 ----
 Configuration.setInvocationBatchingEnabled(true);
 ----
-  或​在​ XML 文​件​里​:
+
+或在 XML 配置文件里添加:
+
 ----
 <invocationBatching enabled="true"/>
 ----
-  在​缺​省​情​况​下​,调​用​的​批​处​理​是​禁​用​的​。​请​注​意​,使​用​批​处​理​你不​需​要​定​义​事​务​管​理​者​。
+  
+在缺省情况下，调用的批处理是禁用的。请注意，使用批处理你不需要定义事务管理者。
 
 * 4.3. Batching API
 
-  一​旦​你​已​经​配​置​了​缓​存​来​使​用​批​处​理​,你​可​以​通​过​调​用​ Cache 上​的​ startBatch() 和​ endBatch() 来​使用​它​。​例​如​:
+如果已经配置了缓存来使用批处理，你可以通过调用 Cache 上的 startBatch() 和 endBatch() 来使用它。例如:
 ----
-Cache cache = getCache();
-// not using a batch
-cache.put("/a", "key", "value"); // will replicate immediately
-// using a batch
-cache.startBatch();
-cache.put("/a", "key", "value");
-cache.put("/b", "key", "value");
-cache.put("/c", "key", "value");
-cache.endBatch(true); // This will now replicate the modifications since the
-batch was started.
-cache.startBatch();
-cache.put("/a", "key", "value");
-cache.put("/b", "key", "value");
-cache.put("/c", "key", "value");
-cache.endBatch(false); // This will "discard" changes made in the batch
+39    Configuration config = new Configuration();
+40    config.setInvocationBatchingEnabled(true);
+41    CacheFactory factory = new DefaultCacheFactory();
+42    Cache cache = factory.createCache(config);
+43 
+44    cache.put("/a", "a", new Content("a"));
+45 
+46    cache.startBatch();
+47    cache.put("/b", "b", new Content("b"));
+48    cache.put("/c", "c", new Content("c"));
+49    cache.put("/d", "d", new Content("d"));
+50    cache.endBatch(true);
+51 
+52    System.out.println(cache.getRoot().getChildren());
 ----
+如上 39-42 行通过调运 Configuration 对象接口启用调用批处理，实例化一个缓存对象； 44 行没有使用批处理，将会被立即复制；46-50 行启用批处理，只有当结束批处理时进行复制操作。
   
-5 部署 ​JBoss Cache
-++++++++++++++++++
+5 部署 JBoss Cache
+~~~~~~~~~~~~~~~~~~
 
 * 5.1 独​立​使​用​/在​程​序​里​进​行​部​署
 
