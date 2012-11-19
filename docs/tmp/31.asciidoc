@@ -371,57 +371,61 @@ org.jboss.cache.config.Configuration 类是一个简单的 Java Bean，它封装
 . 在缺省情况下，JBoss Cache 将根据 XML 模式检验你的 XML 文件，如果配置无效则抛出异常。这可以通过 -Djbosscache.config.validate=false JVM 参数覆盖。或者，你可以用 -Djbosscache.config.schem aLocation=url 参数定自己的模式来进行检验。
 . 而在缺省情况下，配置文件是根据 JBoss Cache 配置模式进行检验的，它位于 jbosscache-core.jar 或​ http://www.jboss.org/jbosscache/jbosscache-config-3.0.xsd 上。大多数的 XML 编辑工具可以和这个模式一起使用以确保你创建的配置文件是正确且有效的。
 
+
 * 3.2.2 通过程序配置
 
 除了上面的基于 XML 配置外， Configuration 也可以使用 Configuration 和其组件开放的简单属性在程序里进行构建。在进行构建时，Configuration 对象和 JBoss Cache 缺省值一起出现，甚至可用作快速启动配置。
+
 ----
-Configuration config = new Configuration();
-config.setTransactionManagerLookupClass(
-GenericTransactionManagerLookup.class.getName()
-);
-config.setIsolationLevel(IsolationLevel.READ_COMMITTED);
-config.setCacheMode(CacheMode.LOCAL);
-config.setLockAcquisitionTimeout(15000);
-CacheFactory factory = new DefaultCacheFactory();
-Cache cache = factory.createCache(config);
+ 37    Configuration config = new Configuration();
+ 38    config.setTransactionManagerLookupClass(GenericTransactionManagerLookup.class.getName());
+ 39    config.setIsolationLevel(IsolationLevel.READ_COMMITTED);
+ 40    config.setCacheMode(CacheMode.LOCAL);
+ 41    config.setLockAcquisitionTimeout(15000);
+ 42 
+ 43    CacheFactory factory = new DefaultCacheFactory();
+ 44    Cache cache = factory.createCache(config);
 ----
 
-  甚​至​上​面​相​当​简​单​的​配​置​也​是​乏​味​的​编​程​; 因​此​使​用​基​于​ XML 配​置​是​首​选​的​办​法​。​然​而​,如​果​你​的​应​用​程序​需​要​它​, 那​没​有​理​由​对​大​部​分​属​性​不​使​用​基​于​ XML 配​置​, 然​后​访​问​ Configuration 对​象​在​程​序​里​修​改一​些​缺​省​值​、​添​加​逐​出​域​等​。
+如上 37 行实例化一个 Configuration 对象，38-41 通过 API 接口对已实例化的 Configuration 分别设定事务管理查询类，设定事务隔离的级别，设定缓存模式，设定获取锁等待时间，43-44 行根据基于 Configuration 创建 Cache。 很显然，通过程序配置 Configuration，相当简单的配置编程乏味的编程； 因此使用基于 XML 配置是首选的办法。然而，如果你的应用程序需要它，那没有理由对大部分属性不使用基于 XML 配置，然后访问 Configuration 对象在程序里修改一些缺省值、添加逐出域等。
 
-  请​注​意​,当​缓​存​在​运​行​时​,配​置​值​可​能​无​法​在​程​序​里​修​改​, 除​了​注​解​为​ @Dynamic 的​配​置​。​动​态​属​性​也​在『​第 12.2 节 “配​置​文​件​快​速​引​用​”』​表​里​进​行​标​注​。​试​图​修​改​非​动​态​属​性​将​导​致ConfigurationException。
+请注意，当缓存在运行时，配置值可能无法在程序里修改，除了注解为 @Dynamic 的配置。动态属性也在『第 12.2 节 “配置文件快速引用”』表里进行标注。试图修改非动态属性将导致 ConfigurationException。
 
-* 3.3 Configuration 对​象​的​构​成
+3.3 Configuration 对象的构成
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-  Configuration 由​大​量​的​子​对​象​构​成​:
+Configuration 由大量的子对象构成:
 
-  Figure 3.2
+image::img/3-2.png[Figure 3-2: JBoss Cache Configuration]
 
-  下​面​是​ Configuration 组​件​的​简​单​概​述​。​关​于​和​每​个​组​件​相​关​的​配​置​的​详​细​解​释​,请​参​考​ Javadoc 和​本书​相​关​的​章​节​。
-. Configuration: 层​次​结​构​里​的​顶​层​对​象​; 它​开​放​本​书​『​第 12.2 节 “配​置​文​件​快​速​引​用​”』​章​节​里​列​出详细的​配​置​属​性​。
-. BuddyReplicationConfig: 仅​当​使​用​『​第 8.1.2.2 节 “Buddy 复​制​”』​时​才​相​关​。​它​是​常​用​的​复​制​配置​选​项​。​它​必​须​包​括​:
-.. BuddyLocatorConfig: 用​于​ BuddyLocator 实​现​的​专​有​配​置​对​象​。​开​放​哪​些​配​置​元​素​取​决​于 BuddyLocator 实​现​的​需​要​。
-. EvictionConfig: 只​在​使​用​『​第 10 章 逐出(Eviction)』​时​才​相​关​。​它​是​常​用​的​逐​出​配​置​选​项​。​它必​须​包​含​至​少​一​个​下​面​的​元​素​:
-.. EvictionRegionConfig: 每​个​逐​出​区​具​有​一​个​;它​为​区​命​名​。​它​必​须​包​括​:
-... EvictionAlgorithmConfig: 用​于​所​使​用​的​ EvictionAlgorithm 实​现​的​专​有​配​置​对​象​。​开​放​哪些​配​置​元​素​取​决​于​ EvictionAlgorithm 实​现​的​需​要​。
-. CacheLoaderConfig: 只​有​使​用​『​第 9 章 缓存加载器​』​时​才​相​关​。​它​是​通​用​的​缓​存​加​载​器​配​置​选​项。​它​必​须​包​括​至​少​一​个​下​面​的​配​置​:
-.. IndividualCacheLoaderConfig: 用​于​所​使​用​的​ CacheLoader 实​现​的​专​有​配​置​对​象​。​开​放​哪​些配​置​元​素​取​决​于​ CacheLoader 实​现​的​需​要​。
-. RuntimeConfig:向​缓​存​客​户​开​放​关​于​运​行​环​境​(使​用​『​xref linkend="br" />』​时​ Buddy 复​制​组​里​的成​员​资​格​)的​信​息​。​它​也​允​许​对​所​需​的​外​部​服​务​如​ JTA TransactionManager 或​ JGroups ChannelFactory 的​缓​存​进​行​直​接​注​入​。
+下面是 Configuration 组件的简单概述。关于和每个组件相关的配置的详细解释，请参考 Javadoc 和本书相关的章节。
 
-* 3.4 动态重配置
+. Configuration: 层次结构里的顶层对象; 它包含 BuddyReplicationConfig，EvictionConfig，CacheLoaderConfig，RuntimeConfig。
+. BuddyReplicationConfig: 仅当使用 “Buddy 复制” 时才相关，本书下一章将详细介绍 “Buddy 复制”。它是常用的复制配置选项。它必须包括:
+.. BuddyLocatorConfig: 用于 BuddyLocator 实现的专有配置对象。开放哪些配置元素取决于 BuddyLocator 实现的需要。
+. EvictionConfig: 只在使用逐出(Eviction)时才相关，本书下一章将详细介绍逐出(Eviction)。它是常用的逐出配置选项。它必须包含至少一个下面的元素:
+.. EvictionRegionConfig: 每个逐出区具有一个；它为区命名。它必须包括:
+... EvictionAlgorithmConfig: 用于所使用的 EvictionAlgorithm 实现的专有配置对象。开放哪些配置元素取决于 EvictionAlgorithm 实现的需要。
+. CacheLoaderConfig: 只有使用缓存加载器时才相关，本书下一章将详细介绍缓存加载器。它是通用的缓存加载器配置选项。它必须包括至少一个下面的配置:
+.. IndividualCacheLoaderConfig: 用于所使用的 CacheLoader 实现的专有配置对象。开放哪些配置元素取决于 CacheLoader 实现的需要。
+. RuntimeConfig: 向缓存客户开放关于运行环境(使用『​xref linkend="br" />』时 Buddy 复制组里的成员资格)的信息。它也允许对所需的外部服务如 JTA TransactionManager 或 JGroups ChannelFactory 的缓存进行直接注入。
 
-  当​缓​存​在​运​行​时​,你​可​以​动​态​地​修​改​ some 选​项​的​配​置​:通​过​程​序​从​运​行​中​的​缓​存​里​获​得 Configuration 对​象​并​修​改​如​下​值​:
+3.4 动态重配置
+^^^^^^^^^^^^^^
+
+当缓存在运行时，你可以动态地修改一些选项的配置：通过程序从运行中的缓存里获得 Configuration 对象并修改如下值:
 ----
 Configuration liveConfig = cache.getConfiguration();
 liveConfig.setLockAcquisitionTimeout(2000);
 ----
 
- 『​第 12.2 节 “配​置​文​件​快​速​引​用​”』​里​关​于​哪​些​选​项​可​以​动​态​修​改​的​完​整​列​表​。​如​果​你​试​图​修​改​一​个​非​动​态的​设​置​,org.jboss.cache.config.ConfigurationException 将​被​抛​出​。
+『第 12.2 节 “配置文件快速引用”』里关于哪些选项可以动态修改的完整列表。如果你试图修改一个非动态的设置，org.jboss.cache.config.ConfigurationException 将被抛出。
 
-* 3.4 .1 通过 Option API 覆盖配​置 
+* 3.4 .1 通过 Option API 覆盖配置 
 
-  Option API 允​许​你​覆​盖​每​一​个​调​用​的​缓​存​行​为​。​这​包​括​创​建​ org.jboss.cache.config.Option 实​例, 在​ Option 对​象​设​置​你​需​要​覆​盖​的​选​项​并​在​调​用​方​法​前​作​为​参​数​传​递​给​ InvocationContext。
+Option API 允许你覆盖每一个调用的缓存行为。这包括创建 org.jboss.cache.config.Option 实例, 在 Option 对象设置你需要覆盖的选项并在调用方法前作为参数传递给 InvocationContext。
 
-  例​如​,当​读​取​数​据​(当​用​在​事​务​时​,这​和​数​据​库​里​的​ SELECT FOR UPDAT E 模​式​类​似​)时​强​制​写​锁​。
+例如，当读取数据(当用在事务时，这和数据库里的 SELECT FOR UPDATE 模式类似)时强制写锁。
 ----
 // first start a transaction
 cache.getInvocationContext().getOptionOverrides().setForceWriteLock(true);
@@ -430,60 +434,64 @@ Node n = cache.getNode(Fqn.fromString("/a/b/c"));
 // commit transaction
 ----
 
-  例​如​,抑​制​ REPL_SYNC 缓​存​里​的​ put 调​用​的​复​制​:
+例如，抑制 REPL_SYNC 缓存里的 put 调用的复制:
 ----
 Node node = cache.getChild(Fqn.fromString("/a/b/c"));
 cache.getInvocationContext().getOptionOverrides().setLocalOnly(true);
 node.put("localCounter", new Integer(2));
 ----
 
-关​于​ Option 类​的​选​项​细​节​,请​参​考​ Javadocs。
+关于 Option 类的选项细节，请参考 Javadocs。
 
 
 4 Batching API
-++++++++++++++
+~~~~~~~~~~~~~~
 
-* 4.1 简介 
+4.1 简介 
+^^^^^^^^
 
-  JBoss Cache 3.x 里​引​入​的​ Batching API,是​批​处​理​独​立​于​ JTA 事​务​的​调​用​的​一​个​机​制​。
+JBoss Cache 3.x 里引入的 Batching API，是一个不依赖 JTA 事务的调用的批处理机制。当你想在比正在运行的 JTA 事务更细的作用域里批处理复制调用时，这是很有用的。
 
-  当​你​想​在​比​正​在​运​行​的​ JT A 事​务​更​细​的​作​用​域​里​批​处​理​复​制​调​用​时​,这​是​很​有​用​的​。
+4.2 配置批处理 
+^^^^^^^^^^^^^^
+  
+要使用批处理，你需要在缓存配置或 Configuration 对象里启用调用批处理:
 
-* 4.2 配置批处理 
-
-  要​使​用​批​处​理​,你​需​要​在​缓​存​配​置​或​ Configuration 对​象​里​启​用​调​用​批​处​理​:
 ----
 Configuration.setInvocationBatchingEnabled(true);
 ----
-  或​在​ XML 文​件​里​:
+
+或在 XML 配置文件里添加:
+
 ----
 <invocationBatching enabled="true"/>
 ----
-  在​缺​省​情​况​下​,调​用​的​批​处​理​是​禁​用​的​。​请​注​意​,使​用​批​处​理​你不​需​要​定​义​事​务​管​理​者​。
+  
+在缺省情况下，调用的批处理是禁用的。请注意，使用批处理你不需要定义事务管理者。
 
 * 4.3. Batching API
 
-  一​旦​你​已​经​配​置​了​缓​存​来​使​用​批​处​理​,你​可​以​通​过​调​用​ Cache 上​的​ startBatch() 和​ endBatch() 来​使用​它​。​例​如​:
+如果已经配置了缓存来使用批处理，你可以通过调用 Cache 上的 startBatch() 和 endBatch() 来使用它。例如:
 ----
-Cache cache = getCache();
-// not using a batch
-cache.put("/a", "key", "value"); // will replicate immediately
-// using a batch
-cache.startBatch();
-cache.put("/a", "key", "value");
-cache.put("/b", "key", "value");
-cache.put("/c", "key", "value");
-cache.endBatch(true); // This will now replicate the modifications since the
-batch was started.
-cache.startBatch();
-cache.put("/a", "key", "value");
-cache.put("/b", "key", "value");
-cache.put("/c", "key", "value");
-cache.endBatch(false); // This will "discard" changes made in the batch
+39    Configuration config = new Configuration();
+40    config.setInvocationBatchingEnabled(true);
+41    CacheFactory factory = new DefaultCacheFactory();
+42    Cache cache = factory.createCache(config);
+43 
+44    cache.put("/a", "a", new Content("a"));
+45 
+46    cache.startBatch();
+47    cache.put("/b", "b", new Content("b"));
+48    cache.put("/c", "c", new Content("c"));
+49    cache.put("/d", "d", new Content("d"));
+50    cache.endBatch(true);
+51 
+52    System.out.println(cache.getRoot().getChildren());
 ----
+如上 39-42 行通过调运 Configuration 对象接口启用调用批处理，实例化一个缓存对象； 44 行没有使用批处理，将会被立即复制；46-50 行启用批处理，只有当结束批处理时进行复制操作。
   
-5 部署 ​JBoss Cache
-++++++++++++++++++
+5 部署 JBoss Cache
+~~~~~~~~~~~~~~~~~~
 
 * 5.1 独​立​使​用​/在​程​序​里​进​行​部​署
 
