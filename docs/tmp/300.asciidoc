@@ -8,3 +8,14 @@ https://community.jboss.org/wiki/JBossCache
 ----
 svn co http://anonsvn.jboss.org/repos/jbosscache/core/trunk/
 ----
+
+2 JBoss Cache 被许多企业级应用服务器或平台使用：
+-----------------------------------------------
+. JBoss
+. JRun4
+. Resin
+. Orion
+. JOnAS
+. BEA Weblogic
+. Websphere 4.0, 5.0, 5.1, 6.0
+. Sun, Glassfish

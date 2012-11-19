@@ -6,6 +6,9 @@ import org.jboss.cache.DefaultCacheFactory;
 import org.jboss.cache.Fqn;
 import org.jboss.cache.Node;
 import org.jboss.cache.config.Configuration;
+import org.jboss.cache.config.Configuration.CacheMode;
+import org.jboss.cache.lock.IsolationLevel;
+import org.jboss.cache.transaction.GenericTransactionManagerLookup;
 
 public class CacheAPITest {
 
@@ -15,16 +18,50 @@ public class CacheAPITest {
 
 //		 test.createCacheUseDefault();
 
-		 test.createCacheUseClasspathXML();
+//		 test.createCacheUseClasspathXML();
 
-		// test.createCacheUseFilepathXML();
+//		 test.createCacheUseFilepathXML();
 
 //		test.cachingRetrieving();
 		
 //		test.cachingRetrievingWithFqn();
 		
 //		test.destroy();
+		
+//		test.configurationCreation();
+		
+		test.batchTest();
 
+	}
+
+	private void batchTest() {
+		
+		Configuration config = new Configuration();
+		config.setInvocationBatchingEnabled(true);
+		CacheFactory factory = new DefaultCacheFactory();
+		Cache cache = factory.createCache(config);
+		
+		cache.put("/a", "a", new Content("a"));
+		
+		cache.startBatch();
+		cache.put("/b", "b", new Content("b"));
+		cache.put("/c", "c", new Content("c"));
+		cache.put("/d", "d", new Content("d"));
+		cache.endBatch(true);
+		
+		System.out.println(cache.getRoot().getChildren());
+	}
+
+	private void configurationCreation() {
+
+		Configuration config = new Configuration();
+		config.setTransactionManagerLookupClass(GenericTransactionManagerLookup.class.getName());
+		config.setIsolationLevel(IsolationLevel.READ_COMMITTED);
+		config.setCacheMode(CacheMode.LOCAL);
+		config.setLockAcquisitionTimeout(15000);
+		
+		CacheFactory factory = new DefaultCacheFactory();
+		Cache cache = factory.createCache(config);
 	}
 
 	private void destroy() {
