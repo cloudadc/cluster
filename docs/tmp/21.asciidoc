@@ -59,38 +59,21 @@ Receiver 用来处理接收消息或视图发生变化等，当有消息接收�
 这个类实现了 Receiver 接口，所有实现方法为空，应用方法如果想实现回调我们需要继承 ReceiverAdapter，重写相关方法，通常我们实现receive() 方法和 viewAccepted() 方法。ReceiverAdapter 明细如下;
 ----
 public class ReceiverAdapter implements Receiver {
-
-	public void receive(Message msg) {
-	}
-
-	public void getState(OutputStream output) throws Exception {
-	}
-
-	public void setState(InputStream input) throws Exception {
-	}
-
-	public void viewAccepted(View view) {
-	}
-
-	public void suspect(Address mbr) {
-	}
-
-	public void block() {
-	}
-
-	public void unblock() {
-	}
+	public void receive(Message msg) {}
+	public void getState(OutputStream output) throws Exception {}
+	public void setState(InputStream input) throws Exception {}
+	public void viewAccepted(View view) {}
+	public void suspect(Address mbr) {}
+	public void block() {}
+	public void unblock() {}
 }
 ----
 
 * ChannelListener
 ----
 public interface ChannelListener {
-
 	void channelConnected(Channel channel);
-
 	void channelDisconnected(Channel channel);
-
 	void channelClosed(Channel channel);
 }
 ----
