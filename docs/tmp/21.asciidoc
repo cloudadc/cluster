@@ -1,0 +1,115 @@
+API
+---
+
+这部分包括两部分，通道 API 及构建快 API
+
+通道 API
+^^^^^^^^
+这部分我们介绍构建可靠群组通信的 JGroups 类，我们主要集中于创建的使用通道。所以这些类位于 org.jgroups 包中，详细的介绍可参看 JGroups javadoc 文档。
+
+1 工具类
+++++++++
+org.jgroups.util.Util 包含许多实用的的方法，我们可以使用这些方法来简化我们的代码。
+
+*  objectToByteBuffer(), objectFromByteBuffer()
+第一种方法需要一个对象作为参数，序列化到一个字节缓冲区（该对象是可序列化或实现 externalizable 接口）。字节数组，然后返回。这种方法通常用于将对象序列化为字节缓冲区的消息。第二种方法返回一个重建的对象从一个缓冲区。这两种方法都抛出一个异常，如果该对象不能被序列化和反序列化。
+
+* objectToStream(), objectFromStream()
+第一种方法需要一个对象，并将其写入到输出流。第二种方法需要输入流中读取对象。这两种方法都抛出一个异常，如果该对象不能被序列化和反序列化。
+
+2 接口
+++++++
+接口被后面的一些实现使用所以我们先介绍 JGroups 通道接口。
+
+* MessageListener
+MessageListener提供接收回调消息，获取和设定群组状态，通过流的形式获取和设定状态。
+----
+public interface MessageListener {
+    void receive(Message msg);
+    void getState(OutputStream output) throws Exception;
+    void setState(InputStream input) throws Exception;
+}
+----
+当一个消息接收时 receive（）方法被调用。getState（）和 setState（）方法用来获取和设置组状态，例如有成员加入到组或有成员离开组时需要重新设定状态。
+
+* MembershipListener
+MembershipListener 接口与 MessageListener 接口类似：每当一个新的视图，怀疑消息，或块事件接收，对应的 MembershipListener 方法的实现将被调用。
+----
+public interface MembershipListener {
+    void viewAccepted(View new_view);
+    void suspect(Address suspected_mbr);
+    void block();
+    void unblock();
+}
+----
+通常情况回调实现类需要实现 viewAccepted() 方法，当新的成员加入群组，或已存在的成员离开群组或已存在的成员发生异常时通知接收者。当有成员被怀疑（发生异常）时 suspect() 方法被调运。
+
+block() 方法用来通知组成员被阻止发送消息，这个具体是 FLUSH 协议完成的，比如在群组状态转换或视图在初始化过程中调运此方法来阻止成员发送消息。当 block() 方法被调运，所以成员的线程都被阻止发送消息，直到 FLUSH 调运 unblock() 方法来释放这些线程。
+
+unblock() 方法用来通知组成员 FLUSH 协议已经完成，成员可以发送消息。
+
+* Receiver
+----
+public interface Receiver extends MessageListener, MembershipListener {
+}
+----
+Receiver 用来处理接收消息或视图发生变化等，当有消息接收到时 receive() 方法被调运，任何时候当视图发生变化时 viewAccepted() 方法被调运。
+
+* ReceiverAdapter
+这个类实现了 Receiver 接口，所有实现方法为空，应用方法如果想实现回调我们需要继承 ReceiverAdapter，重写相关方法，通常我们实现receive() 方法和 viewAccepted() 方法。ReceiverAdapter 明细如下;
+----
+public class ReceiverAdapter implements Receiver {
+
+	public void receive(Message msg) {
+	}
+
+	public void getState(OutputStream output) throws Exception {
+	}
+
+	public void setState(InputStream input) throws Exception {
+	}
+
+	public void viewAccepted(View view) {
+	}
+
+	public void suspect(Address mbr) {
+	}
+
+	public void block() {
+	}
+
+	public void unblock() {
+	}
+}
+----
+
+* ChannelListener
+----
+public interface ChannelListener {
+
+	void channelConnected(Channel channel);
+
+	void channelDisconnected(Channel channel);
+
+	void channelClosed(Channel channel);
+}
+----
+一个类实现 ChannelListener 可以使用 Channel.addChannelListener（）方法来注册获来获取通道状态的变化信息。当一个通道被关闭，断开或开启，相应的方法会被调用。 
+
+3 Address
+++++++++++
+一个群组中的每个成员都有一个地址，它唯一标识成员。抽象这样的地址的接口是 Address，该地址需要具体的实现比较，排序等相关接口，JGroups的地址必须实现以下接口：
+----
+public interface Address extends Streamable, Comparable<Address>, Externalizable{
+int size();
+} 
+----
+为了序列化及反序列化方便，size() 方法需要返回的地址实现的一个实例序列化形式占用的字节数。不要使用直接实现 Address，Address 作为一个不透明的集群节点的标识符！
+
+实际上 Address 的实现需要依赖底层的通信协议（例如，UDP或TCP），这允许被使用的JGroups为所有可能的各种地址。由于一个地址唯一的标识一个通道，群组中的成员也是通过地址来发送消息到组中其他成员。
+
+Address 的默认实现是 org.jgroups.util.UUID，它唯一标识节点，断开并重新连接到群集时，一个节点被赋予了新的 UUID。UUID 是不会直接显示出来，但通常显示为一个逻辑名称（之后会消息介绍逻辑名称）。这个名字可以通过用户或 JGroups，其唯一的目的是为了使日志输出的更具可读性。UUID 映射到 IP 地址和端口号，这些最终被传输协议用来来发送消息。
+
+4 Message
++++++++++
+
