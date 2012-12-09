@@ -164,4 +164,315 @@ ViewId 是用来唯一标识视图，它包括的视图创建者的地址和一�
 
 image::img/2-2.png[通道主要状态]
 
+当第一次创建一个通道，它是在未连接状态。如果通道在未连接状态执行某些特定方法（如发送/接收消息）会抛出异常。如果有客户端成功连接到通道，通道变为连接状态。在连接状态，通道可以接收/发送消息，同时也会收到通道中成员离开或新成员加入的通知消息。当通道断开，允许其返回到未连接状态。一个连接和未连接的通道都可以被关闭，这样设计也是为了通道的可重利用。当通道处于关闭状态，任何方法尝试操作通道都会抛出异常。当出于连接状态的通通执行关闭操作，首先通道变为未关闭状态，然后到关闭状态。
 
+接下来我们列出所以操作通道的方法，通过这些方法我们可以明细通道状态的变化：
+
+* 创建通道
+我们可以通过通道的构造方法创建一个通道。最被常用的方法如下：
+----
+public JChannel(String props) throws Exception;
+----
+
+props 参数指向一个 XML 文件，该文件定义了通道所使用的协议栈信息。如下为常见代码端：
+----
+JChannel ch = new JChannel("/home/bela/udp.xml");
+----
+
+如果道具参数为null，默认的属性将被使用。如果无法创建通道，将会抛出一个异常。可能的原因包括协议中指定的属性参数，但没有被发现，或错误的协议参数。其他可选的构造方法如下：
+----
+public JChannel() throws Exception
+public JChannel(File properties) throws Exception
+public JChannel(Element properties) throws Exception
+public JChannel(URL properties) throws Exception
+public JChannel(ProtocolStackConfigurator configurator) throws Exception
+public JChannel(JChannel ch) throws Exception 
+----
+
+如下为 XML 文件示例：
+----
+<config xmlns="urn:org:jgroups"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="urn:org:jgroups http://www.jgroups.org/schema/JGroups-3.1.xsd">
+    <UDP
+         mcast_port="${jgroups.udp.mcast_port:45588}"
+         tos="8"
+         ucast_recv_buf_size="20M"
+         ucast_send_buf_size="640K"
+         mcast_recv_buf_size="25M"
+         mcast_send_buf_size="640K"
+         loopback="true"
+         discard_incompatible_packets="true"
+         max_bundle_size="64K"
+         max_bundle_timeout="30"
+         ip_ttl="${jgroups.udp.ip_ttl:8}"
+         enable_bundling="true"
+         enable_diagnostics="true"
+         thread_naming_pattern="cl"
+
+         timer_type="new"
+         timer.min_threads="4"
+         timer.max_threads="10"
+         timer.keep_alive_time="3000"
+         timer.queue_max_size="500"
+
+         thread_pool.enabled="true"
+         thread_pool.min_threads="2"
+         thread_pool.max_threads="8"
+         thread_pool.keep_alive_time="5000"
+         thread_pool.queue_enabled="true"
+         thread_pool.queue_max_size="10000"
+         thread_pool.rejection_policy="discard"
+
+         oob_thread_pool.enabled="true"
+         oob_thread_pool.min_threads="1"
+         oob_thread_pool.max_threads="8"
+         oob_thread_pool.keep_alive_time="5000"
+         oob_thread_pool.queue_enabled="false"
+         oob_thread_pool.queue_max_size="100"
+         oob_thread_pool.rejection_policy="Run"/>
+
+    <PING timeout="2000"
+            num_initial_members="20"/>
+    <MERGE2 max_interval="30000"
+            min_interval="10000"/>
+    <FD_SOCK/>
+    <FD_ALL/>
+    <VERIFY_SUSPECT timeout="1500"  />
+    <BARRIER />
+    <pbcast.NAKACK2 xmit_interval="1000"
+                    xmit_table_num_rows="100"
+                    xmit_table_msgs_per_row="2000"
+                    xmit_table_max_compaction_time="30000"
+                    max_msg_batch_size="500"
+                    use_mcast_xmit="false"
+                    discard_delivered_msgs="true"/>
+    <UNICAST  xmit_interval="2000"
+              xmit_table_num_rows="100"
+              xmit_table_msgs_per_row="2000"
+              xmit_table_max_compaction_time="60000"
+              conn_expiry_timeout="60000"
+              max_msg_batch_size="500"/>
+    <pbcast.STABLE stability_delay="1000" desired_avg_gossip="50000"
+                   max_bytes="4M"/>
+    <pbcast.GMS print_local_addr="true" join_timeout="3000"
+                view_bundling="true"/>
+    <UFC max_credits="2M"
+         min_threshold="0.4"/>
+    <MFC max_credits="2M"
+         min_threshold="0.4"/>
+    <FRAG2 frag_size="60K"  />
+    <RSVP resend_interval="2000" timeout="10000"/>
+    <pbcast.STATE_TRANSFER />
+    <!-- pbcast.FLUSH  /-->
+</config>
+----
+
+如上一个协议栈由<config></config>元素包裹，该元素列出所有协议，从最底部的协议（UDP）到顶部协议（STATE_TRANSFER）。每一个元素定义了一个协议。
+
+每一种协议都由一个Java类实现。当创建基于上述 XML 配置的协议栈，第一个元素（“UDP”）成为最下层的协议，第二个元素被至于元素（“UDP”）之上，类似堆栈协议创建将从底部到顶部。
+
+协议栈中的每一个元素都有一个 Java 类，这些类位于 org.jgroups.protocols 包中。请注意，只有基本名称必须符合，而不是完全指定的类名（UDP，而非 org.jgroups.protocols.UDP）。如果没有找到，协议类的 JGroups 假设给定的名称是一个完全合格的类名，因此将尝试实例化这个类。如果这不起作用抛出一个异常。这使得协议类可以存在于不同的包，例如：一个有效的协议的名称可能是 com.sun.eng.protocols.reliable.UCAST。
+
+每一层可以有零个或多个参数，这些参数在协议名称后括号中括号中以 key/value 的形式指定。在上面的例子中，UDP被配置一些选项，其中之一是IP组播端口（mcast_port）被设置为45588（如果没有使用系统参数 jgroups.udp.mcast_port 指定）。
+
+另为在一个群组中的所有成员必须使用相同的协议栈。
+
+通常情况下，通道是通过传递一个 XML 配置文件的名称给 JChannel（）构造函数来创建。除本声明的配置，JGroups 提供的API以编程方式创建一个通道。以这种方式首先是创建一个 JChannel，然后实例化一个 ProtocolStack，然后添加所有所需的协议到 ProtocolStack，最后调用init（）在堆栈中设置它。如下是一个使用 JGroups API 创建通道的例子：
+----
+ 27 public class ProgrammaticChat {
+ 28 
+ 29         static final String BIND_ADDR = "192.168.1.101" ;
+ 30 
+ 31         public static void main(String[] args) throws Exception {
+ 32 
+ 33                 JChannel channel = new JChannel(false);
+ 34                 ProtocolStack stack = new ProtocolStack();
+ 35                 channel.setProtocolStack(stack);
+ 36 
+ 37                 stack.addProtocols(new UDP().setValue("bind_addr", InetAddress.getByName(BIND_ADDR)))
+ 38                                 .addProtocol(new PING())
+ 39                                 .addProtocol(new MERGE2())
+ 40                                 .addProtocol(new FD_SOCK())
+ 41                                 .addProtocol(new FD_ALL().setValue("timeout", 12000).setValue("interval", 3000))
+ 42                                 .addProtocol(new VERIFY_SUSPECT()).addProtocol(new BARRIER())
+ 43                                 .addProtocol(new NAKACK()).addProtocol(new UNICAST2())
+ 44                                 .addProtocol(new STABLE()).addProtocol(new GMS())
+ 45                                 .addProtocol(new UFC()).addProtocol(new MFC())
+ 46                                 .addProtocol(new FRAG2());
+ 47                 stack.init();
+ 48 
+ 49                 channel.setReceiver(new ReceiverAdapter(){
+ 50 
+ 51                         public void receive(Message msg) {
+ 52                                 Address sender=msg.getSrc();
+ 53                                 System.out.println(msg.getObject() + " [" + sender + "]");
+ 54                         }
+ 55 
+ 56                         public void viewAccepted(View view) {
+ 57                                 System.out.println("view: " + view);
+ 58                         }});
+ 59 
+ 60                 channel.connect("ChatCluster");
+ 61 
+ 62                 for (;;) {
+ 63                         String line = Util.readStringFromStdin(": ");
+ 64                         channel.send(null, line);
+ 65                 }
+ 66 
+ 67         }
+ 68 
+ 69 }
+----
+
+33 行实例化一个通道，并传递一个 false 参数，这表明创建通道不需要实例化协议栈；34 行实例化自定义的协议栈；37-46 行使用 API 添加协议。注意添加的顺序（（由最低层传输协议到最顶层FRAG2），每个协议提供了set/get方法来设定参数，当然也可以使用 setValue(String attr_name, Object value)来设定相关参数的值；47 行所示，当协议栈配置完成，我们通过 ProtocolStack.init() 初始化协议栈；至此由编程的方式创建通道完成。
+
+* 给通道一个逻辑名称
+通道可以指定一个逻辑名称。如果 JGroups 的逻辑名称没有被设置，则会自动生成一个，使用主机名和一个随机数，例如 localhost-35655。逻辑名称设定可以通过如下方法设定：
+----
+public void setName(String logical_name);
+----
+
+设定逻辑名必须要在连接通道之前进行，逻辑名设定后知道通道被销毁一直存在，如下为 JGroups 启动时显示设定的通道逻辑名：
+----
+GMS: address=JBoss Cluster, cluster=JChannelLogicNameTest, physical address=192.168.1.101:47094
+----
+
+如上通道逻辑名为 JBoss Cluster，物理地址为 192.168.1.101:47094
+
+* 自定义地址
+我们可以自定义地址，这意味着，应用程序可以决定它使用什么样的地址。默认地址类型的 UUID，因为一些协议使用的 UUID，可以通过继承 UUID 来自定义自己的地址。这可以用来传递额外的数据通过地址，例如我们可以传递节点位置通过自定义地址。需要注意父类 UUID 中 equals(), hashCode() 及 compare() 则不需要改变。
+
+* 加入到一个群组
+当客户端要加入集群，它连接到一个通道通过要加入群集的名称： 
+----
+public void connect(String cluster) throws Exception;
+----
+
+群集名称是要加入群集的名称。所有通道，调用connect（）具有相同的名称，组成一个集群。集群中的任何通道上发送的消息，所有成员都能够收到。connect（）方法一旦连接成功将会返回。如果通道在关闭状态，调运 connect（）方法将会抛出异常。如果没有其他成员，即没有其他的成员连接到集群使用这个名字，然后一个新的群集创建和加入它作为第一个成员。在群集的第一个成员成为小组的协调员。协调器是负责当群组成员发生变化时安装新的视图。
+
+* 在加入集群时获取一个成员的状态
+客户端还可以加入集群，并在一次操作中获取集群状态。最好的方式来概念化的连接和获取状态的连接方法是把它作为一个常规的connect（）和有getstate（）连续执行的方法。然而，使用的连接，并获取定期连接状态连接方法有几个优点。首先，底层的消息交换是高度优化的，特别是如果使用 FLUSH 协议。但更重要的是，从客户的角度来看，连接和获取状态操作成为一个原子操作。
+----
+public void connect(String cluster, Address target, long timeout) throws Exception;
+----
+就像在一个普通的connect（），群集名称代表要加入集群。target 参数表示要获取状态的集群成员，如果 target 参数为空则表示获取群集中协调者的状态。timeout 参数表示加入群集和获取状态的时间，如果超过此时间则抛出异常。
+
+* 获取本地地址和集群的名称
+方法getAddress（）返回的地址的通道。当通道处于未连接状态时，该连接不可用。
+----
+public Address getAddress();
+----
+
+方法 getClusterName（）方法返回群集的名称。
+----
+public String getClusterName();
+----
+
+* 获取当前群集视图
+使用如下方法可以获取当前状态的视图：
+----
+public View getView();
+----
+
+该方法获得当前通道的视图，视图在当有新成员加入或现有成员离开时发生变化。如果通道出于关闭或未连接状态时调运此方法返回空值。
+
+* 发送消息
+一旦客户连接到通道，我们可以使用下面中的任何一个 send() 方法发送消息：
+----
+public void send(Message msg) throws Exception
+public void send(Address dst, Object obj) throws Exception
+public void send(Address dst, byte[] buf) throws Exception
+public void send(Address dst, byte[] buf, int offset, int length) throws Exception
+----
+
+第一send（）方法只有一个参数，就是要发送的消息。消息的目的地即可以是接收器的地址（单播）或空（多播）。当目标为空，则该消息将被发送到群集中的所有成员（包括其本身）。其它send（）方法即可以发送字节数组也可以发送实现了序列化的对象。如果通道状态为关闭或未连接状态，发送方法或抛出异常。如下：
+----
+channel.send(null, data);
+----
+
+目的地址为空值意味着该消息将被发送到集群中的所有成员。当然我们也可以将消息发送到特定的成员：
+----
+Address receiver = channel.getView().getMembers().get(0);
+channel.send(receiver, "hello world");
+----
+
+如上我们给集群的协调者（视图中的第一个成员）发送 hello world 字符串。
+
+我们可以通过如下方法不给自己发送消息：
+----
+JChannel.setDiscardOwnMessages(boolean flag)
+----
+
+虽然JGroups的担保，消息最终会被送到在所有非故障的成员，有时这可能需要一段时间。例如，如果我们有一个重传协议负责确认，并当发送最后一条消息丢失，那么接收器将不得不等待，直到通知该消息已丢失，然后才可以重发。这是可以通过设置 Message.RSVP 标志：遇到这个标志时，消息发送阻塞，直到所有成员都确认接收消息。这也可作为另一个目的：如果我们发送一个有 RSVP 标记的消息，接着当 send（）方法返回，我们确保所有成员接收消息。请注意，因为 RSVP 消息是昂贵的，可能会阻止发送者一段时间，它应该被谨慎使用。
+
+要使用RSVP，必须做两件事情：
+首先 首先，RSVP 协议要在协议栈的配置中，如下：
+----
+<config>
+<UDP/>
+<PING />
+<FD_ALL/>
+<pbcast.NAKACK use_mcast_xmit="true"
+discard_delivered_msgs="true"/>
+<UNICAST timeout="300,600,1200"/>
+<RSVP />
+<pbcast.STABLE stability_delay="1000" desired_avg_gossip="50000"
+max_bytes="4M"/>
+<pbcast.GMS print_local_addr="true" join_timeout="3000"
+view_bundling="true"/>
+...
+</config>
+----
+
+其次，我们想要得到的同步确认的消息必须有设定 RSVP 标记：
+----
+Message msg=new Message(null, null, "hello world");
+msg.setFlag(Message.RSVP);
+ch.send(msg);
+----
+
+* 接收消息
+通常，重写 ReceiverAdapter（或Receiver）中的 receive() 方法来负责处理接收消息。
+----
+public void receive(Message msg);
+----
+
+接收器可以通过通道使用JChannel.setReceiver（）来注册。所以接收消息，视图状态变化都可以通过重写 ReceiverAdapter（或Receiver）中方法来实现监听。如下代码端：
+----
+ 49                 channel.setReceiver(new ReceiverAdapter(){
+ 50 
+ 51                         public void receive(Message msg) {
+ 52                                 Address sender=msg.getSrc();
+ 53                                 System.out.println(msg.getObject() + " [" + sender + "]");
+ 54                         }
+ 55 
+ 56                         public void viewAccepted(View view) {
+ 57                                 System.out.println("view: " + view);
+ 58                         }});
+----
+
+51 行为重写 ReceiverAdapter receive() 方法，当有消息接收到时，该方法被调运；56 行重写 viewAccepted() 方法，当视图发生改变（有成员加入或退出）时，该方法被调运。
+
+* 获取集群的状态
+新加入的成员在开始工作之前，可能要检索的集群状态。这可以通过 getstate()：
+----
+public void getState(Address target, long timeout) throws Exception;
+----
+此方法返回一个成员（通常是最年长的成员，即协调者）的状态。如果 target 参数为空则表示获取群集中协调者的状态。timeout 参数表示获取状态的时间，如果超过此时间则抛出异常。如果 timeout 参数值设为 0 则表示一直等待直到操作完成。
+// come soon
+
+* 断开通道连接
+断开一个通道是通过使用下面的方法来完成：
+----
+public void disconnect();
+----
+如果通道已经在断开或闭合的状态下，它不会有任何效果。如果连接时，它会离开集群会通过发送离开请求到目前的协调员。后者也将随之从视图中删除离开的节点，并安装一个新的视图中所有剩余的成员。断开连接成功后，该通道将是在未连接的状态下，可能会在日后重新连接。
+
+* 关闭通道
+要关闭释放一个通道实例（销毁相关联的协议栈，并释放所有的资源），使用 close（）方法：
+----
+public void close();
+----
+
+关闭连接的通道，先断开通道。close（）方法使通道出于关闭状态，通道出于关闭状态时没有进一步的操作是允许的。在这种状态下，通道实例不考虑再被任何一个应用程序使用。最终 JVM 垃圾回收器会释放通道使用的内存。
