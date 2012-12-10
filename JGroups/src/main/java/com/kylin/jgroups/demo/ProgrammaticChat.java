@@ -26,7 +26,7 @@ import org.jgroups.util.Util;
 
 public class ProgrammaticChat {
 	
-	static final String BIND_ADDR = "192.168.1.108" ;
+	static final String BIND_ADDR = "192.168.1.101" ;
 
 	public static void main(String[] args) throws Exception {
 
