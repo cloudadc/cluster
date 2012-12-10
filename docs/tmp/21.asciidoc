@@ -455,12 +455,30 @@ public void receive(Message msg);
 51 行为重写 ReceiverAdapter receive() 方法，当有消息接收到时，该方法被调运；56 行重写 viewAccepted() 方法，当视图发生改变（有成员加入或退出）时，该方法被调运。
 
 * 获取集群的状态
+
 新加入的成员在开始工作之前，可能要检索的集群状态。这可以通过 getstate()：
 ----
 public void getState(Address target, long timeout) throws Exception;
 ----
 此方法返回一个成员（通常是最年长的成员，即协调者）的状态。如果 target 参数为空则表示获取群集中协调者的状态。timeout 参数表示获取状态的时间，如果超过此时间则抛出异常。如果 timeout 参数值设为 0 则表示一直等待直到操作完成。
-// come soon
+
+NOTE: getState() 方法没有任何返回。
+
+如果客户端代码需要参与到集群状态的变化，客户端代码需要在 ReceiverAdapter (Receiver) 的 getState() 和 setState() 中做相应的处理。
+----
+public void getState(OutputStream output) throws Exception;
+public void setState(InputStream input) throws Exception;
+----
+
+方法 getState()  作用于状态提供者（协调者），它需要将状态写到输出流，当写操作完成后不能够关闭输出流，如果关闭 JGroups 运行会抛出异常。而方法 setState() 作用于状态请求者，比如客户端代码执行了 JChannel.getState()， 它就是一个状态请求者，它需要从输入流读取当前状态，同样我们不能够关闭输入流，如果关闭 JGroups 运行会出错。
+
+实验-1 为客户端参与群组状态变化的实验，通过此实验我们可以深入理解如何获取群组状态。
+
+另外，如果要使用操作群组状态变化，一些状态变化相关的协议必须添加在协议栈的配置文件中，这些协议可以是 STATE_TRANSFER, STATE, 或 STATE_SOCK。
+
+. STATE_TRANSFER 这是最原始的状态变化协议，底层使用字符缓存，在 getState() 和 setState() 方法中将字符缓存转换成输入流和输出流。
+. STATE JGroups 3.0 后引入，它直接发送状态实例在状态请求者和状态提供者之间。
+. STATE_SOCK 类似上面的协议，只是底层使用了 TCP 协议 
 
 * 断开通道连接
 断开一个通道是通过使用下面的方法来完成：
