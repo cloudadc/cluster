@@ -462,7 +462,7 @@ public void getState(Address target, long timeout) throws Exception;
 ----
 此方法返回一个成员（通常是最年长的成员，即协调者）的状态。如果 target 参数为空则表示获取群集中协调者的状态。timeout 参数表示获取状态的时间，如果超过此时间则抛出异常。如果 timeout 参数值设为 0 则表示一直等待直到操作完成。
 
-NOTE: getState() 方法没有任何返回。
+NOTE: getState() 方法没有任何返回，如果直接返回会破坏通道 FIFO 属性，状态变化将会发生错误。 
 
 如果客户端代码需要参与到集群状态的变化，客户端代码需要在 ReceiverAdapter (Receiver) 的 getState() 和 setState() 中做相应的处理。
 ----
@@ -494,3 +494,25 @@ public void close();
 ----
 
 关闭连接的通道，先断开通道。close（）方法使通道出于关闭状态，通道出于关闭状态时没有进一步的操作是允许的。在这种状态下，通道实例不考虑再被任何一个应用程序使用。最终 JVM 垃圾回收器会释放通道使用的内存。
+
+
+构建快 API
+----------
+构建快位于通道之上，是对通道 API 的更高层面的抽象，如果客户端应用需要更高层抽象接口时可以用来代替通道层 API。通道是是简单的socket结构，构建快可以提供一些更抽象的接口，在某些情况下，构建快提供途径访问底层的通道，这样构建快不需要提供某些功能而通道可以直接被访问。构建快 API 位于在org.jgroups.blocks包中。
+
+MessageDispatcher
++++++++++++++++++
+通道是简单的模式，以异步方式发送和接收消息。然而，一个显着的群组通信模式的特性是同步通信。例如，发送方想将消息发送到组中，等待所有接收方响应。或其应用程序想将消息发送到组中，等待，直到大部分的接收器发送回响应，或直到发生超时。
+
+MessageDispatcher提供阻塞（非阻塞）请求发送和响应的相互通信模式。它提供了同步（和异步）消息发送请求 - 响应的相互通信模式，如匹配一个或多个与原始请求的响应。使用这个类的一个例子是请求消息发送到所有群集成员，阻止，直到所有的响应已经收到，或直到超时已过。
+
+与随后讨论的 RpcDispatcher 相反，MessageDispatcher 发送发送消息及得到相关接收者的响应，而 RpcDispatcher 调用远程方法并等待相关联的响应。RpcDispatcher扩展了 MessageDispatcher，并提供更高级别的抽象。RpcDispatcher 本质上是跨集群来执行远程方法调运。
+
+MessageDispatcher 和 RpcDispatcher 都位于通道之上，因此创建一个实例 MessageDispatcher 需要一个通道作为参数。现在它可以被用来扮演客户端和服务器的双重角色：客户端发送请求和接收响应和服务器接收请求和发送响应，MessageDispatcher 允许一个应用程序在同一时间扮演这两个角色。为了能够提供服务器角色，执行服务器端的逻辑 RequestHandler.handle（）方法被执行：
+----
+Object handle(Message msg) throws Exception;
+----
+每当接收到一个请求的handle（）方法被调用。它必须返回一个值（必须是可序列化的，但不能为空），或者抛出一个异常。返回的值将被发送给请求发送者，同样异常也会传播给请求发送者。
+
+* RequestOptions
+
