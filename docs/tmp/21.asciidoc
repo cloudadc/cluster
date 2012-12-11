@@ -516,3 +516,85 @@ Object handle(Message msg) throws Exception;
 
 * RequestOptions
 
+RequestOptions 用来保存执行运程方法调运的相关参数，使用 MessageDispatcher 发送消息或者通过 RpcDispatcher 调运远程节点成员的方法我们需要 RequestOptions 作为参数传递。RequestOptions 所携带的参数包括：
+
+* 响应模式-觉得调运是否阻塞，如果是，阻塞多长时间，具体模式包括：
+. GET_FIRST 阻塞直到第一个响应接收到
+. GET_ALL 阻塞直到所有响应接收到
+. GET_MAJORITY 阻塞知道大多数成员响应接收到
+. GET_NONE 非阻塞
+
+* 超时时间 单位为毫秒，阻塞的最长时间，如果在这个时间里响应还没有接收到，TimeoutException 会被抛出；如果值为 0，则永远阻塞；如果响应模式为 GET_NONE 此参数无效被忽略
+
+* 使用单播 如果为 true 表示我们将使用单播发送消息而不是发送多播消息
+
+* 结果过滤 此属性用来过滤响应结果，或用户自己定义终止调运。比如，我们想得到 10 个成员的响应，但是当我们接收到 3 个非空的响应后我们就结束调运，在这种情况下我们可以通过此属性完成，稍候我们将做进一步的介绍
+
+* 作用范围 并发消息处理时使用
+
+* 标识符 标识消息，随后会有详细介绍
+
+* 不包括列表 如果我们不想将消息发送给某一个成员，我们可以将他加入此列表。
+
+* *MessageDispatcher 主要方法*
+----
+public <T> RspList<T> castMessage(final Collection<Address> dests, Message msg, RequestOptions options) throws Exception
+public <T> NotifyingFuture<RspList<T>> castMessageWithFuture(final Collection<Address> dests, Message msg, RequestOptions options) throws Exception
+public <T> T sendMessage(Message msg, RequestOptions opts) throws Exception
+public <T> NotifyingFuture<T> sendMessageWithFuture(Message msg, RequestOptions options) throws Exception
+----
+由上之下，castMessage() 方法发送一个消息到一组成员，成员定义在 dests 中，如果 dests 为空则消息发送到当前群组中的所有成员。当然我们可以在消息中定义自己的目的地，如果消息中设定了自己的目的低则此项被重写。如果消息是同步模式（options.mode 定义），则 options.timeout 必须设定一个超时时间等待响应，超时后会抛出异常。castMessage() 返回一个 RspList 对象，该对象包括所有返回的信息，以目的成员地址/返回的键值对的形式保存所以返回。
+
+执行 castMessageWithFuture() 方法立即返回且返回一个 NotifyingFuture 对象，我们可以给此对象注自己的 FutureListener 来处理响应信息。我们将在随后介绍此项用法。
+
+sendMessage() 方法允许应用程序发送单播消息给群组中的某一个成员并等待该成员的响应。使用此方法时，我们必须在消息中定义接收者地址，否则 JGroups 会抛出异常。由于单播消息，响应模式属性可以忽略。
+
+和castMessageWithFuture() 方法一样，sendMessageWithFuture() 方法也立即返回，返回一个 NotifyingFuture 对象，我们可以给此对象注自己的 FutureListener 来处理响应信息。
+
+构建快接口的一个特点的加入容错能力，如果直接使用通道 API，如果远程出错则程序运行发生异常，但是如果使用构建快接口，如果远程调运出错，它同样会有结果返回，只是返回的消息标记为失败。RspList 应用方法处理各种情况：
+----
+public class RspList<T> implements Map<Address,Rsp> {
+  public boolean isReceived(Address sender);
+  public int numSuspectedMembers();
+  public List<T> getResults();
+  public List<Address> getSuspectedMembers();
+  public boolean isSuspected(Address sender);
+  public Object get(Address sender);
+  public int size();
+}
+----
+getResults() 返回所有响应结果，numSuspectedMembers() 为所以失败的节点成员数，get() 返回特定成员的响应，isReceived() 用来检测某一成员的响应是否成功。
+
+* 实验二：使用 MessageDispatcher 构建群组通信
+
+RpcDispatcher
++++++++++++++
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
