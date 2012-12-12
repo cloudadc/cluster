@@ -569,7 +569,17 @@ getResults() 返回所有响应结果，numSuspectedMembers() 为所以失败的
 
 RpcDispatcher
 +++++++++++++
+RpcDispatcher 继承了 MessageDispatcher，它允许程序员调用远程方法，在所有（或单一）的集群成员选择等待的返回响应。应用程序通常会创建一个通道，然后基于该通道创建一个 RpcDispatcher。RpcDispatcher可以用来调用远程方法（客户端角色），并在同一时间可以被其他成员调运（服务器角色）。
 
+相比 MessageDispatcher，RpcDispatcher 没有 handle（）方法需要实现。相反要调用的方法可以直接定义在类上，且使用常规的方法定义（见实验三中例子）。底层使用反射来完成方法调运。要调用远程方法调用（单播和多播）使用下面的方法：
+----
+public <T> RspList<T> callRemoteMethods(Collection<Address> dests, String method_name, Object[] args, Class[] types, RequestOptions options) throws Exception
+public <T> RspList<T> callRemoteMethods(Collection<Address> dests, MethodCall method_call, RequestOptions options) throws Exception
+public <T> NotifyingFuture<RspList<T>> callRemoteMethodsWithFuture(Collection<Address> dests, MethodCall method_call, RequestOptions options) throws Exception
+public <T> T callRemoteMethod(Address dest, String method_name, Object[] args, Class[] types, RequestOptions options) throws Exception
+public <T> T callRemoteMethod(Address dest, MethodCall call, RequestOptions options) throws Exception
+public <T> NotifyingFuture<T> callRemoteMethodWithFuture(Address dest, MethodCall call, RequestOptions options) throws Exception
+-----
 
 
 

@@ -1,0 +1,80 @@
+实验一：使用 MessageDispatcher 发送消息到集群所有成员并等待响应
+----------------------------------------------------------------
+实验目的：使用 MessageDispatcher 发送消息到集群所有成员并等待响应，验证 GET_ALL 响应模式，超时时间等属性
+
+实验描述：本实验集群中有三个成员： node1，node2，node3，node1 为协调者（第一个加入集群）负责集群视图的更新，三个节点都是做相同的事情，向集群中所有节点发送十条连续的消息：
+----
+ 47                 channel = new JChannel(props);
+ 48                 if(null != name) {
+ 49                         channel.setName(name);
+ 50                 }
+ 51                 handler = new MyRequestHandler(channel);
+ 52                 messageListener = new MyMessageListener();
+ 53                 membershipListener = new MyMembershipListener();
+ 54 
+ 55                 disp = new MessageDispatcher(channel, messageListener, membershipListener, handler);
+ 56                 channel.connect("MessageDispatcherTestGroup");
+ 57 
+ 58                 for(int i = 0 ; i < 10 ; i ++) {
+ 59                         Util.sleep(100);
+ 60                         logger.info("Casting message #" + i);
+ 61                         Message message = new Message(null, null, new String("Number #" + i));
+ 62                         rsp_list = disp.castMessage(null, message, new RequestOptions().setMode(ResponseMode.GET_ALL).setTimeout(0));
+ 63 
+ 64                         logger.info(channel.getName() + " Responses:");
+ 65 
+ 66                         List list = rsp_list.getResults();
+ 67                         for(Object obj : list) {
+ 68                                 System.out.println("  " + obj);
+ 69                         }
+ 70                         System.out.println();
+ 71                 }
+----
+55-56 行实例化一个 MessageDispatcher，我们可以看到，构建快接口是基于通道之上，是对通道的更高层抽象，所以创建 MessageDispatcher 时需要传递一个实例化的通道（channel），MessageDispatcher 实例化后通道开始连接到群组；61-62 行创建一个消息，通过 castMessage（）方法将消息发送到群组，注意，目的地址为空，所以消息接收者为群组所有成员，响应模式为 GET_ALL，所以发送者等待所有成员响应后 castMessage（）方法返回，超时时间为 0，即一直等待；66-69 行打印输出所有返回信息。
+
+如下面代码所示：
+----
+ 19         public Object handle(Message msg) throws Exception {
+ 20 
+ 21                 logger.info("Handle Message");
+ 22                 logger.info("Message received, " + "** Message: " + msg + ", message content: [" + new String(msg.getBuffer()) + "]");
+ 23                 logger.info("Message Object: " + msg.getObject());
+ 24                 logger.info("Handle Message End");
+ 25 
+ 26                 return channel.getName() + "-" + msg.getObject();
+ 27         }
+----
+如上，群组中各个成员接收到消息后，日志记录收到消息后，将收到消息添加自己逻辑名称作为前缀后返回。
+
+
+实验步骤：
+* 确保 JGroups-stu.jar，jgroups-3.1.0.Final.jar，log4j-1.2.16.jar 存在，执行如下 Maven 命令可以生成这些 jar 包
+----
+mvn clean dependency:copy-dependencies install
+---- 
+
+* 启动 4 个命令行窗口，分别执行如下命令
+----
+java -cp JGroups-stu.jar:jgroups-3.1.0.Final.jar:log4j-1.2.16.jar  -Djava.net.preferIPv4Stack=true com.kylin.jgroups.blocks.MessageDispatcherTest -n node1
+java -cp JGroups-stu.jar:jgroups-3.1.0.Final.jar:log4j-1.2.16.jar  -Djava.net.preferIPv4Stack=true com.kylin.jgroups.blocks.MessageDispatcherTest -n node2
+java -cp JGroups-stu.jar:jgroups-3.1.0.Final.jar:log4j-1.2.16.jar  -Djava.net.preferIPv4Stack=true com.kylin.jgroups.blocks.MessageDispatcherTest -n node3
+----
+
+* 运行结果:
+
+依次启动 node1,node2,node3 后 node3 节点有如下信息输出：
+----
+21:06:52,544 INFO  [MessageDispatcherTest] node3 Responses:
+  node2-Number #9
+  node3-Number #9
+  node1-Number #9
+----
+
+node1 节点如下日志输出：
+----
+21:06:52,542 INFO  [MyRequestHandler] Handle Message
+21:06:52,542 INFO  [MyRequestHandler] Message received, ** Message: [dst: <null>, src: node3 (3 headers), size=10 bytes], message content: [umber #9]
+21:06:52,542 INFO  [MyRequestHandler] Message Object: Number #9
+21:06:52,542 INFO  [MyRequestHandler] Handle Message End
+----
+如上 node3 打印输出的响应消息包括所有成员的响应消息，node1 返回响应时间戳是在 node3 打印响应消息之前。

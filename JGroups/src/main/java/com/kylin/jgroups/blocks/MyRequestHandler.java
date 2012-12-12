@@ -18,10 +18,10 @@ public class MyRequestHandler implements RequestHandler {
 
 	public Object handle(Message msg) throws Exception {
 		
-		logger.debug("Handle Message");
-		logger.debug("Message received, " + "** Message: " + msg + ", message content: [" + new String(msg.getBuffer()) + "]");
-		logger.debug("Message Object: " + msg.getObject());
-		logger.debug("Handle Message End");
+		logger.info("Handle Message");
+		logger.info("Message received, " + "** Message: " + msg + ", message content: [" + new String(msg.getBuffer()) + "]");
+		logger.info("Message Object: " + msg.getObject());
+		logger.info("Handle Message End");
 		
 		return channel.getName() + "-" + msg.getObject();
 	}
