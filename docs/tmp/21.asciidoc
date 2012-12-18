@@ -580,14 +580,58 @@ public <T> T callRemoteMethod(Address dest, String method_name, Object[] args, C
 public <T> T callRemoteMethod(Address dest, MethodCall call, RequestOptions options) throws Exception
 public <T> NotifyingFuture<T> callRemoteMethodWithFuture(Address dest, MethodCall call, RequestOptions options) throws Exception
 -----
+callRemoteMethods（）方法参数 dests 指的是接收地址的列表。如果为null，所有的集群成员（包括发送者自己）的方法都被调运，该方法通常还包括一个字符串形的变量表示要调运的运程方法的名字和 RequestOptions （如前面所描述，用来指定包括响应模式，超时时间，是否单播调运等）。调运远程方法底层实现是 Java 反射技术，所以 callRemoteMethods（）方法除了将远程方法名作为参数外，还需要传递远程方法的参数类型和参数值。JGroups 提供了 MethodCall 对象，用来封装反射调运所需要的方法名，方法参数及方法参数类型。和 MessageDispatcher 定义的方法类似，callRemoteMethods（）可返回一个 RspList 对象或 NotifyingFuture 对象。RspList 包括所有成员的响应结果，包括出错异常（如果调运某一成员方法时发生异常，则返回异常）。NotifyingFuture 可用来注册 FutureListener 异步处理响应信息。
+
+callRemoteMethod() 方法和 callRemoteMethods（）方法相似，只是接收者为唯一的地址，该方法用来一对一发送消息。该方法的可以返回任意类型（与远程方法返回结果相同），同意也可以异步调运返回 NotifyingFuture 对象。
+
+* 实验三：使用 RpcDispatcher 进行远程方法调运:
 
 
+使用构建快 API 进行异步调运
++++++++++++++++++++++++++++
 
+当调用一个同步调用，调用线程被阻塞，直到响应收到为止。Future 对象允许方法调运立即返回，异步处理响应结果。如前面所描述 MessageDispatcher 和 RpcDispatcher 都提供了异步调运的方法，这些方法都会返回一个  NotifyingFuture 对象，我们可以给此对象注自己的 FutureListener 来处理响应信息。
 
+* NotifyingFuture
 
+NotifyingFuture 接口继承了 java.util.concurrent.Future，提供了异步调运相关的方法，如 isDone()，isCancelled()，get()等，如下：
+----
+public interface NotifyingFuture<T> extends Future<T> {
+    NotifyingFuture setListener(FutureListener<T> listener);
+}
+----
+setListener()方法用来注册监听器，处理响应结果。
 
+* FutureListener
 
+----
+public interface FutureListener<T> {
+    void futureDone(Future<T> future);
+}
+----
+如上 FutureListener 接口定义了一个方法，当远程响应给方法被调运，我们只需要实现此方法来异步处理响应结果，Future 对象 get() 方法可以返回 RspList 对象。
 
+* 实验四： 使用构建快 API 进行异步调运
+
+返回过滤策略
+++++++++++++
+响应过滤器允许应用程序代码挂接到接收群集成员的响应，可以让请求 - 响应的执行和相关代码知道响应是可以接受的，是否需要更多的答复，或是否调用（如果阻塞）可以返回。 RspFilter 接口如下所示：
+----
+public interface RspFilter {
+    boolean isAcceptable(Object response, Address sender);
+    boolean needMoreResponses();
+}
+----
+isAcceptable（）方法参数包括响应值和响应的发送者，并需要决定响应发送者是否添加到响应列表，响应发送者添加到响应列表返回true，否则返回false。 needMoreResponses（）方法判断是否调用是否返回。
+
+* 实验五： 使用 RspFilter 完成响应过滤
+
+ReplicatedHashMap 与 ReplCache
+++++++++++++++++++++++++++++++
+
+JGroups 包中的 ReplicatedHashMap 与 ReplCache 位于 org.jgroups.blocks 包中，这两个类都是基于底层通道 API 来实现共享缓存的方案，具体前者在所有节点上共享资源，而后者是在指定个数的节点上共享资源。资源以键值对的方式保存在共享的缓存中，两个类都提供了 get(),put()等方法，集群中成员可以通过这些方法改变缓存。特别 ReplCache 提供分布式缓存相关的特性，它提供类似 put(K,V,R) 的方法，该方法中 R 表示 键值对资源在集群中保存几份，如果为 2 表示在集群中复制两份。
+
+注意：ReplicatedHashMap 与 ReplCache 没有经过测试，不能用于生产环境，但随后我们要说的 JBoss Cache 及 Infinispan 的设计很大程度上沿用了此思路。
 
 
 

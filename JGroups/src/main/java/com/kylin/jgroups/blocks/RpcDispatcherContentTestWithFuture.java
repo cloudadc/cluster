@@ -13,6 +13,16 @@ import org.jgroups.util.NotifyingFuture;
 import org.jgroups.util.RspList;
 import org.jgroups.util.Util;
 
+/**
+ * 
+ * @author kylin
+ * 
+ * Run
+ *   java -cp JGroups-stu.jar:jgroups-3.1.0.Final.jar:log4j-1.2.16.jar  -Djava.net.preferIPv4Stack=true com.kylin.jgroups.blocks.RpcDispatcherContentTestWithFuture -n node1
+ *   java -cp JGroups-stu.jar:jgroups-3.1.0.Final.jar:log4j-1.2.16.jar  -Djava.net.preferIPv4Stack=true com.kylin.jgroups.blocks.RpcDispatcherContentTestWithFuture -n node2
+ *   java -cp JGroups-stu.jar:jgroups-3.1.0.Final.jar:log4j-1.2.16.jar  -Djava.net.preferIPv4Stack=true com.kylin.jgroups.blocks.RpcDispatcherContentTestWithFuture -n node3
+ *
+ */
 public class RpcDispatcherContentTestWithFuture {
 
 private static final Logger logger = Logger.getLogger(RpcDispatcherContentTestWithFuture.class);

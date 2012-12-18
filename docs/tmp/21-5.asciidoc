@@ -1,0 +1,69 @@
+实验五：使用 RspFilter 完成响应过滤
+-----------------------------------
+
+实验目的：使用 RspFilter 完成响应过滤，定义自己的 RspFilter 对响应进行过滤。
+
+实验描述：本实验集群中有三个成员： node1，node2，node3，node1 为协调者（第一个加入集群）负责集群视图的更新，类似实验三，我们同样调运远程节点的方法，同样我们循环调运远程方法 10 次，每次调运传递一个 Content 对象，Content 的 id 属性来唯一标识每次调运，但与实现三不同的是我们对响应做了过滤，当 Content 的 id 为奇数时不将响应添加到响应列表，为偶数时和之前处理，MyRspFilter 来完成此逻辑：
+----
+ 11         public boolean isAcceptable(Object response, Address sender) {
+ 12                 logger.info("isAcceptable(), response: " + response + ", sender: " + sender);
+ 13                 Content c = (Content) response;
+ 14                 return c.getId() % 2 == 0;
+ 15         }
+ 16 
+ 17         public boolean needMoreResponses() {
+ 18                 logger.info("set needMoreResponses valuse is true");
+ 19                 return true;
+ 20         }
+----
+
+如上 14 行来控制是否将响应结果添加到响应列表，如果 Content  的 id 为奇数不添加，否则添加。19 行返回 true 表示需要更多返回。如下为示例相关的主要代码：
+----
+ 45                 messageListener = new MyMessageListener();
+ 46                 membershipListener = new MyMembershipListener();
+ 47                 rpcMethods = new RpcMethods(channel);
+ 48                 disp = new RpcDispatcher(channel, messageListener, membershipListener, rpcMethods);
+ 49                 channel.connect("RpcDispatcherContentTestGroup");
+ 50 
+ 51                 RequestOptions requestOptions = new RequestOptions(ResponseMode.GET_ALL, 0, false, new MyRspFilter());
+ 52 
+ 53                 for(int i = 0 ; i < 10 ; i ++) {
+ 54                         Util.sleep(1000);
+ 55                         String viewId = null;
+ 56                         if(null != channel.getView()) {
+ 57                                 viewId = channel.getView().getViewId().toString();
+ 58                         }
+ 59                         Content content = new Content(i, channel.getName(), viewId);
+ 60                         MethodCall call = new MethodCall("updateContent", new Object[]{content}, new Class[]{Content.class});
+ 61                         logger.info("Call all group members updatecontent method: " + content);
+ 62                         rsp_list = disp.callRemoteMethods(null, call, requestOptions);
+ 63 
+ 64                         showRspList(rsp_list);
+ 65                 }
+----
+
+如上我们通过 RpcDispatcher 提供的 callRemoteMethods() 方法调运远程方法，51 行将 MyRspFilter 添加到 RequestOptions；59 行实例化 Content 对象；62-65 调运运程方法并打印输出结果
+
+实验步骤：
+* 确保 JGroups-stu.jar，jgroups-3.1.0.Final.jar，log4j-1.2.16.jar 存在，执行如下 Maven 命令可以生成这些 jar 包
+----
+mvn clean dependency:copy-dependencies install
+---- 
+
+* 启动 3 个命令行窗口，分别执行如下命令
+----
+java -cp JGroups-stu.jar:jgroups-3.1.0.Final.jar:log4j-1.2.16.jar  -Djava.net.preferIPv4Stack=true com.kylin.jgroups.blocks.RpcDispatcherContentTestWithRspFilter -n node1
+java -cp JGroups-stu.jar:jgroups-3.1.0.Final.jar:log4j-1.2.16.jar  -Djava.net.preferIPv4Stack=true com.kylin.jgroups.blocks.RpcDispatcherContentTestWithRspFilter -n node2
+java -cp JGroups-stu.jar:jgroups-3.1.0.Final.jar:log4j-1.2.16.jar  -Djava.net.preferIPv4Stack=true com.kylin.jgroups.blocks.RpcDispatcherContentTestWithRspFilter -n node3
+----
+
+* 运行结果:
+
+依次启动 node1,node2,node3，各个节点打印出的返回 Content 对象 id 属性都为偶数，如下为 node3 输出的信息
+----
+14:55:14,220 INFO  [RpcDispatcherContentTestWithRspFilter] node3 Responses:
+  Content [id=8, name=node3-node1, viewId=[node1|2]-[node1|2]]
+  Content [id=8, name=node3-node3, viewId=[node1|2]-[node1|2]]
+  Content [id=8, name=node3-node2, viewId=[node1|2]-[node1|2]]
+----	
+

@@ -15,13 +15,9 @@ public class RpcMethods {
 	}
 
 	public Content updateContent(Content c) {
-		
 		logger.info("Content before update: " + c);
-		
 		c.setName(c.getName() + "-" + channel.getName()).setViewId(c.getViewId() + "-" +channel.getView().getViewId());
-		
 		logger.info("Content after update: " + c);
-		
 		return c ;
 	}
 }

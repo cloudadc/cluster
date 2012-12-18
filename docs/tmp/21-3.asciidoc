@@ -1,0 +1,74 @@
+实验三：使用 RpcDispatcher 进行远程方法调运
+-------------------------------------------
+
+实验目的：使用 RpcDispatcher 提供的 callRemoteMethods() 方法调运集群中所有成员的方法，验证返回的 RspList 对象中远程方法返回的结果。
+
+实验描述：本实验集群中有三个成员： node1，node2，node3，node1 为协调者（第一个加入集群）负责集群视图的更新，每个节点有一个 RpcMethods 对象，该对象定义了一个 updateContent() 方法，该方法有一个参数，参数类型为 Content 对象：
+----
+ 17         public Content updateContent(Content c) {
+ 18                 logger.info("Content before update: " + c);
+ 19                 c.setName(c.getName() + "-" + channel.getName()).setViewId(c.getViewId() + "-" +channel.getView().getViewId());
+ 20                 logger.info("Content after update: " + c);
+ 21                 return c ;
+ 22         }
+----
+
+如 19 行所示，我们将节点的逻辑名称设为 Content 对象的名称，日志记录后，将 Content 对象返回。每个节点连续调运远程方法十次，使用 id 来标识每次调运，结果返回被依次输出:
+----
+ 43                 messageListener = new MyMessageListener();
+ 44                 membershipListener = new MyMembershipListener();
+ 45                 rpcMethods = new RpcMethods(channel);
+ 46                 disp = new RpcDispatcher(channel, messageListener, membershipListener, rpcMethods);
+ 47                 channel.connect("RpcDispatcherContentTestGroup");
+ 48 
+ 49                 RequestOptions requestOptions = new RequestOptions(ResponseMode.GET_ALL, 0);
+ 50 
+ 51                 for(int i = 0 ; i < 10 ; i ++) {
+ 52                         Util.sleep(1000);
+ 53                         String viewId = null;
+ 54                         if(null != channel.getView()) {
+ 55                                 viewId = channel.getView().getViewId().toString();
+ 56                         }
+ 57                         Content content = new Content(i, channel.getName(), viewId);
+ 58                         MethodCall call = new MethodCall("updateContent", new Object[]{content}, new Class[]{Content.class});
+ 59                         logger.info("Call all group members updatecontent method: " + content);
+ 60                         rsp_list = disp.callRemoteMethods(null, call, requestOptions);
+ 61 
+ 62                         showRspList(rsp_list);
+ 63                 }
+----
+46 行实例化一个 RpcDispatcher，构建快接口是基于通道之上，是对通道的更高层抽象，所以创建 RpcDispatcher 时需要传递一个实例化的通道（channel）作为参数，另外 实例化 RpcDispatcher 是也指定了远程调运方法的类名；51-60 连续进行 10 次远程方法调运，每次调运之前实例化 Content 对象作为参数。
+
+
+实验步骤：
+* 确保 JGroups-stu.jar，jgroups-3.1.0.Final.jar，log4j-1.2.16.jar 存在，执行如下 Maven 命令可以生成这些 jar 包
+----
+mvn clean dependency:copy-dependencies install
+---- 
+
+* 启动 3 个命令行窗口，分别执行如下命令
+----
+java -cp JGroups-stu.jar:jgroups-3.1.0.Final.jar:log4j-1.2.16.jar  -Djava.net.preferIPv4Stack=true com.kylin.jgroups.blocks.RpcDispatcherContentTest -n node1
+java -cp JGroups-stu.jar:jgroups-3.1.0.Final.jar:log4j-1.2.16.jar  -Djava.net.preferIPv4Stack=true com.kylin.jgroups.blocks.RpcDispatcherContentTest -n node2
+java -cp JGroups-stu.jar:jgroups-3.1.0.Final.jar:log4j-1.2.16.jar  -Djava.net.preferIPv4Stack=true com.kylin.jgroups.blocks.RpcDispatcherContentTest -n node3
+----
+
+* 运行结果:
+
+依次启动 node1,node2,node3 后 node3 节点有如下信息输出：
+----
+11:36:46,677 INFO  [RpcDispatcherContentTest] Call all group members updatecontent method: Content [id=9, name=node3, viewId=[node1|2]]
+11:36:46,679 INFO  [RpcMethods] Content before update: Content [id=9, name=node3, viewId=[node1|2]]
+11:36:46,679 INFO  [RpcMethods] Content after update: Content [id=9, name=node3-node3, viewId=[node1|2]-[node1|2]]
+11:36:46,716 INFO  [RpcDispatcherContentTest] node3 Responses:
+  Content [id=9, name=node3-node3, viewId=[node1|2]-[node1|2]]
+  Content [id=9, name=node3-node2, viewId=[node1|2]-[node1|2]]
+  Content [id=9, name=node3-node1, viewId=[node1|2]-[node1|2]]
+----
+
+node1 节点如下日志输出：
+----
+11:36:46,710 INFO  [RpcMethods] Content before update: Content [id=9, name=node3, viewId=[node1|2]]
+11:36:46,710 INFO  [RpcMethods] Content after update: Content [id=9, name=node3-node1, viewId=[node1|2]-[node1|2]]
+----
+如上 node3 打印输出的响应消息包括所有成员的响应消息，node1 返回响应时间戳是在 node3 打印响应消息之前。

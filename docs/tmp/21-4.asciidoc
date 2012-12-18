@@ -1,0 +1,83 @@
+实验四：使用构建快 API 进行异步调运
+-----------------------------------
+
+实验目的：使用构建快 API 进行异步调运，定义自己的 FutureListener 来处理异步响应结果。
+
+实验描述：本实验集群中有三个成员： node1，node2，node3，node1 为协调者（第一个加入集群）负责集群视图的更新，类似实验三，我们同样调运远程节点的方法，同样我们循环调运远程方法 10 次，MyFutureListener 实现了 FutureListener，用来异步处理响应结果：
+----
+  9 public class MyFutureListener implements FutureListener<RspList<Content>> {
+ 10 
+ 11         public void futureDone(Future<RspList<Content>> future) {
+ 12 
+ 13                 try {
+ 14                         RspList<Content> list = future.get();
+ 15                         for(Content c : list.getResults()) {
+ 16                                 System.out.println("   " + c);
+ 17                         }
+ 18                         System.out.println();
+ 19                 } catch (InterruptedException e) {
+ 20                         e.printStackTrace();
+ 21                 } catch (ExecutionException e) {
+ 22                         e.printStackTrace();
+ 23                 }
+ 24         }
+ 25 }
+----
+
+如上 14 行，我们得到 RspList 对象将结果输出。如下为进行异步调运代码：
+----
+ 43                 for(int i = 0 ; i < 10 ; i ++) {
+ 44                         String viewId = null;
+ 45                         if(null != channel.getView()) {
+ 46                                 viewId = channel.getView().getViewId().toString();
+ 47                         }
+ 48                         Content content = new Content(i, channel.getName(), viewId);
+ 49                         MethodCall call = new MethodCall("updateContent", new Object[]{content}, new Class[]{Content.class});
+ 50                         logger.info("Call all group members updatecontent method: " + content);
+ 51 
+ 52                         NotifyingFuture<RspList<Content>> future = disp.callRemoteMethodsWithFuture(null, call, requestOptions);
+ 53 
+ 54                         Util.sleep(1000);
+ 55 
+ 56                         logger.info(channel.getName() + " Responses:");
+ 57 
+ 58                         future.setListener(new MyFutureListener());
+ 59                 }
+----
+
+如上我们通过 RpcDispatcher 提供的 callRemoteMethodsWithFuture() 方法实现异步调运，52 行接收者列表为空表示群组中所以成员都会被调运；58 行设定自定义的 MyFutureListener 来异步处理调运的返回。
+
+实验步骤：
+* 确保 JGroups-stu.jar，jgroups-3.1.0.Final.jar，log4j-1.2.16.jar 存在，执行如下 Maven 命令可以生成这些 jar 包
+----
+mvn clean dependency:copy-dependencies install
+---- 
+
+* 启动 3 个命令行窗口，分别执行如下命令
+----
+java -cp JGroups-stu.jar:jgroups-3.1.0.Final.jar:log4j-1.2.16.jar  -Djava.net.preferIPv4Stack=true com.kylin.jgroups.blocks.RpcDispatcherContentTestWithFuture -n node1
+java -cp JGroups-stu.jar:jgroups-3.1.0.Final.jar:log4j-1.2.16.jar  -Djava.net.preferIPv4Stack=true com.kylin.jgroups.blocks.RpcDispatcherContentTestWithFuture -n node2
+java -cp JGroups-stu.jar:jgroups-3.1.0.Final.jar:log4j-1.2.16.jar  -Djava.net.preferIPv4Stack=true com.kylin.jgroups.blocks.RpcDispatcherContentTestWithFuture -n node3
+----
+
+* 运行结果:
+
+依次启动 node1,node2,node3 后 node3 节点有如下信息输出：
+----
+14:26:31,676 INFO  [RpcDispatcherContentTestWithFuture] Call all group members updatecontent method: Content [id=9, name=node3, viewId=[node1|2]]
+14:26:31,678 INFO  [RpcMethods] Content before update: Content [id=9, name=node3, viewId=[node1|2]]
+14:26:31,678 INFO  [RpcMethods] Content after update: Content [id=9, name=node3-node3, viewId=[node1|2]-[node1|2]]
+14:26:32,677 INFO  [RpcDispatcherContentTestWithFuture] node3 Responses:
+   Content [id=9, name=node3-node3, viewId=[node1|2]-[node1|2]]
+   Content [id=9, name=node3-node1, viewId=[node1|2]-[node1|2]]
+   Content [id=9, name=node3-node2, viewId=[node1|2]-[node1|2]]
+----	
+
+node1 节点如下日志输出：
+----
+14:26:31,709 INFO  [RpcMethods] Content before update: Content [id=9, name=node3, viewId=[node1|2]]
+14:26:31,709 INFO  [RpcMethods] Content after update: Content [id=9, name=node3-node2, viewId=[node1|2]-[node1|2]]
+----
+如上 node3 打印输出的响应消息包括所有成员的响应消息，node1 记录显示 updatecontent() 方法被调运。
+
+

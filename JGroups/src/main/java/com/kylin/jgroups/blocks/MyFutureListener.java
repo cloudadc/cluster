@@ -6,6 +6,11 @@ import java.util.concurrent.Future;
 import org.jgroups.util.FutureListener;
 import org.jgroups.util.RspList;
 
+/**
+ * 
+ * @author kylin
+ *
+ */
 public class MyFutureListener implements FutureListener<RspList<Content>> {
 
 	public void futureDone(Future<RspList<Content>> future) {
@@ -22,7 +27,4 @@ public class MyFutureListener implements FutureListener<RspList<Content>> {
 			e.printStackTrace();
 		}
 	}
-
-	
-
 }
