@@ -1,8 +1,10 @@
 实验一：使用 MessageDispatcher 发送消息到集群所有成员并等待响应
 ----------------------------------------------------------------
+
 实验目的：使用 MessageDispatcher 发送消息到集群所有成员并等待响应，验证 GET_ALL 响应模式，超时时间等属性
 
 实验描述：本实验集群中有三个成员： node1，node2，node3，node1 为协调者（第一个加入集群）负责集群视图的更新，三个节点都是做相同的事情，向集群中所有节点发送十条连续的消息：
+
 ----
  47                 channel = new JChannel(props);
  48                 if(null != name) {
@@ -33,6 +35,7 @@
 55-56 行实例化一个 MessageDispatcher，我们可以看到，构建快接口是基于通道之上，是对通道的更高层抽象，所以创建 MessageDispatcher 时需要传递一个实例化的通道（channel），MessageDispatcher 实例化后通道开始连接到群组；61-62 行创建一个消息，通过 castMessage（）方法将消息发送到群组，注意，目的地址为空，所以消息接收者为群组所有成员，响应模式为 GET_ALL，所以发送者等待所有成员响应后 castMessage（）方法返回，超时时间为 0，即一直等待；66-69 行打印输出所有返回信息。
 
 如下面代码所示：
+
 ----
  19         public Object handle(Message msg) throws Exception {
  20 
