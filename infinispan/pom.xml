@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.kylin.infinispan</groupId>
-    <artifactId>parent</artifactId>
+    <artifactId>infinispan-stu-parent</artifactId>
     <version>1.0</version>
     <packaging>pom</packaging>
     <name>Parent for Infinispan Test project</name>
@@ -22,6 +22,7 @@
         <module>embedded-cache</module>
 	<module>api-stu</module>
 	<module>helloworld</module>
+	<module>hotrod</module>
     </modules>
 
 </project>

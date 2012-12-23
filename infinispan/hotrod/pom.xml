@@ -2,11 +2,11 @@
    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
    <modelVersion>4.0.0</modelVersion>
    <groupId>com.kylin.infinispan</groupId>
-   <artifactId>infinispan-stu-helloworld</artifactId>
+   <artifactId>infinispan-stu-hotrod-java</artifactId>
    <version>1.0</version>
 
-   <name>Infinispan HelloWorld</name>
-   <description>Infinispan HelloWorld</description>
+   <name>Infinispan Hot Rod</name>
+   <description>Infinispan Hot Rod</description>
 
    <url>https://github.com/kylinsoong</url>
 

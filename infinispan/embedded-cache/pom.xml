@@ -2,7 +2,7 @@
    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
    <modelVersion>4.0.0</modelVersion>
    <groupId>com.kylin.infinispan</groupId>
-   <artifactId>infinispan-embedded-cache</artifactId>
+   <artifactId>infinispan-stu-embedded-cache</artifactId>
    <version>1.0</version>
 
    <name>Infinispan Embedded Cache Test</name>
@@ -13,7 +13,7 @@
    <properties>
       <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-      <infinispan.version>5.2.0.Beta1</infinispan.version>
+      <infinispan.version>5.2.0.Beta6</infinispan.version>
    </properties>
 
    <dependencies>
