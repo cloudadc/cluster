@@ -1,0 +1,15 @@
+JBoss CacheManager 服务
+-----------------------
+
+In JBoss Enterprise Application Platform 5, the scattered cache deployments have been replaced with
+a new CacheManager service, deployed via the $JBOSS_HOME/server/production/deploy/
+cluster/jboss-cache-manager.sar. The CacheManager is a factory and registry for JBoss
+Cache instances. It is configured with a set of named JBoss Cache configurations. Services that need
+a cache ask the cache manager for the cache by name; the cache manager creates the cache (if not
+already created) and returns it. The cache manager keeps a reference to each cache it has created,
+so all services that request the same cache configuration name will share the same cache. When a
+service is done with the cache, it releases it to the cache manager. The cache manager keeps track of
+how many services are using each cache, and will stop and destroy the cache when all services have
+released it.
+
+

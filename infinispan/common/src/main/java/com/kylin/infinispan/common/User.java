@@ -23,24 +23,27 @@ public class User implements Serializable {
 		return id;
 	}
 
-	public void setId(int id) {
+	public User setId(int id) {
 		this.id = id;
+		return this;
 	}
 
 	public String getName() {
 		return name;
 	}
 
-	public void setName(String name) {
+	public User setName(String name) {
 		this.name = name;
+		return this;
 	}
 
 	public String getCareer() {
 		return career;
 	}
 
-	public void setCareer(String career) {
+	public User setCareer(String career) {
 		this.career = career;
+		return this;
 	}
 
 	public String toString() {

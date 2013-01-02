@@ -1,0 +1,12 @@
+实验一：启动 Infinispan 构建数据网格
+
+1. 通过以下命令生成多个本地地址
+   ifconfig lo:1 127.0.0.2 netmask 255.0.0.0
+   ifconfig lo:2 127.0.0.3 netmask 255.0.0.0
+
+2. 启动多个 Infinispan 节点
+   ./startServer.sh -r hotrod -l 127.0.0.1
+   ./startServer.sh -r hotrod -l 127.0.0.2
+   ./startServer.sh -r hotrod -l 127.0.0.3
+
+

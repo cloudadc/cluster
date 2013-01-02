@@ -10,11 +10,10 @@ import org.infinispan.client.hotrod.RemoteCacheManager;
 import com.kylin.infinispan.common.User;
 import com.kylin.infinispan.common.Util;
 
-
-public class BasicAPITest {
+public class UnsupportedMethodTest {
 
 	public static void main(String[] args) throws IOException {
-		
+
 		InputStream in = BasicAPITest.class.getClassLoader().getResourceAsStream("hotrod-client.properties");
 		Properties props = new Properties();
 		props.load(in);
@@ -24,10 +23,8 @@ public class BasicAPITest {
 		RemoteCache<Object, Object> cache = cacheManager.getCache();
 		Object value = new User(1, "Kylin Soong", "IT");
 		cache.put("key", value);
-		Util.println(cache.get("key"));
-		cache.remove("key");
 		
-		Util.println("DONE");
+		cache.remove("key", value);
 	}
 
 }
