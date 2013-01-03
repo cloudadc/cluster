@@ -21,9 +21,10 @@
         <module>common</module>
         <module>clustered-cache</module>
         <module>embedded-cache</module>
-	<module>api-stu</module>
+	<module>api</module>
 	<module>helloworld</module>
 	<module>hotrod</module>
+	<module>dg</module>
     </modules>
 
 </project>
