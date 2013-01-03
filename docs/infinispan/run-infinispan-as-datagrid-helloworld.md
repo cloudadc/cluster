@@ -69,6 +69,7 @@ NOTE: Entries expire and simply disappear after 60 seconds from last update.
 To access predefined servlets and directly store/retrieve a key in the cache, access the following URLs:
 
 <http://localhost:8080/infinispan-stu-dg-helloworld/TestServletPut>
+
 <http://localhost:8230/infinispan-stu-dg-helloworld/TestServletGet>  (note the different port 8230)
 
 
