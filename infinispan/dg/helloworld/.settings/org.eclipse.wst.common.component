@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-modules id="moduleCoreId" project-version="1.5.0">
+    <wb-module deploy-name="infinispan-stu-dg-helloworld">
+        <wb-resource deploy-path="/" source-path="/target/m2e-wtp/web-resources"/>
+        <wb-resource deploy-path="/" source-path="/src/main/webapp" tag="defaultRootSource"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/java"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/resources"/>
+        <dependent-module archiveName="infinispan-stu-common-1.0.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/infinispan-stu-common/infinispan-stu-common">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <property name="context-root" value="infinispan-stu-dg-helloworld"/>
+        <property name="java-output-path" value="/infinispan-stu-dg-helloworld/target/classes"/>
+    </wb-module>
+</project-modules>

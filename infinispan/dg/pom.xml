@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.kylin.infinispan</groupId>
+    <artifactId>infinispan-stu-dg-parent</artifactId>
+    <version>1.0</version>
+    <packaging>pom</packaging>
+    <name>Parent for Run infinispan as Data Grid project</name>
+
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <distribution>repo</distribution>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
+        </license>
+    </licenses>
+
+ <properties>
+      <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+      <infinispan.version>5.2.0.Beta6</infinispan.version>
+   </properties>
+
+
+<dependencies>
+      <dependency>
+         <groupId>org.infinispan</groupId>
+         <artifactId>infinispan-core</artifactId>
+         <version>${infinispan.version}</version>
+      </dependency>
+
+     <dependency>
+         <groupId>com.kylin.infinispan</groupId>
+         <artifactId>infinispan-stu-common</artifactId>
+         <version>${project.version}</version>
+      </dependency>
+
+
+      <dependency>
+         <groupId>org.infinispan</groupId>
+         <artifactId>infinispan-client-hotrod</artifactId>
+         <version>${infinispan.version}</version>
+      </dependency>
+
+   </dependencies>
+
+
+    <modules>
+        <module>helloworld</module>
+    </modules>
+
+</project>
