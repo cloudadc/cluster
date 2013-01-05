@@ -12,6 +12,9 @@ import java.util.Random;
 
 import org.apache.log4j.Logger;
 
+import com.kylin.tankwar.jmx.annotations.MBean;
+
+@MBean(description = "Tank")
 public class Tank {
 	
 	public static final int WIDTH = 30;

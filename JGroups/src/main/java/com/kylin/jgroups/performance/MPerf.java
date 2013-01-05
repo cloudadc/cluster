@@ -27,6 +27,7 @@ import org.jgroups.JChannel;
 import org.jgroups.Message;
 import org.jgroups.ReceiverAdapter;
 import org.jgroups.Version;
+import org.jgroups.View;
 import org.jgroups.conf.ClassConfigurator;
 import org.jgroups.jmx.JmxConfigurator;
 import org.jgroups.stack.ProtocolStack;
@@ -35,7 +36,14 @@ import org.jgroups.util.ResponseCollector;
 import org.jgroups.util.Streamable;
 import org.jgroups.util.Util;
 
-
+/**
+ * Dynamic tool to measure multicast performance of JGroups; every member sends N messages and we measure how long it
+ * takes for all receivers to receive them.<p/>
+ * All messages received from a member P are checked for ordering and non duplicity.<p/>
+ * MPerf is <em>dynamic</em> because it doesn't accept any configuration parameters (besides the channel config file and name); all configuration is done at runtime, 
+ * and will be broadcast to all cluster members.
+ *
+ */
 public class MPerf extends ReceiverAdapter {
 	
 	protected String props = null;
@@ -72,6 +80,46 @@ public class MPerf extends ReceiverAdapter {
 	
 	protected final ConcurrentMap<Address, Stats> received_msgs = Util.createConcurrentMap();
 	
+	static {
+		format.setGroupingUsed(false);
+		format.setMaximumFractionDigits(2);
+	}
+	
+	public void start(String props, String name) throws Exception {
+		
+		this.props = props;
+		this.name = name;
+        
+		StringBuilder sb = new StringBuilder();
+        sb.append("\n\n----------------------- MPerf -----------------------\n");
+        sb.append("Date: ").append(new Date()).append('\n');
+        sb.append("Run by: ").append(System.getProperty("user.name")).append("\n");
+        sb.append("JGroups version: ").append(Version.description).append('\n');
+        println(sb);
+
+		channel = new JChannel(props);
+		channel.setName(name);
+		channel.setReceiver(this);
+		channel.connect("mperf");
+		local_addr = channel.getAddress();
+        JmxConfigurator.registerChannel(channel, Util.getMBeanServer(), "jgroups", "mperf", true);
+
+        // send a CONFIG_REQ to the current coordinator, so we can get the current config
+		Address coord = channel.getView().getMembers().get(0);
+        if(coord != null && !local_addr.equals(coord)){
+        	send(coord,null,MPerfHeader.CONFIG_REQ, Message.Flag.RSVP);
+        }
+    }
+	
+	public void stop() {
+		looping = false;
+        try {
+            JmxConfigurator.unregisterChannel(channel, Util.getMBeanServer(), "jgroups", "mperf");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		Util.close(channel);
+	}
 	
 	public void receive(Message msg) {
 		MPerfHeader hdr = (MPerfHeader) msg.getHeader(ID);
@@ -198,6 +246,30 @@ public class MPerf extends ReceiverAdapter {
             default:
                 System.err.println("Header type " + hdr.type + " not recognized");
         }
+    }
+	
+	public void viewAccepted(View view) {
+		
+        println("** " + view);
+        
+		final List<Address> mbrs = view.getMembers();
+		members.clear();
+		members.addAll(mbrs);
+		receive_log_interval = num_msgs * mbrs.size() / 10;
+
+        // Remove non members from received messages
+        received_msgs.keySet().retainAll(mbrs);
+
+        // Add non-existing elements
+        for(Address member: mbrs){
+        	received_msgs.putIfAbsent(member, new Stats());
+        }
+
+        results.retainAll(mbrs);
+
+		if (result_collector != null && !mbrs.contains(result_collector)){
+			result_collector = null;
+		}
     }
 	
 	protected void displayResults() {
@@ -338,32 +410,6 @@ public class MPerf extends ReceiverAdapter {
         }
     }
 	
-	public void start(String props, String name) throws Exception {
-		
-		this.props = props;
-		this.name = name;
-        
-		StringBuilder sb = new StringBuilder();
-        sb.append("\n\n----------------------- MPerf -----------------------\n");
-        sb.append("Date: ").append(new Date()).append('\n');
-        sb.append("Run by: ").append(System.getProperty("user.name")).append("\n");
-        sb.append("JGroups version: ").append(Version.description).append('\n');
-        println(sb);
-
-		channel = new JChannel(props);
-		channel.setName(name);
-		channel.setReceiver(this);
-		channel.connect("mperf");
-		local_addr = channel.getAddress();
-        JmxConfigurator.registerChannel(channel, Util.getMBeanServer(), "jgroups", "mperf", true);
-
-        // send a CONFIG_REQ to the current coordinator, so we can get the current config
-		Address coord = channel.getView().getMembers().get(0);
-        if(coord != null && !local_addr.equals(coord)){
-        	send(coord,null,MPerfHeader.CONFIG_REQ, Message.Flag.RSVP);
-        }
-    }
-	
 	protected void send(Address target, Object payload, byte header, Message.Flag ... flags) throws Exception {
 		
 		Message msg = new Message(target, null, payload);
@@ -434,16 +480,6 @@ public class MPerf extends ReceiverAdapter {
         }
         stop();
     }
-	
-	public void stop() {
-		looping = false;
-        try {
-            JmxConfigurator.unregisterChannel(channel, Util.getMBeanServer(), "jgroups", "mperf");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		Util.close(channel);
-	}
 	
 	protected void newConfig() throws Exception {
 		String filename = Util.readStringFromStdin("Config file: ");
@@ -671,8 +707,9 @@ public class MPerf extends ReceiverAdapter {
     }
 	
 	protected static class ConfigChange implements Streamable {
-        protected String attr_name;
-        protected byte[] attr_value;
+		
+		protected String attr_name;
+		protected byte[] attr_value;
 
 
         public ConfigChange() {
@@ -716,21 +753,21 @@ public class MPerf extends ReceiverAdapter {
         }
 
         public int size() {
-            return Util.size(time) + Util.size(msgs);
+			return Util.size(time) + Util.size(msgs);
         }
 
         public void writeTo(DataOutput out) throws Exception {
-            Util.writeLong(time, out);
-            Util.writeLong(msgs, out);
+			Util.writeLong(time, out);
+			Util.writeLong(msgs, out);
         }
 
         public void readFrom(DataInput in) throws Exception {
-            time=Util.readLong(in);
-            msgs=Util.readLong(in);
+			time = Util.readLong(in);
+			msgs = Util.readLong(in);
         }
 
         public String toString() {
-            return msgs + " in " + time + " ms";
+			return msgs + " in " + time + " ms";
         }
     }
 	
