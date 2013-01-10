@@ -43,8 +43,14 @@ import org.jgroups.util.Util;
  * MPerf is <em>dynamic</em> because it doesn't accept any configuration parameters (besides the channel config file and name); all configuration is done at runtime, 
  * and will be broadcast to all cluster members.
  *
+ * How to run?
+ *   java -cp jgroups-3.1.0.Final.jar:JGroups-stu.jar -Djava.net.preferIPv4Stack=true com.kylin.jgroups.performance.MPerf -name node1 -props config.xml
  */
 public class MPerf extends ReceiverAdapter {
+	
+	static {
+		ClassConfigurator.addProtocol((short) 588, MPerf.class);
+	}
 	
 	protected String props = null;
 	
@@ -427,51 +433,60 @@ public class MPerf extends ReceiverAdapter {
     }
 	
 	protected void loop() {
+		
         int c;
 
-		final String INPUT = "[1] Send [2] View\n" +
-							 "[3] Set num msgs (%d) [4] Set msg size (%s) [5] Set threads (%d) [6] New config (%s)\n" +
-							 "[7] Number of senders (%s)\n" +
-							 "[x] Exit this [X] Exit all";
+		final String INPUT = "\n------------- JGroups Performance MPerf --------------\n" + 
+							 "  [1] Send\n" + 
+							 "  [2] View\n" +
+							 "  [3] Set num msgs (%d)\n" + 
+							 "  [4] Set msg size (%s)\n" +
+							 "  [5] Set threads (%d)\n" +
+							 "  [6] New config (%s)\n" +
+							 "  [7] Number of senders (%s)\n" +
+							 "  [x] Exit this\n" +
+							 "  [X] Exit all\n" +
+							 "-------------------------------------------------------";
 
 		while (looping) {
 			try {
 				c = Util.keyPress(String.format(INPUT, num_msgs, Util.printBytes(msg_size), num_threads, props == null? "<default>" : props, num_senders <= 0? "all" : String.valueOf(num_senders)));
-                switch(c) {
-                    case '1':
-                        initiator=true;
-                        results.reset(getSenders());
+                
+				switch (c) {
+				case '1':
+					initiator = true;
+					results.reset(getSenders());
 
-                        ack_collector.reset(channel.getView().getMembers());
-                        send(null,null,MPerfHeader.CLEAR_RESULTS, Message.Flag.RSVP); // clear all results (from prev runs) first
-                        ack_collector.waitForAllAcks(5000);
+					ack_collector.reset(channel.getView().getMembers());
+					send(null,null,MPerfHeader.CLEAR_RESULTS, Message.Flag.RSVP); // clear all results (from prev runs) first
+					ack_collector.waitForAllAcks(5000);
                         
-                        send(null, null, MPerfHeader.START_SENDING, Message.Flag.RSVP);
-                        break;
-                    case '2':
-                        System.out.println("view: " + channel.getView() + " (local address=" + channel.getAddress() + ")");
-                        break;
-                    case '3':
-                        configChange("num_msgs");
-                        break;
-                    case '4':
-                        configChange("msg_size");
-                        break;
-                    case '5':
-                        configChange("num_threads");
-                        break;
-                    case '6':
-                        newConfig();
-                        break;
-                    case '7':
-                        configChange("num_senders");
-                        break;
-                    case 'x':
-                        looping=false;
-                        break;
-                    case 'X':
-                        send(null,null,MPerfHeader.EXIT);
-                        break;
+					send(null, null, MPerfHeader.START_SENDING, Message.Flag.RSVP);
+					break;
+				case '2':
+					println("view: " + channel.getView() + " (local address=" + channel.getAddress() + ")");
+					break;
+				case '3':
+					configChange("num_msgs");
+					break;
+				case '4':
+					configChange("msg_size");
+					break;
+				case '5':
+					configChange("num_threads");
+					break;
+				case '6':
+					newConfig();
+					break;
+				case '7':
+					configChange("num_senders");
+					break;
+				case 'x':
+					looping = false;
+					break;
+				case 'X':
+					send(null, null, MPerfHeader.EXIT);
+					break;
                 }
             }
             catch(Throwable t) {
@@ -702,7 +717,7 @@ public class MPerf extends ReceiverAdapter {
         }
 
         public String toString() {
-            return computeStats(stop - start,num_msgs_received,msg_size);
+			return computeStats(stop - start, num_msgs_received, msg_size);
         }
     }
 	
