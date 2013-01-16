@@ -3,6 +3,7 @@ package com.kylin.jbosscache.demo;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.xml.DOMConfigurator;
 import org.jboss.cache.Cache;
 import org.jboss.cache.CacheFactory;
 import org.jboss.cache.DefaultCacheFactory;
@@ -21,6 +22,10 @@ import org.jboss.cache.DefaultCacheFactory;
  *
  */
 public class Runner {
+	
+	static {
+		DOMConfigurator.configure("log4j.xml");
+	}
 	
    private static Log log = LogFactory.getLog(Runner.class.getName());
 
