@@ -21,13 +21,13 @@ import org.jboss.cache.DefaultCacheFactory;
  * data needs to be displayed, the underlying cache will be accessed directly.
  *
  */
-public class Runner {
+public class JBossCacheView {
 	
 	static {
 		DOMConfigurator.configure("log4j.xml");
 	}
 	
-   private static Log log = LogFactory.getLog(Runner.class.getName());
+   private static Log log = LogFactory.getLog(JBossCacheView.class.getName());
 
    /**
     * A reference to the Swing GUI that displays contents to the user.
@@ -38,6 +38,11 @@ public class Runner {
     * Whether or not to use the embedded BeanShell console.
     */
    private boolean useConsole = false;
+   
+   /**
+    * Whether or not to use Command Line
+    */
+   private boolean useCli = false;
 
    /**
     * Cache configuration file.
@@ -119,7 +124,7 @@ public class Runner {
     */
 	public static void main(String args[]) {
 		try {
-			Runner view = new Runner();
+			JBossCacheView view = new JBossCacheView();
 			view.doMain(args);
 		} catch (Exception ex) {
 			log.error("Cannot start up!!", ex);
@@ -135,6 +140,10 @@ public class Runner {
 	protected void parseParameters(String[] args) {
 		for (int i = 0; i < args.length; i++) {
 			if (args[i].equals("-console")) {
+				useConsole = true;
+				continue;
+			}
+			if (args[i].equals("-cli")) {
 				useConsole = true;
 				continue;
 			}
@@ -168,14 +177,15 @@ public class Runner {
 
 	private static void help() {
       System.out.println("JBossCacheView [-help] " +
-            "[-console] " +
-            "[-config <path to configuration file to use>]");
+    		  			 "[-console/-cli] " +
+    		  			 "[-config <path to configuration file to use>]");
 
       System.out.println();
       System.out.println("-console enables the embedded BeanShell console");
       System.out.println("-config allows you to provide a path to the configuration file to use.");
       System.out.println();
       System.out.println();
+      Runtime.getRuntime().exit(0); 
    }
 }
 
