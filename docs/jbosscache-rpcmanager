@@ -1,0 +1,8 @@
+1. What's the JBossCache RPCManager?
+   It provides a mechanism for communicating with other caches in the cluster.  Using JGroups as an underlying transport.
+   It have a simple lifecycle:
+     start() - starts the underlying channel based on configuration options injected, and connects the channel
+     disconnect() - disconnects the channel</li>
+     stop() - stops the dispatcher and releases resources
+
+

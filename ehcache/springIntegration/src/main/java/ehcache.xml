@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="ehcache.xsd" updateCheck="true"
+	monitoring="autodetect" dynamicConfig="true">
+
+
+	<terracottaConfig url="127.0.0.1:9510" />
+
+	<defaultCache maxEntriesLocalHeap="0" eternal="false"
+		timeToIdleSeconds="0" timeToLiveSeconds="0" overflowToDisk="false">
+	 	<terracotta /> 
+	</defaultCache>
+	<cache name="00009" maxEntriesLocalHeap="0" eternal="false"
+		timeToIdleSeconds="0" timeToLiveSeconds="0" overflowToDisk="false" />
+	<cache name="00001" maxEntriesLocalHeap="0" eternal="false"
+		timeToIdleSeconds="0" timeToLiveSeconds="0" overflowToDisk="false" />
+	<cache name="00006" maxEntriesLocalHeap="0" eternal="false"
+		timeToIdleSeconds="0" timeToLiveSeconds="0" overflowToDisk="false" />
+	<cache name="00010" maxEntriesLocalHeap="0" eternal="false"
+		timeToIdleSeconds="0" timeToLiveSeconds="0" overflowToDisk="false" />
+	<cache name="BIZ_PARAMS" maxEntriesLocalHeap="0" eternal="false"
+		timeToIdleSeconds="0" timeToLiveSeconds="0" overflowToDisk="false" />
+	<cache name="OMP_PARAMS" maxEntriesLocalHeap="0" eternal="false"
+		timeToIdleSeconds="0" timeToLiveSeconds="0" overflowToDisk="false" />
+	<cache name="HOST_MODULE" maxEntriesLocalHeap="0" eternal="false"
+		timeToIdleSeconds="0" timeToLiveSeconds="0" overflowToDisk="false" />				
+	<cache name="DailyMaintenanceBatchLogsCache" maxEntriesLocalHeap="0"
+		eternal="false" timeToIdleSeconds="0" timeToLiveSeconds="0"
+		overflowToDisk="false" />
+	<cache name="DailyMaintenanceDetailLogsCache"
+		maxEntriesLocalHeap="0" eternal="false" timeToIdleSeconds="0"
+		timeToLiveSeconds="0" overflowToDisk="false" />
+	<cache name="DailyMaintenanceDurationsCache" maxEntriesLocalHeap="0"
+		eternal="false" timeToIdleSeconds="0" timeToLiveSeconds="0"
+		overflowToDisk="false" />
+	<cache name="BmsDailyMaintenanceBatchLogsCache"
+		maxEntriesLocalHeap="0" eternal="false" timeToIdleSeconds="0"
+		timeToLiveSeconds="0" overflowToDisk="false" />
+	<cache name="BmsDailyMaintenanceDetailLogsCache"
+		maxEntriesLocalHeap="0" eternal="false" timeToIdleSeconds="0"
+		timeToLiveSeconds="0" overflowToDisk="false" />
+	<cache name="BmsDailyMaintenanceDurationsCache"
+		maxEntriesLocalHeap="0" eternal="false" timeToIdleSeconds="0"
+		timeToLiveSeconds="0" overflowToDisk="false" />
+</ehcache>

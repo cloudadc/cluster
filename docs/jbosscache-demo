@@ -1,0 +1,6 @@
+1. How to Run jbosscache helloworld demo?
+  1) build
+      mvn clean install dependency:copy-dependencies
+  2) Run helloworld in 2 node use the following commands:
+      java -cp target/jbosscache-helloworld-1.0.jar:target/dependency/*  -Djava.net.preferIPv4Stack=true com.kylin.jbosscache.Runner -console -config total-replication.xml
+
