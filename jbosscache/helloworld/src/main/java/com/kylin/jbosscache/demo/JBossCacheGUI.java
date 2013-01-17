@@ -108,9 +108,9 @@ public class JBossCacheGUI extends JFrame implements WindowListener, TreeSelecti
 		tree_model = new DefaultTreeModel(new JBossCacheGUI.DisplayNode(Fqn.ROOT.toString()));
 		jtree = new JTree(tree_model);
 		
-		Icon closedIcon = new ImageIcon(getClass().getResource("close.gif"));
-		Icon openedIcon = new ImageIcon(getClass().getResource("close.gif"));
-		Icon leafIcon = new ImageIcon(getClass().getResource("leaf.gif"));
+		Icon closedIcon = new ImageIcon(getClass().getClassLoader().getResource("close.gif"));
+		Icon openedIcon = new ImageIcon(getClass().getClassLoader().getResource("close.gif"));
+		Icon leafIcon = new ImageIcon(getClass().getClassLoader().getResource("leaf.gif"));
 		
 		DefaultTreeCellRenderer render = new DefaultTreeCellRenderer();
 	    render.setClosedIcon(closedIcon);
@@ -212,7 +212,7 @@ public class JBossCacheGUI extends JFrame implements WindowListener, TreeSelecti
 					};
 					executor.execute(r);
 					
-					System.out.println("jtree mouselistener, selected_node = " + selected_node);
+//					System.out.println("jtree mouselistener, selected_node = " + selected_node);
 				}
 			}
 		};

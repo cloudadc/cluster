@@ -23,6 +23,10 @@ import org.jboss.cache.DefaultCacheFactory;
  */
 public class JBossCacheView {
 	
+	static {
+		DOMConfigurator.configure("log4j.xml");
+	}
+	
    private static Log log = LogFactory.getLog(JBossCacheView.class.getName());
 
    /**
