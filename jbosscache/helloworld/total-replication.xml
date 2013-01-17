@@ -5,7 +5,7 @@
    <!-- Configure the TransactionManager -->
    <transaction transactionManagerLookupClass="org.jboss.cache.transaction.GenericTransactionManagerLookup"/>
 
-   <clustering mode="replication">
+   <clustering mode="replication" clusterName="JBossCache-Demo">
       <!-- JGroups protocol stack properties. -->
       <jgroupsConfig>
          <UDP discard_incompatible_packets="true" enable_bundling="false" enable_diagnostics="false" ip_ttl="2"

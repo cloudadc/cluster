@@ -30,6 +30,7 @@ import javax.swing.event.TreeSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
@@ -106,6 +107,16 @@ public class JBossCacheGUI extends JFrame implements WindowListener, TreeSelecti
 		this.useConsole = useConsole;
 		tree_model = new DefaultTreeModel(new JBossCacheGUI.DisplayNode(Fqn.ROOT.toString()));
 		jtree = new JTree(tree_model);
+		
+		Icon closedIcon = new ImageIcon(getClass().getResource("close.gif"));
+		Icon openedIcon = new ImageIcon(getClass().getResource("close.gif"));
+		Icon leafIcon = new ImageIcon(getClass().getResource("leaf.gif"));
+		
+		DefaultTreeCellRenderer render = new DefaultTreeCellRenderer();
+	    render.setClosedIcon(closedIcon);
+	    render.setOpenIcon(openedIcon);
+	    render.setLeafIcon(leafIcon);
+	    jtree.setCellRenderer(render);
 		jtree.setDoubleBuffered(true);
 		jtree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
 
@@ -167,6 +178,7 @@ public class JBossCacheGUI extends JFrame implements WindowListener, TreeSelecti
 		MouseListener ml = new MouseAdapter() {
 			
 			public void mouseClicked(final MouseEvent e) {
+				
 				if (log.isTraceEnabled()) {
 					log.trace("clicked GUI");
 				}
@@ -199,6 +211,8 @@ public class JBossCacheGUI extends JFrame implements WindowListener, TreeSelecti
 						}
 					};
 					executor.execute(r);
+					
+					System.out.println("jtree mouselistener, selected_node = " + selected_node);
 				}
 			}
 		};
@@ -544,7 +558,17 @@ public class JBossCacheGUI extends JFrame implements WindowListener, TreeSelecti
 		}
 		
 		List<Object> elements = Arrays.asList(path);
-		fqnToPath = Fqn.fromList(elements);
+		StringBuffer sb  = new StringBuffer();
+		for(Object obj : elements) {
+			JBossCacheGUI.DisplayNode node = (JBossCacheGUI.DisplayNode) obj;
+			if(node.toString().equals(Fqn.SEPARATOR)) {
+				sb.append(Fqn.SEPARATOR);
+			} else {
+				sb.append(node.toString());
+				sb.append(Fqn.SEPARATOR);
+			}
+		}
+		fqnToPath = Fqn.fromString(sb.toString());
 		if (root.hasChild(fqnToPath)) {
 			return root.getChild(fqnToPath);
 		} else {
@@ -960,11 +984,14 @@ public class JBossCacheGUI extends JFrame implements WindowListener, TreeSelecti
 		private static final long serialVersionUID = -7656592171312920825L;
 
 		public void actionPerformed(ActionEvent e) {
+						
 			if (log.isTraceEnabled()) {
 				log.trace("node added/modified, updating GUI: " + e);
 			}
-			if (selected_node == null)
+			
+			if (selected_node == null){
 				return;
+			}
 
 			clearTable();
 			Map<String, String> data = selected_node.getData();

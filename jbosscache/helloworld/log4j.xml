@@ -83,7 +83,7 @@ make a lot of noise in DEBUG or TRACE -->
     <!-- ======================= -->
 
     <root>
-        <priority value="WARN"/>
+        <priority value="DEBUG"/>
         <appender-ref ref="FILE"/>
         <!--<appender-ref ref="CONSOLE"/>-->
     </root>

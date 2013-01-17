@@ -23,10 +23,6 @@ import org.jboss.cache.DefaultCacheFactory;
  */
 public class JBossCacheView {
 	
-	static {
-		DOMConfigurator.configure("log4j.xml");
-	}
-	
    private static Log log = LogFactory.getLog(JBossCacheView.class.getName());
 
    /**
@@ -84,7 +80,6 @@ public class JBossCacheView {
 
 		if (configurationFile == null) {
          help();
-         throw new Exception("Configuration file cannot be null, please specify with the -config parameter when starting!");
       }
 
       CacheModelDelegate cacheModelDelegate = createCacheDelegate();
