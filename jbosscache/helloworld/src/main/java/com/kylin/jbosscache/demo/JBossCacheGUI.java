@@ -10,12 +10,15 @@ import org.jboss.cache.Fqn;
 import org.jboss.cache.Node;
 import org.jboss.cache.lock.TimeoutException;
 import org.jboss.cache.notifications.annotation.CacheListener;
+import org.jboss.cache.notifications.annotation.CacheStarted;
+import org.jboss.cache.notifications.annotation.CacheStopped;
 import org.jboss.cache.notifications.annotation.NodeCreated;
 import org.jboss.cache.notifications.annotation.NodeEvicted;
 import org.jboss.cache.notifications.annotation.NodeLoaded;
 import org.jboss.cache.notifications.annotation.NodeModified;
 import org.jboss.cache.notifications.annotation.NodeRemoved;
 import org.jboss.cache.notifications.annotation.ViewChanged;
+import org.jboss.cache.notifications.event.Event;
 import org.jboss.cache.notifications.event.NodeEvent;
 import org.jboss.cache.notifications.event.NodeModifiedEvent;
 import org.jboss.cache.notifications.event.ViewChangedEvent;
@@ -47,7 +50,6 @@ import java.awt.event.WindowListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -67,6 +69,7 @@ public class JBossCacheGUI extends JFrame implements WindowListener, TreeSelecti
 
 	private transient CacheModelDelegate cacheModelDelegate;
 	private transient Cache cache;
+	private JBossCacheGUILogger cacheLogger;
    
 	private transient Log log = LogFactory.getLog(getClass());
    
@@ -99,7 +102,7 @@ public class JBossCacheGUI extends JFrame implements WindowListener, TreeSelecti
     */
 	private transient Executor executor;
 
-	public JBossCacheGUI(CacheModelDelegate cacheDelegate, boolean useConsole) throws Exception {
+	public JBossCacheGUI(CacheModelDelegate cacheDelegate, boolean useConsole, boolean debugCache) throws Exception {
 	   
 		executor = Executors.newCachedThreadPool();
 
@@ -225,8 +228,13 @@ public class JBossCacheGUI extends JFrame implements WindowListener, TreeSelecti
 
 		// make sure we set the cache BEFORE initialising this!!
 		setCacheModelDelegate(cacheDelegate);
+		
+		// add JBossCacheGUILogger
+		cacheLogger = new JBossCacheGUILogger(cache, debugCache);
+		
 		init();
 		setVisible(true);
+		setResizable(false);
 		tree_model.setRoot(myNodeRoot);
 		tree_model.reload();
 
@@ -410,9 +418,17 @@ public class JBossCacheGUI extends JFrame implements WindowListener, TreeSelecti
 
    /* ------------------ CacheListener interface ------------ */
 
+	@CacheStarted
+	@CacheStopped
+	public void cacheStartStopEvent(Event e) {
+		cacheLogger.log(e);
+	}
+	
 	@NodeCreated
-	@NodeLoaded
+//	@NodeLoaded
 	public void nodeCreated(NodeEvent e) {
+		
+		cacheLogger.log(e);
 		
       /* Updating the GUI upon node creation should be done sequentially to avoid concurrency issues when
       adding multiple nodes at the same time, for example for PojoCache, where attaching a pojo creates several nodes.
@@ -432,17 +448,19 @@ public class JBossCacheGUI extends JFrame implements WindowListener, TreeSelecti
 	@NodeModified
 	public void nodeModified(final NodeModifiedEvent e) {
 		
+		cacheLogger.log(e);
+		
 		Runnable r = new Runnable() {
 			
 			public void run() {
 				if (e.isPre() && selected_node != null && selected_node.getFqn().equals(e.getFqn())) {
 					
 					clearTable();
-					
-					Node n = root.getChild(e.getFqn());
-					if (n != null) {
-						populateTable(n.getData());
-					}
+					populateTable(selected_node.getData());
+//					Node n = root.getChild(e.getFqn());
+//					if (n != null) {
+//						populateTable(n.getData());
+//					}
 				}
 			}
 		};
@@ -452,6 +470,8 @@ public class JBossCacheGUI extends JFrame implements WindowListener, TreeSelecti
 	@NodeRemoved
 	@NodeEvicted
 	public void nodeRemoved(final NodeEvent e) {
+		
+		cacheLogger.log(e);
 		
 		if (log.isTraceEnabled()) {
 			log.trace("node removed, updating GUI");
@@ -478,6 +498,8 @@ public class JBossCacheGUI extends JFrame implements WindowListener, TreeSelecti
 
 	@ViewChanged
 	public void viewChange(final ViewChangedEvent e) {
+		
+		cacheLogger.log(e);
 		
 		Runnable r = new Runnable() {
 			public void run() {
@@ -993,18 +1015,40 @@ public class JBossCacheGUI extends JFrame implements WindowListener, TreeSelecti
 				return;
 			}
 
-			clearTable();
-			Map<String, String> data = selected_node.getData();
-			if (data == null || data.isEmpty()) {
-				data = new HashMap<String, String>();
-				String[] placeHolder = getRowPlaceHolderData();
-				data.put(placeHolder[0], placeHolder[1]);
+			try {
+				clearTable();
+				Map<String, String> data = selected_node.getData();
+//			if (data == null || data.isEmpty()) {
+//				data = new HashMap<String, String>();
+//				String[] placeHolder = getRowPlaceHolderData();
+//				data.put(placeHolder[0], placeHolder[1]);
+//			}
+				
+				JTextField keyField = new JTextField("key");
+				JTextField valueField = new JTextField("value");
+				Object[] information = { "Enter Key", keyField, "Enter Value", valueField };
+				final String btnOk = "OK";
+				final String btnCancel = "Cancel";
+				Object[] options = { btnOk, btnCancel };
+				int userChoice = JOptionPane.showOptionDialog(null, information,
+						"Add Key/Value to Node", JOptionPane.YES_NO_OPTION,
+						JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
+				
+				if (userChoice == 0) {
+					String key = keyField.getText();
+					String value = valueField.getText();
+//					data.put(key, value);
+					selected_node.put(key, value);
+				}
+
+				populateTable(selected_node.getData());
+
+				mainPanel.add(tablePanel, BorderLayout.SOUTH);
+				validate();
+			} catch (Exception e1) {
+				log.error("AddModifyDataForNodeAction Error", e1);
+				throw new RuntimeException("", e1);
 			}
-
-			populateTable(data);
-
-			mainPanel.add(tablePanel, BorderLayout.SOUTH);
-			validate();
 		}
 	}
 

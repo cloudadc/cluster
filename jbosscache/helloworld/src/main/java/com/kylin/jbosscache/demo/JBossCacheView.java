@@ -39,6 +39,8 @@ public class JBossCacheView {
     */
    private boolean useConsole = false;
    
+   private boolean debugCache = false;
+   
    /**
     * Whether or not to use Command Line
     */
@@ -101,7 +103,7 @@ public class JBossCacheView {
 		if (gui == null) {
 			log.info("start(): creating the GUI");
 			System.out.println("start(): creating the GUI");
-			gui = createGUI(cacheModelDelegate, useConsole);
+			gui = createGUI(cacheModelDelegate, useConsole, debugCache);
 		}
 	}
 
@@ -146,6 +148,10 @@ public class JBossCacheView {
 				useConsole = true;
 				continue;
 			}
+			if (args[i].equals("-debug")) {
+				debugCache = true;
+				continue;
+			}
 			if (args[i].equals("-config")) {
 				configurationFile = args[++i];
 				continue;
@@ -170,17 +176,20 @@ public class JBossCacheView {
       return delegate;
    }
 
-   protected JBossCacheGUI createGUI(CacheModelDelegate delegate, boolean useConsole) throws Exception {
-      return new JBossCacheGUI(delegate, useConsole);
+   protected JBossCacheGUI createGUI(CacheModelDelegate delegate, boolean useConsole, boolean debugCache) throws Exception {
+      return new JBossCacheGUI(delegate, useConsole, debugCache);
    }
 
 	private static void help() {
       System.out.println("JBossCacheView [-help] " +
     		  			 "[-console/-cli] " +
+    		  			 "[-debug]" +
     		  			 "[-config <path to configuration file to use>]");
 
       System.out.println();
       System.out.println("-console enables the embedded BeanShell console");
+      System.out.println("-cli enables the command line console");
+      System.out.println("-debug enables print cache while JBossCache changed");
       System.out.println("-config allows you to provide a path to the configuration file to use.");
       System.out.println();
       System.out.println();

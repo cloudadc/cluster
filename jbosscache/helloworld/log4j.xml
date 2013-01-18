@@ -18,7 +18,7 @@
         <!-- Rollover at the top of each hour
            <param name="DatePattern" value="'.'yyyy-MM-dd-HH"/>
         -->
-        <param name="Threshold" value="TRACE"/>
+        <param name="Threshold" value="DEBUG"/>
 
         <layout class="org.apache.log4j.PatternLayout">
             <!-- The default pattern: Date Priority [Category] Message\n -->
