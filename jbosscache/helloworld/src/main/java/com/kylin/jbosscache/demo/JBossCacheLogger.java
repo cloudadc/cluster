@@ -6,15 +6,15 @@ import org.jboss.cache.notifications.event.Event;
 import org.jboss.cache.notifications.event.NodeEvent;
 import org.jboss.cache.notifications.event.ViewChangedEvent;
 
-public class JBossCacheGUILogger {
+public class JBossCacheLogger {
 	
-	private static final Logger log = Logger.getLogger(JBossCacheGUILogger.class);
+	private static final Logger log = Logger.getLogger(JBossCacheLogger.class);
 	
 	private Cache cache;
 	
 	private boolean debugCache;
 
-	public JBossCacheGUILogger(Cache cache, boolean debugCache) {
+	public JBossCacheLogger(Cache cache, boolean debugCache) {
 		this.cache = cache;
 		this.debugCache = debugCache ;
 	}
