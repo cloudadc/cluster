@@ -1,15 +1,35 @@
 package com.kylin.jbosscache.demo;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+
+import org.apache.log4j.Logger;
 import org.jboss.cache.Cache;
 import org.jboss.cache.Fqn;
 import org.jboss.cache.Node;
 import org.jboss.cache.notifications.annotation.CacheListener;
+import org.jboss.cache.notifications.annotation.CacheStarted;
+import org.jboss.cache.notifications.annotation.CacheStopped;
+import org.jboss.cache.notifications.annotation.NodeCreated;
+import org.jboss.cache.notifications.annotation.NodeModified;
+import org.jboss.cache.notifications.annotation.ViewChanged;
+import org.jboss.cache.notifications.event.Event;
+import org.jboss.cache.notifications.event.NodeEvent;
+import org.jboss.cache.notifications.event.NodeModifiedEvent;
+import org.jboss.cache.notifications.event.ViewChangedEvent;
+import org.jgroups.Address;
 
 import com.customized.tools.cli.TreeInputConsole;
 import com.customized.tools.cli.TreeNode;
 
 @CacheListener
 public class JBossCacheConsole extends TreeInputConsole{
+	
+	private static final Logger log = Logger.getLogger(JBossCacheConsole.class);
 	
 	static final String CACHE_ADD = "add";
 	static final String CACHE_MODIFY = "modify";
@@ -18,11 +38,15 @@ public class JBossCacheConsole extends TreeInputConsole{
 	static final String CACHE_ADD_NODE = "add node";
 	static final String CACHE_REMOVE_NODE = "remove node";
 	
-	private Cache<String, String> cache;
+	private transient Cache<String, String> cache;
+	private List<Address> membership = new LinkedList<Address>();
+	private Address coordinator = null;
 	
 	private boolean debugCache ;
 	
-	private JBossCacheLogger cacheLogger;
+	private transient JBossCacheLogger cacheLogger;
+	
+	private transient Executor executor;
 	
 	public JBossCacheConsole(String name, TreeNode currentNode, JBossCacheModelDelegate cacheDelegate, boolean debugCache) {
 		
@@ -30,6 +54,8 @@ public class JBossCacheConsole extends TreeInputConsole{
 		
 		this.cache = cacheDelegate.getGenericCache();
 		this.debugCache = debugCache;
+		
+		executor = Executors.newCachedThreadPool();
 		
 		Runtime.getRuntime().addShutdownHook(new Thread() {
 			public void run() {
@@ -40,6 +66,8 @@ public class JBossCacheConsole extends TreeInputConsole{
 		cache.addCacheListener(this);
 		
 		cacheLogger = new JBossCacheLogger(cache, debugCache);
+		
+		init();
 	}
 	
 	protected void handleADD(String pointer) {
@@ -138,10 +166,81 @@ public class JBossCacheConsole extends TreeInputConsole{
 		
 		addTreeNode( new TreeNode(fqn, "", getCurrentNode(), null));
 	}
+	
+	private synchronized void updateTreeNode(String path, Map<String, String> data) {
+		
+		String[] array = path.split("/");
+		
+		for(int i = 0 ; i < array.length ; i ++) {
+//			node = 
+		}
+	}
+	
+	private void init() {
+		
+		List<Address> mbrship;
+
+		mbrship = getMembers();
+		if (mbrship != null && mbrship.size() > 0) {
+			membership.clear();
+			membership.addAll(mbrship);
+			coordinator = mbrship.get(0);
+		}
+	}
+	
+	private List<Address> getMembers() {
+		try {
+			return new ArrayList<Address>(cache.getMembers());
+		} catch (Throwable t) {
+			log.error("JBossCacheConsole.getMembers(): ", t);
+			return null;
+		}
+	}
 
 	public String readString(String prompt, boolean validation) {
 		// add Fqn validation
 		return super.readString(prompt, validation);
+	}
+	
+	@CacheStarted
+	@CacheStopped
+	public void cacheStartStopEvent(Event e) {
+		cacheLogger.log(e);
+	}
+	
+	@NodeCreated
+	public void nodeCreated(NodeEvent e) {
+		
+		cacheLogger.log(e);
+	}
+	
+	@NodeModified
+	public void nodeModified(final NodeModifiedEvent e) {
+		
+		cacheLogger.log(e);
+		
+		Fqn fqn = e.getFqn();
+		Map<String, String> data = e.getData();
+		
+	}
+	
+	@ViewChanged
+	public void viewChange(final ViewChangedEvent e) {
+		
+		cacheLogger.log(e);
+		
+		Runnable r = new Runnable() {
+			public void run() {
+				List<Address> mbrship;
+				if (e.getNewView() != null && (mbrship = e.getNewView().getMembers()) != null) {
+					membership.clear();
+					membership.addAll(mbrship);
+					coordinator = mbrship.get(0);
+				}
+			}
+		};
+		
+		executor.execute(r);
 	}
 
 }
