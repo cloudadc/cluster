@@ -30,5 +30,5 @@ public interface JBossCacheModelDelegate {
 	 * 
 	 * @return returns an instance of Cache
 	 */
-	Cache getGenericCache();
+	Cache<String, String> getGenericCache();
 }

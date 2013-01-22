@@ -17,7 +17,7 @@ public class JBossCacheModelDelegateImpl implements JBossCacheModelDelegate {
 		return cache;
 	}
 
-	public Cache getGenericCache() {
+	public Cache<String, String> getGenericCache() {
 		return cache;
 	}
 }

@@ -14,7 +14,6 @@ import org.jboss.cache.notifications.annotation.CacheStarted;
 import org.jboss.cache.notifications.annotation.CacheStopped;
 import org.jboss.cache.notifications.annotation.NodeCreated;
 import org.jboss.cache.notifications.annotation.NodeEvicted;
-import org.jboss.cache.notifications.annotation.NodeLoaded;
 import org.jboss.cache.notifications.annotation.NodeModified;
 import org.jboss.cache.notifications.annotation.NodeRemoved;
 import org.jboss.cache.notifications.annotation.ViewChanged;

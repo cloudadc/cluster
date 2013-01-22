@@ -1,5 +1,6 @@
 package com.kylin.jbosscache.demo.test;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -9,8 +10,10 @@ import org.jboss.cache.Cache;
 import org.jboss.cache.CacheFactory;
 import org.jboss.cache.DefaultCacheFactory;
 import org.jboss.cache.Fqn;
+import org.jboss.cache.Node;
 
-import com.kylin.jbosscache.demo.Content;
+import com.customized.tools.cli.Console;
+import com.kylin.jbosscache.api.Content;
 
 public class CacheTest {
 	
@@ -19,6 +22,8 @@ public class CacheTest {
 	}
 	
 	Cache<String, String> cache ;
+	
+	Console console = new Console();
 	
 	Fqn<String> fqn1 = Fqn.fromString("/root");
 	Fqn<String> fqn2 = Fqn.fromString("/root/branch");
@@ -96,6 +101,30 @@ public class CacheTest {
 			System.out.println(obj);
 		}
 	}
+	
+	protected void testNode() {
+		
+		console.pauseln("test JBossCache Node");
+		
+		Node root = cache.getRoot();
+		console.println("root.getData() : " + root.getData());
+		console.println("root.getFqn() :" + root.getFqn());
+		
+		Node<String, String> node = cache.getNode(fqn7);
+		console.println("node.getData() : " + node.getData());
+		console.println("node.getFqn() :" + node.getFqn());
+		
+		Node son = node.addChild(Fqn.fromString("test"));
+		son.put("testKey-1", "testValue");
+		son.put("testKey-2", "testValue");
+		son.put("testKey-3", "testValue");
+		console.println("son.getData() : " + son.getData());
+		console.println("son.getFqn() :" + son.getFqn());
+		
+		boolean  isRemove = node.removeChild(Fqn.fromString("test"));
+		console.println(isRemove);
+	}
+	
 
 	public static void main(String[] args) {
 	
@@ -103,6 +132,7 @@ public class CacheTest {
 		test.init();
 		test.addContent();
 		test.getALlFqn();
+		test.testNode();
 	}
 	
 
