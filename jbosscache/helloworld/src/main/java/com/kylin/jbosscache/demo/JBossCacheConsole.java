@@ -27,7 +27,7 @@ import com.customized.tools.cli.TreeInputConsole;
 import com.customized.tools.cli.TreeNode;
 
 @CacheListener
-public class JBossCacheConsole extends TreeInputConsole{
+public class JBossCacheConsole extends TreeInputConsole {
 	
 	private static final Logger log = Logger.getLogger(JBossCacheConsole.class);
 	
@@ -42,40 +42,24 @@ public class JBossCacheConsole extends TreeInputConsole{
 	private List<Address> membership = new LinkedList<Address>();
 	private Address coordinator = null;
 	
-	private boolean debugCache ;
-	
+	private boolean isDebugCache, isDebugTreeNode ;
+		
 	private transient JBossCacheLogger cacheLogger;
 	
 	private transient Executor executor;
 	
-	public JBossCacheConsole(String name, TreeNode currentNode, JBossCacheModelDelegate cacheDelegate, boolean debugCache) {
+	public JBossCacheConsole(String name, TreeNode currentNode, JBossCacheModelDelegate cacheDelegate, boolean isDebugCache, boolean isDebugTreeNode) {
 		
 		super(name, currentNode);
 		
 		this.cache = cacheDelegate.getGenericCache();
-		this.debugCache = debugCache;
-		
-		executor = Executors.newCachedThreadPool();
-		
-		Runtime.getRuntime().addShutdownHook(new Thread() {
-			public void run() {
-				cache.stop();
-			}
-		});
-
-		cache.addCacheListener(this);
-		
-		cacheLogger = new JBossCacheLogger(cache, debugCache);
+		this.isDebugCache = isDebugCache;
+		this.isDebugTreeNode = isDebugTreeNode;
 		
 		init();
 	}
 	
 	protected void handleADD(String pointer) {
-		
-		if(null == getCurrentNode()) {
-			prompt("no CurrentNode exists");
-			return;
-		}
 		
 		String[] array = pointer.split(" ");
 		
@@ -96,11 +80,6 @@ public class JBossCacheConsole extends TreeInputConsole{
 	}
 
 	protected void handleRM(String pointer) {
-		
-		if(null == getCurrentNode()) {
-			prompt("no CurrentNode exists");
-			return;
-		}
 		
 		String[] array = pointer.split(" ");
 		String key = "";
@@ -133,9 +112,9 @@ public class JBossCacheConsole extends TreeInputConsole{
 			handleAddNode();
 		} else if(pointer.equals(CACHE_REMOVE_NODE)) {
 			handleRemoveNode();
+		} else {
+			super.handleOther(pointer);
 		}
-		
-		super.handleOther(pointer);
 	}
 
 	private void handleRemoveNode() {
@@ -145,20 +124,14 @@ public class JBossCacheConsole extends TreeInputConsole{
 		
 		String fqnStr = readString("Enter JBossCache Fully Qualified Name:", true);
 		
-		if(isRemoving(" fqnStr From JBossCache " + fqn) && node.removeChild(Fqn.fromString(fqnStr))) {
+		if(isRemoving(fqnStr + " From JBossCache " + fqn) && node.removeChild(Fqn.fromString(fqnStr))) {
 			removeTreeNode(fqnStr);
 		}
 	}
 
 	private void handleAddNode() {
 		
-		Node parentNode ;
-		
-		if(null == getCurrentNode()) {
-			parentNode = cache.getRoot();
-		} else {
-			parentNode = cache.getNode(Fqn.fromString(getAbsolutePath()));
-		}
+		Node parentNode = cache.getNode(Fqn.fromString(getAbsolutePath()));
 		
 		String fqn = readString("Enter JBossCache Fully Qualified Name:", true);
 		Node node = parentNode.addChild(Fqn.fromString(fqn));
@@ -167,6 +140,16 @@ public class JBossCacheConsole extends TreeInputConsole{
 		addTreeNode( new TreeNode(fqn, "", getCurrentNode(), null));
 	}
 	
+	protected void handleHELP(String pointer) {
+		super.handleHELP(pointer);
+		println("[modify] modify JBossCache Node Data");
+		println("[update] update JBossCache Node Data");
+		println("[remove] remove JBossCache Node Data");
+		println("[add node] add children Node");
+		println("[remove node] remove children Node");
+		println("[rm node] remove children Node");
+	}
+
 	private synchronized void updateTreeNode(String path, Map<String, String> data) {
 		
 		String[] array = path.split("/");
@@ -177,6 +160,21 @@ public class JBossCacheConsole extends TreeInputConsole{
 	}
 	
 	private void init() {
+		
+		setDebug(isDebugTreeNode);
+		
+		executor = Executors.newCachedThreadPool();
+		
+		Runtime.getRuntime().addShutdownHook(new Thread() {
+			public void run() {
+				cache.stop();
+			}
+		});
+
+		cache.addCacheListener(this);
+		
+		cacheLogger = new JBossCacheLogger(cache, isDebugCache);
+		
 		
 		List<Address> mbrship;
 

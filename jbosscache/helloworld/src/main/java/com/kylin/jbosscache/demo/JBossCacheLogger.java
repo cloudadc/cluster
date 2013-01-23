@@ -2,6 +2,7 @@ package com.kylin.jbosscache.demo;
 
 import org.apache.log4j.Logger;
 import org.jboss.cache.Cache;
+import org.jboss.cache.Node;
 import org.jboss.cache.notifications.event.Event;
 import org.jboss.cache.notifications.event.NodeEvent;
 import org.jboss.cache.notifications.event.ViewChangedEvent;
@@ -10,19 +11,17 @@ public class JBossCacheLogger {
 	
 	private static final Logger log = Logger.getLogger(JBossCacheLogger.class);
 	
-	private Cache cache;
+	private Cache<String, String> cache;
 	
-	private boolean debugCache;
+	private boolean isDebugCache;
 
-	public JBossCacheLogger(Cache cache, boolean debugCache) {
+	public JBossCacheLogger(Cache<String, String> cache, boolean isDebugCache) {
 		this.cache = cache;
-		this.debugCache = debugCache ;
+		this.isDebugCache = isDebugCache ;
 	}
 
 	public void log(Event e) {
-		
-//		System.out.println(e.getType());
-		
+				
 		switch (e.getType()) {
 		case CACHE_STARTED:
 			log.debug("Cache has started");
@@ -61,8 +60,32 @@ public class JBossCacheLogger {
 	}
 
 	private void flush(Event.Type type) {
-		// TODO Auto-generated method stub
 		
+		if (!isDebugCache)
+			return;
+		
+		Node<String, String> root = cache.getRoot();
+		
+		StringBuffer sb = new StringBuffer();
+		sb.append("JBossCache Node Contents Stack:");
+		sb.append("\n");
+		
+		recursiveCacheNode(root, sb, 0);
+	}
+
+	private void recursiveCacheNode(Node<String, String> root, StringBuffer sb, int index) {
+
+		String preBlank = countBlank(index ++);
+	}
+	
+	private String countBlank(int size) {
+
+		String tab = "    ";
+		String sum = "";
+		for(int i = 0 ; i < size ; i ++) {
+			sum += tab ;
+		}
+		return sum;
 	}
 
 	

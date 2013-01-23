@@ -1,6 +1,8 @@
 package com.kylin.jbosscache.demo;
 
 
+import java.io.IOException;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.xml.DOMConfigurator;
@@ -34,91 +36,82 @@ public class JBossCacheView {
     */
    private JBossCacheGUI gui = null;
    
+   /**
+    * Tree architecture Command Line Console
+    */
    private JBossCacheConsole console = null;
 
    /**
     * Whether or not to use the embedded BeanShell console.
     */
+   private boolean useBeanShellConsole = false;
+   
+   /**
+    * Whether or not to debug TreeNode Node content and cache content
+    */
+   private boolean isDebug = false;
+   
+   /**
+    * Whether or not to use Command Line Console
+    */
    private boolean useConsole = false;
-   
-   private boolean debugCache = false;
-   
-   /**
-    * Whether or not to use Command Line
-    */
-   private boolean useCli = false;
 
-   /**
-    * Cache configuration file.
-    */
    private String configurationFile = null;
 
-   /**
-    * The cache model.
-    */
    private JBossCacheModelDelegate cacheModelDelegate;
 
-   /**
-    * Gets the configuration file
-    *
-    * @return String containing the path to the configuration file
-    */
 	public String getConfigurationFile() {
       return configurationFile;
    }
 
-   /**
-    * Sets a reference to the cache model
-    *
-    * @param cacheModelDelegate cache model instance to associate with this view
-    */
 	public void setCacheModelDelegate(JBossCacheModelDelegate cacheModelDelegate) {
       this.cacheModelDelegate = cacheModelDelegate;
       if (gui != null) gui.setCacheModelDelegate(cacheModelDelegate);
    }
 
-   /**
-    * Main code for the view
-    *
-    * @param args arguments passed via command line
-    * @throws Exception if there's any issues starting the cache demo
-    */
 	public void doMain(String[] args) throws Exception {
       
 		parseParameters(args);
-
-		if (configurationFile == null) {
-			help();
-		}
 
 		JBossCacheModelDelegate cacheModelDelegate = createCacheDelegate();
 		cacheModelDelegate.getGenericCache().start();
 		setCacheModelDelegate(cacheModelDelegate);
 		
-		start();
+		if(useConsole) {
+			startConsole();
+		} else {
+			startGUI();
+		}
    }
 
-   /**
-    * Starts the view
-    *
-    * @throws Exception
-    */
-	public void start() throws Exception {
-		if (gui == null) {
-			log.info("start(): creating the GUI");
-			System.out.println("start(): creating the GUI");
-			gui = createGUI(cacheModelDelegate, useConsole, debugCache);
+	public void startConsole() throws IOException {
+		
+		if(console == null) {
+			log.info("start(): creating the Console");
+			console = new JBossCacheConsole("JBossCache", null, cacheModelDelegate, isDebug, isDebug);
+			console.start();
 		}
 	}
 
-   /**
-    * Stops the view
-    */
+	public void startGUI() throws Exception {
+		if (gui == null) {
+			log.info("start(): creating the GUI");
+			gui = createGUI(cacheModelDelegate, useBeanShellConsole, isDebug);
+		}
+	}
+
 	public void stop() {
+		
 		if (gui != null) {
 			log.info("stop(): disposing the GUI");
 			gui.stopGui();
 			gui = null;
+		}
+		
+		if(console != null) {
+			log.info("stop(): disposing the Console");
+			console.stop();
+			console = null;
 		}
 	}
 
@@ -136,24 +129,19 @@ public class JBossCacheView {
 		}
 	}
 
-	/**
-	 * Parses the parameters
-	 * 
-	 * @param args
-	 *            arguments passed via command line
-	 */
 	protected void parseParameters(String[] args) {
+		
 		for (int i = 0; i < args.length; i++) {
+			if (args[i].equals("-bsh")) {
+				useBeanShellConsole = true;
+				continue;
+			}
 			if (args[i].equals("-console")) {
 				useConsole = true;
 				continue;
 			}
-			if (args[i].equals("-cli")) {
-				useCli = true;
-				continue;
-			}
 			if (args[i].equals("-debug")) {
-				debugCache = true;
+				isDebug = true;
 				continue;
 			}
 			if (args[i].equals("-config")) {
@@ -163,18 +151,17 @@ public class JBossCacheView {
 			help();
 		}
 		
-		if(useCli && useConsole) {
-			System.out.println("Can not set command line and bsh console simultaneously");
+		if(useConsole && useBeanShellConsole) {
+			System.out.println("Can not set '-beanShell' and '-console' simultaneously");
+			help();
+		}
+		
+		if (configurationFile == null) {
+			System.out.println("-config <path to configuration file to use> is mandatory" );
 			help();
 		}
 	}
 
-   /**
-    * Factory method that creates the cache model delegate instance for this demo
-    *
-    * @return instance of CacheModelDelegate
-    * @throws Exception
-    */
 	protected JBossCacheModelDelegate createCacheDelegate() throws Exception {
 		CacheFactory<String, String> factory = new DefaultCacheFactory<String, String>();
 		Cache<String, String> cache = factory.createCache(configurationFile, false);
@@ -192,15 +179,16 @@ public class JBossCacheView {
 		
 		System.out.println();
 		System.out.println("JBossCacheView [-help] " +
-    		  		   	   "[-console/-cli] " +
-    		  		  	   "[-debug]" +
-    		  			   "[-config <path to configuration file to use>]");
+    		  		   	   "[-console/-bsh] " +
+    		  		  	   "[-debug] " +
+    		  			   "[-config <JBossCache Configuration File>]");
 
 		System.out.println();
-		System.out.println("-console enables the embedded BeanShell console");
-		System.out.println("-cli enables the command line console");
-		System.out.println("-debug enables print cache while JBossCache changed");
-		System.out.println("-config allows you to provide a path to the configuration file to use.");
+		System.out.println("[-help] List All Available Commands");
+		System.out.println("[-bsh]  Enables The Embedded BeanShell Console");
+		System.out.println("[-console]  Enables The Command Line Console");
+		System.out.println("[-debug] Enables Print cache content and TreeNode content");
+		System.out.println("[-config <configuration file>] Points To A JBossCache Configuration File ");
 		System.out.println();
 		Runtime.getRuntime().exit(0); 
 	}
