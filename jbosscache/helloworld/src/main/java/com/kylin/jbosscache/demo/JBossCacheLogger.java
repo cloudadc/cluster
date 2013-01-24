@@ -71,11 +71,19 @@ public class JBossCacheLogger {
 		sb.append("\n");
 		
 		recursiveCacheNode(root, sb, 0);
+		
+		log.info(sb.toString());
 	}
 
 	private void recursiveCacheNode(Node<String, String> root, StringBuffer sb, int index) {
 
 		String preBlank = countBlank(index ++);
+		sb.append(preBlank + root.getFqn() + " - " + root.getData());
+		sb.append("\n");
+		
+		for(Node<String, String> node : root.getChildren()) {
+			recursiveCacheNode(node, sb, index);
+		}
 	}
 	
 	private String countBlank(int size) {

@@ -15,7 +15,9 @@ import org.jboss.cache.notifications.annotation.CacheListener;
 import org.jboss.cache.notifications.annotation.CacheStarted;
 import org.jboss.cache.notifications.annotation.CacheStopped;
 import org.jboss.cache.notifications.annotation.NodeCreated;
+import org.jboss.cache.notifications.annotation.NodeEvicted;
 import org.jboss.cache.notifications.annotation.NodeModified;
+import org.jboss.cache.notifications.annotation.NodeRemoved;
 import org.jboss.cache.notifications.annotation.ViewChanged;
 import org.jboss.cache.notifications.event.Event;
 import org.jboss.cache.notifications.event.NodeEvent;
@@ -150,15 +152,22 @@ public class JBossCacheConsole extends TreeInputConsole {
 		println("[rm node] remove children Node");
 	}
 
-	private synchronized void updateTreeNode(String path, Map<String, String> data) {
+	private void updateTreeNode(String path, Map<String, String> data) {
 		
-		String[] array = path.split("/");
+		log.debug("updateTreeNode path = " + path + ", data = " + data);
 		
-		for(int i = 0 ; i < array.length ; i ++) {
-//			node = 
-		}
+		TreeNode node = getTreeNode(path);
+		node.setContent(data + "");
 	}
 	
+	private void createTreeNode(String path, String name) {
+
+		log.debug("createTreeNode path = " + path );
+		
+		TreeNode node = getTreeNode(path);
+		node.getSons().add(new TreeNode(name, "", node, null));
+	}
+
 	private void init() {
 		
 		setDebug(isDebugTreeNode);
@@ -202,16 +211,28 @@ public class JBossCacheConsole extends TreeInputConsole {
 	
 	@CacheStarted
 	@CacheStopped
-	public void cacheStartStopEvent(Event e) {
+	public void cacheStartStopEvent(final Event e) {
 		cacheLogger.log(e);
 	}
 	
 	@NodeCreated
-	public void nodeCreated(NodeEvent e) {
+	public void nodeCreated(final NodeEvent e) {
 		
 		cacheLogger.log(e);
+		
+		String parent = e.getFqn().getParent().toString();
+		String last = e.getFqn().getLastElementAsString();
+		createTreeNode(parent, last);
 	}
 	
+	@NodeRemoved
+	@NodeEvicted
+	public void nodeRemoved(final NodeEvent e) {
+		
+		cacheLogger.log(e);
+		
+	}
+
 	@NodeModified
 	public void nodeModified(final NodeModifiedEvent e) {
 		
@@ -219,6 +240,8 @@ public class JBossCacheConsole extends TreeInputConsole {
 		
 		Fqn fqn = e.getFqn();
 		Map<String, String> data = e.getData();
+		
+		updateTreeNode(fqn.toString(), data);
 		
 	}
 	

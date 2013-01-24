@@ -1,5 +1,6 @@
-package com.kylin.jbosscache.api;
+                   package com.kylin.jbosscache.api;
 
+import org.jboss.cache.Fqn;
 import org.jboss.cache.notifications.annotation.CacheListener;
 import org.jboss.cache.notifications.annotation.CacheStarted;
 import org.jboss.cache.notifications.annotation.CacheStopped;
@@ -28,11 +29,16 @@ public class MyListener {
 	}
 
 	@NodeCreated
-	@NodeRemoved
-	@NodeVisited
-	@NodeModified
-	@NodeMoved
+//	@NodeRemoved
+//	@NodeVisited
+//	@NodeModified
+//	@NodeMoved
+	@CacheStarted
+	@CacheStopped
 	public void logNodeEvent(NodeEvent e) {
+		Fqn fqn = e.getFqn();
+		System.out.println(fqn);
+		System.out.println(fqn.getLastElementAsString());
 		System.out.println(e.getType() + " on node " + e.getFqn() + " has occured");
 	}
 

@@ -123,6 +123,10 @@ public class CacheTest {
 		
 		boolean  isRemove = node.removeChild(Fqn.fromString("test"));
 		console.println(isRemove);
+		
+		StringBuffer sb = new StringBuffer();
+		sb.append(node.getFqn() + " - " + node.getData());
+		console.pauseln(sb.toString());
 	}
 	
 

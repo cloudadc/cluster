@@ -21,9 +21,10 @@ public class MyListenerTest {
 		Node abc = root.addChild(abcFqn);
 		abc.put("content", new Content("abc test"));
 		abc.get("content");
-		cache.removeNode(abcFqn);
-		cache.stop();
-		cache.destroy();
+		Node node = root.getChild(Fqn.fromString("/a/b"));
+		node.removeChild("c");
+//		cache.stop();
+//		cache.destroy();
 	}
 
 	public static void main(String[] args) {
