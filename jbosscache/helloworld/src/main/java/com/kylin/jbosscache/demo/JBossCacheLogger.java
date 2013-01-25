@@ -24,42 +24,35 @@ public class JBossCacheLogger {
 				
 		switch (e.getType()) {
 		case CACHE_STARTED:
-			log.debug("Cache has started");
-			flush(e.getType());
+			debugCache("Cache started");
 			break;
 		case CACHE_STOPPED:
-			log.debug("Cache has stopped");
-			flush(e.getType());
+			debugCache("Cache stopped");
 			break;
 		case NODE_CREATED:
 			NodeEvent event = (NodeEvent) e;
-			log.debug("created node " + event.getFqn());
-			flush(e.getType());
+			debugCache("Created node " + event.getFqn());
 			break;
 		case NODE_MODIFIED:
 			NodeEvent event1 = (NodeEvent) e;
-			log.debug("modified node " + event1.getFqn());
-			flush(e.getType());
+			debugCache("Modified node " + event1.getFqn());;
 			break;
 		case NODE_REMOVED:
 			NodeEvent event2 = (NodeEvent) e;
-			log.debug("removed node " + event2.getFqn());
-			flush(e.getType());
+			debugCache("Removed node " + event2.getFqn());
 			break;
 		case NODE_EVICTED:
 			NodeEvent event3 = (NodeEvent) e;
-			log.debug("removed node " + event3.getFqn());
-			flush(e.getType());
+			debugCache("Evicted node " + event3.getFqn());
 			break;
 		case VIEW_CHANGED:
 			ViewChangedEvent event4 = (ViewChangedEvent) e;
-			log.debug("view changed " + event4.getNewView().getMembers());
-			flush(e.getType());
+			debugCache("View changed " + event4.getNewView().getMembers());
 			break;
 		}
 	}
 
-	private void flush(Event.Type type) {
+	public void debugCache(String prompt) {
 		
 		if (!isDebugCache)
 			return;
@@ -67,7 +60,7 @@ public class JBossCacheLogger {
 		Node<String, String> root = cache.getRoot();
 		
 		StringBuffer sb = new StringBuffer();
-		sb.append("JBossCache Node Contents Stack:");
+		sb.append(prompt + ", JBossCache Node Contents Stack:");
 		sb.append("\n");
 		
 		recursiveCacheNode(root, sb, 0);

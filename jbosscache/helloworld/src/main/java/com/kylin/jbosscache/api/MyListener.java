@@ -46,19 +46,19 @@ public class MyListener {
 	public void nodeModified(final NodeModifiedEvent e) {
 		
 		if(e.isPre()) {
-			System.out.println(e.getFqn() + " Pre");
-			System.out.println(e.getData());
-		} else {
-			System.out.println(e.getFqn() + " Post");
-			System.out.println(e.getData());
-		}
+			return ;
+		} 
 		
 		switch(e.getModificationType()) {
 		case PUT_DATA :
-			System.out.println(e.getModificationType());
+			System.out.println(e.getFqn() + " " + e.getModificationType());
+			System.out.println(e.getData());
+			System.out.println(e.getCache().getNode(e.getFqn()).getData());
 			break;
 		case REMOVE_DATA :
-			System.out.println(e.getModificationType());
+			System.out.println(e.getFqn() + " " + e.getModificationType());
+			System.out.println(e.getData());
+			System.out.println(e.getCache().getNode(e.getFqn()).getData());
 			break;
 		case PUT_MAP :
 			System.out.println(e.getModificationType());
@@ -66,7 +66,7 @@ public class MyListener {
 		}
 		
 		
-		System.out.println(e.getCache().getNode(e.getFqn()).getData());
+		
 		System.out.println();
 	}
 

@@ -1,7 +1,6 @@
 package com.kylin.jbosscache.demo;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -62,6 +61,27 @@ public class JBossCacheConsole extends TreeInputConsole {
 		init();
 	}
 	
+	protected void updateTreeNodes(String prompt) {
+		
+		cacheLogger.debugCache("Print Cache Content before execute [" + prompt + "]");
+		
+		TreeNode rootNode = getRootNode();
+		rootNode.getSons().clear();
+		
+		Node<String, String> root = cache.getRoot();
+		rootNode.setContent(root.getData() + "");
+		synchTreeNodes(root, rootNode);
+	}
+
+	private void synchTreeNodes(Node<String, String> root, TreeNode rootNode) {
+		
+		for(Node<String, String> node : root.getChildren()) {
+			TreeNode treeNode = new TreeNode(node.getFqn().getLastElementAsString(), node.getData() + "", rootNode, null);
+			rootNode.getSons().add(treeNode);
+			synchTreeNodes(node, treeNode);
+		}
+	}
+
 	protected void handleADD(String pointer) {
 		
 		String[] array = pointer.split(" ");
@@ -79,7 +99,7 @@ public class JBossCacheConsole extends TreeInputConsole {
 		Fqn<String> fqn = Fqn.fromString(strFqn);
 		Node<String, String> node = cache.getNode(fqn);
 		node.put(key, value);
-//		getCurrentNode().setContent(node.getData() + "");
+		getCurrentNode().setContent(node.getData() + "");
 	}
 
 	protected void handleRM(String pointer) {
@@ -102,7 +122,7 @@ public class JBossCacheConsole extends TreeInputConsole {
 			node.remove(key);
 		}
 		
-//		getCurrentNode().setContent(node.getData() + "");
+		getCurrentNode().setContent(node.getData() + "");
 	}
 
 	protected void handleOther(String pointer) {
@@ -127,8 +147,8 @@ public class JBossCacheConsole extends TreeInputConsole {
 		
 		String fqnStr = readString("Enter JBossCache Fully Qualified Name:", true);
 		
-		if(isRemoving(fqnStr + " From JBossCache " + fqn)) {
-			node.removeChild(Fqn.fromString(fqnStr));
+		if(isRemoving(fqnStr + " From JBossCache " + fqn) && node.removeChild(Fqn.fromString(fqnStr))) {
+			removeTreeNode(fqnStr);
 		}
 	}
 
@@ -138,7 +158,8 @@ public class JBossCacheConsole extends TreeInputConsole {
 		
 		String fqn = readString("Enter JBossCache Fully Qualified Name:", true);
 		Node node = parentNode.addChild(Fqn.fromString(fqn));
-		prompt("Add JBossCache Node, Fully Qualified Name [" + node.getFqn() + "]");		
+		prompt("Add JBossCache Node, Fully Qualified Name [" + node.getFqn() + "]");
+		addTreeNode( new TreeNode(fqn, "", getCurrentNode(), null));
 	}
 	
 	protected void handleHELP(String pointer) {
@@ -148,7 +169,6 @@ public class JBossCacheConsole extends TreeInputConsole {
 		println("[remove] remove JBossCache Node Data");
 		println("[add node] add children Node");
 		println("[remove node] remove children Node");
-		println("[rm node] remove children Node");
 	}
 
 	/**
@@ -209,7 +229,7 @@ public class JBossCacheConsole extends TreeInputConsole {
 		cache.addCacheListener(this);
 		
 		cacheLogger = new JBossCacheLogger(cache, isDebugCache);
-		
+		cacheLogger.debugCache("Debug Initial Cache Content");
 		
 		List<Address> mbrship;
 
@@ -247,11 +267,11 @@ public class JBossCacheConsole extends TreeInputConsole {
 		if (e.isPre())
 			return;
 		
-		cacheLogger.log(e);
+//		String parent = e.getFqn().getParent().toString();
+//		String last = e.getFqn().getLastElementAsString();
+//		createTreeNode(parent, last);
 		
-		String parent = e.getFqn().getParent().toString();
-		String last = e.getFqn().getLastElementAsString();
-		createTreeNode(parent, last);
+		cacheLogger.log(e);
 	}
 	
 	@NodeRemoved
@@ -261,34 +281,39 @@ public class JBossCacheConsole extends TreeInputConsole {
 		if (e.isPre())
 			return;
 		
-		cacheLogger.log(e);
+//		String parent = e.getFqn().getParent().toString();
+//		String last = e.getFqn().getLastElementAsString();
+//		removeTreeNode(parent, last);
 		
-		String parent = e.getFqn().getParent().toString();
-		String last = e.getFqn().getLastElementAsString();
-		removeTreeNode(parent, last);
+		cacheLogger.log(e);
 	}
 
 	@NodeModified
 	public void nodeModified(final NodeModifiedEvent e) {
 		
-		if (e.isPre() || e.getCache().getNode(e.getFqn()) == null)
+		if (e.isPre())
 			return;
 		
-		cacheLogger.log(e);
-						
-		try {
-			Map<String, String> preMap = e.getCache().getNode(e.getFqn()).getData();
-			Map<String, String> postMap = e.getData();
-			
-			Map<String, String> tmpMap = new HashMap<String, String>();
-			tmpMap.putAll(preMap);
-			tmpMap.putAll(postMap);
-			
-			updateTreeNode(e.getFqn().toString(), tmpMap);
-		} catch (Exception e1) {
-			println(e1.getStackTrace().toString());
-		}
+//		Map<String, String> tmpMap = new HashMap<String, String>();
+//		
+//		switch(e.getModificationType()) {
+//		case PUT_DATA :
+//			tmpMap.putAll(e.getCache().getNode(e.getFqn()).getData());
+//			tmpMap.putAll(e.getData());
+//			break;
+//		case REMOVE_DATA :
+//			tmpMap.putAll(e.getCache().getNode(e.getFqn()).getData());
+//			for(Object obj : e.getData().keySet()) {
+//				tmpMap.remove(obj);
+//			}
+//			break;
+//		case PUT_MAP :
+//			break;
+//		}
+//						
+//		updateTreeNode(e.getFqn().toString(), tmpMap);
 		
+		cacheLogger.log(e);
 	}
 	
 	@ViewChanged

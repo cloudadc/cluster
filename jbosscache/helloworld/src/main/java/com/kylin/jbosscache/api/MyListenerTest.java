@@ -24,9 +24,9 @@ public class MyListenerTest {
 		node.put("k3", "v3");
 		node.put("k4", "v4");
 		node.put("k5", "v5");
-//		node.remove("k1");
-//		node.remove("k2");
-		node.clearData();
+		node.remove("k1");
+		node.remove("k2");
+//		node.clearData();
 		
 //		abc.put("content", new Content("abc test"));
 //		abc.get("content");
