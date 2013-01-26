@@ -50,7 +50,7 @@ public class JBossCacheConsole extends TreeInputConsole {
 	
 	private transient Executor executor;
 	
-	public JBossCacheConsole(String name, TreeNode currentNode, JBossCacheModelDelegate cacheDelegate, boolean isDebugCache, boolean isDebugTreeNode) {
+	public JBossCacheConsole(String name, TreeNode currentNode, JBossCacheDelegate cacheDelegate, boolean isDebugCache, boolean isDebugTreeNode) {
 		
 		super(name, currentNode);
 		
@@ -71,6 +71,8 @@ public class JBossCacheConsole extends TreeInputConsole {
 		Node<String, String> root = cache.getRoot();
 		rootNode.setContent(root.getData() + "");
 		synchTreeNodes(root, rootNode);
+
+		updateCurrentNode(getTreeNode(getAbsolutePath()));
 	}
 
 	private void synchTreeNodes(Node<String, String> root, TreeNode rootNode) {

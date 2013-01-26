@@ -80,7 +80,7 @@ public class JBossCacheGUI extends JFrame implements WindowListener, TreeSelecti
 	private static final int KEY_COL_WIDTH = 20;
 	private static final int VAL_COL_WIDTH = 300;
 
-	private transient JBossCacheModelDelegate cacheModelDelegate;
+	private transient JBossCacheDelegate cacheModelDelegate;
 	private transient Cache cache;
 	private JBossCacheLogger cacheLogger;
    
@@ -115,7 +115,7 @@ public class JBossCacheGUI extends JFrame implements WindowListener, TreeSelecti
     */
 	private transient Executor executor;
 
-	public JBossCacheGUI(JBossCacheModelDelegate cacheDelegate, boolean useConsole, boolean debugCache) throws Exception {
+	public JBossCacheGUI(JBossCacheDelegate cacheDelegate, boolean useConsole, boolean debugCache) throws Exception {
 	   
 		executor = Executors.newCachedThreadPool();
 
@@ -257,7 +257,7 @@ public class JBossCacheGUI extends JFrame implements WindowListener, TreeSelecti
 		}
 	}
 
-	public void setCacheModelDelegate(final JBossCacheModelDelegate cacheModelDelegate) {
+	public void setCacheModelDelegate(final JBossCacheDelegate cacheModelDelegate) {
 		
 		this.cacheModelDelegate = cacheModelDelegate;
 		
@@ -421,7 +421,7 @@ public class JBossCacheGUI extends JFrame implements WindowListener, TreeSelecti
             "    TransactionManager transactionManager;\n";
 	}
 
-	protected void configureInterpreter(Interpreter interpreter, JBossCacheModelDelegate cacheDelegate) throws EvalError {
+	protected void configureInterpreter(Interpreter interpreter, JBossCacheDelegate cacheDelegate) throws EvalError {
 		interpreter.getNameSpace().importPackage("org.jboss.cache");
 		interpreter.getNameSpace().importPackage("org.jboss.cache.transaction");
 		interpreter.set("cache", cacheDelegate.getGenericCache());

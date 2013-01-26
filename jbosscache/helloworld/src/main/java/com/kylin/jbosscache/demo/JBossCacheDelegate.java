@@ -6,7 +6,7 @@ import org.jboss.cache.Cache;
  * Delegate that hides cache model details for the demo GUI
  * 
  */
-public interface JBossCacheModelDelegate {
+public interface JBossCacheDelegate {
 	
 	/**
 	 * Sets the cache instance that will be used by users to interact with the

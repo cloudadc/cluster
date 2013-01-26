@@ -5,7 +5,7 @@ import org.jboss.cache.Cache;
 /**
  * Model delegate implementation for JBossCache demo
  */
-public class JBossCacheModelDelegateImpl implements JBossCacheModelDelegate {
+public class JBossCacheDelegateImpl implements JBossCacheDelegate {
 	
 	private Cache<String, String> cache;
 
