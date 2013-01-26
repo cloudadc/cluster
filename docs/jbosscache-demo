@@ -2,5 +2,5 @@
   1) build
       mvn clean install dependency:copy-dependencies
   2) Run helloworld in 2 node use the following commands:
-      java -cp target/jbosscache-helloworld-1.0.jar:target/dependency/*  -Djava.net.preferIPv4Stack=true -Dbind.address=10.66.192.48 com.kylin.jbosscache.demo.JBossCacheView -console -config total-replication.xml
+      java -cp target/jbosscache-helloworld-1.0.jar:target/dependency/*  -Djava.net.preferIPv4Stack=true -Dbind.address=10.66.192.48 com.kylin.jbosscache.demo.Main -console -config total-replication.xml -debug -bsh
 
