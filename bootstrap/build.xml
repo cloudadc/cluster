@@ -32,7 +32,13 @@
     	<mkdir dir="${build.dir}/conf" />
     	
     	<copy todir="${build.dir}/conf" >
-    		<fileset dir="${resource.dir}/conf" includes="**"/>
+    		<fileset dir="${resource.dir}/conf" includes="log4j.xml"/>
+    		<fileset dir="${resource.dir}/conf" includes="total-replication.xml"/>
+    	</copy>
+    	
+    	<copy todir="${build.dir}/bin" >
+    		<fileset dir="${resource.dir}/conf" includes="run.sh"/>
+    		<fileset dir="${resource.dir}/conf" includes="run.bat"/>
     	</copy>
 
 		<copy todir="${build.dir}/modules" >
@@ -60,7 +66,7 @@
     		<fileset dir="${dependency.dir}" includes="jbosscache-helloworld-1.0.jar"/>
     	</copy>
     	
-    	<copy todir="${build.dir}/modules/com/kylin/jbosscluster/main" >
+    	<copy todir="${build.dir}/modules/bootstrap/main" >
     		<fileset dir="${target.dir}" includes="bootstrap.jar"/>
     	</copy>
     	

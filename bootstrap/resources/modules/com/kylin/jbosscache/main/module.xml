@@ -13,5 +13,6 @@
     	<module name="javax.api"/>
     	<module name="org.jboss.cache" services="import"/>
     	<module name="bsh" services="import"/>
+    	<module name="org.apache.log4j" services="import"/>
     </dependencies>
 </module>
