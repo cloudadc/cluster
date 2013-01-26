@@ -39,6 +39,7 @@
     	<copy todir="${build.dir}/bin" >
     		<fileset dir="${resource.dir}/conf" includes="run.sh"/>
     		<fileset dir="${resource.dir}/conf" includes="run.bat"/>
+		<fileset dir="${resource.dir}/conf" includes="run.conf"/>
     	</copy>
 
 		<copy todir="${build.dir}/modules" >
