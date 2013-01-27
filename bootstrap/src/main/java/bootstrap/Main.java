@@ -1,6 +1,7 @@
 package bootstrap;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 
 import org.apache.log4j.Logger;
 import org.apache.log4j.xml.DOMConfigurator;
@@ -9,8 +10,10 @@ import com.kylin.jbosscache.demo.JBossCacheView;
 
 public class Main {
 	
-	static final String LOG_CONF = "log4j.xml";
-	static final String LOG_LOG = "log";
+	static final String DEMO_LOG_CONF = "log4j.xml";
+	static final String DEMO_LOG = "log";
+	static final String DEMO_CONF = "conf";
+	static final String DEMO_BIN = "bin";
 
 	static {
 		String homePath = System.getProperty("demo.home.dir") ;
@@ -19,9 +22,11 @@ public class Main {
 			throw new NullPointerException("Property 'demo.home.dir' is null");
 		}
 		
-		System.setProperty("demo.log.dir", homePath + File.separator + LOG_LOG);
+		System.setProperty("demo.log.dir", homePath + File.separator + DEMO_LOG);
+		System.setProperty("demo.conf.dir", homePath + File.separator + DEMO_CONF);
+		System.setProperty("demo.bin.dir", homePath + File.separator + DEMO_BIN);
 		
-		DOMConfigurator.configure(homePath + File.separator + LOG_CONF);	
+		DOMConfigurator.configure(System.getProperty("demo.conf.dir") + File.separator + DEMO_LOG_CONF);	
 	}
 
 	private final static Logger logger = Logger.getLogger(Main.class);
@@ -47,7 +52,9 @@ public class Main {
 		
 		logger.debug("Display Demo Information");
 		logger.debug("    demo.home.dir: " + System.getProperty("demo.home.dir"));
-		logger.debug("    demo.log.dir: " + System.getProperty("demo.log.dir"));
+		logger.debug("    demo.bin.dir : " + System.getProperty("demo.bin.dir"));
+		logger.debug("    demo.conf.dir: " + System.getProperty("demo.conf.dir"));
+		logger.debug("    demo.log.dir : " + System.getProperty("demo.log.dir"));
 	}
 
 	public static void main(String[] args) throws Exception {
@@ -58,10 +65,17 @@ public class Main {
 		
 		displayDebugInfo();
 
-		doStart();
+		try {
+			doStart();
+		} catch (Exception e) {
+			logger.error("Bootstrap Failed", e);
+			throw e;
+		}
 	}
 	
 	static void doStart() throws Exception {
+		
+		validateParams();
 
 		if(mode.compareTo(JGROUPS) == 0) {
 			runJGroupsDemo();
@@ -72,12 +86,37 @@ public class Main {
 		}
 	}
 
+	static void validateParams() throws FileNotFoundException {
+		
+		String confPath = System.getProperty("demo.conf.dir");
+		
+		configFile = confPath + File.separator + configFile ;
+		
+		logger.debug("validate " + configFile);
+		
+		if(!new File(configFile).exists()) {
+			
+			StringBuffer sb = new StringBuffer();
+			sb.append(new File(configFile).getName() + " doesn't exist, available config files: ");
+			
+			for(File file : new File(confPath).listFiles()) {
+				if(file.getName().compareTo(DEMO_LOG_CONF) != 0) {
+					sb.append(file.getName() + ", ");
+				}
+			}
+			
+			throw new FileNotFoundException(sb.toString());
+		}
+		
+		
+	}
+
 	static void runJGroupsDemo() {
 		
 	}
 
 	static void runJBossCacheDemo() throws Exception {
-		new JBossCacheView(useBeanShellConsole, useConsole, configurationFile, isDebug).doMain();
+		new JBossCacheView(useBeanShellConsole, useConsole, configFile, isDebug).doMain();
 	}
 
 	static void runInfinispanDemo() {
@@ -93,22 +132,24 @@ public class Main {
 	static boolean useBeanShellConsole = false;
 	static boolean isDebug = false;
 	static boolean useConsole = false;
-	static String configurationFile = null;
+	
+	static String configFile = null;
 	
 	private static void help() {
 		
 		System.out.println();
 		
 		System.out.println("[-help] [-h] Lists All Available Commands");
-		System.out.println("[-mode <jgroups> <jbosscache> <infinispan>] Selects a JBoss Cluster Framework");
+		System.out.println("[-mode/-m <jgroups> <jbosscache> <infinispan>] Selects a JBoss Cluster Framework");
+		System.out.println("[-b <bind address>] Binds a address");
 		System.out.println("Run JBoss Cluster Framework Demo in Linux:");
-		System.out.println("	run.sh -mode jgroups ");
-		System.out.println("	run.sh -mode jbosscache [-console/-bsh] [-debug] [-config <JBossCache Configuration File>]");
-		System.out.println("	rim.sh -mode infinispan");
+		System.out.println("	run.sh [-mode/-m jgroups] [-b <IP>]");
+		System.out.println("	run.sh [-mode/-m jbosscache] [-b <IP>] [-console/-bsh] [-debug] [-config <JBossCache Configuration File>]");
+		System.out.println("	rim.sh [-mode/-m infinispan] [-b <IP>]");
 		System.out.println("Run JBoss Cluster Framework Demo in Windows:");
-		System.out.println("	run.bat -mode jgroups ");
-		System.out.println("	run.bat -mode jbosscache [-console/-bsh] [-debug] [-config <JBossCache Configuration File>]");
-		System.out.println("	rim.bat -mode infinispan");
+		System.out.println("	run.bat [-mode/-m jgroups] [-b <IP>]");
+		System.out.println("	run.bat [-mode/-m jbosscache] [-b <IP>] [-console/-bsh] [-debug] [-config <JBossCache Configuration File>]");
+		System.out.println("	rim.bat [-mode/-m infinispan] [-b <IP>]");
 
 		System.out.println();
 		System.out.println("JGroups Params:");
@@ -118,7 +159,7 @@ public class Main {
 		System.out.println("[-bsh]  Enables The Embedded BeanShell Console");
 		System.out.println("[-console]  Enables The Command Line Console");
 		System.out.println("[-debug] Enables Print cache content and TreeNode content");
-		System.out.println("[-config <configuration file>] Points To A JBossCache Configuration File ");
+		System.out.println("[-config/-c <configuration file>] Points To A JBossCache Configuration File ");
 		
 
 		System.out.println();
@@ -131,8 +172,13 @@ public class Main {
 		
 		for (int i = 0; i < args.length; i++) {
 			
-			if (args[i].equals("-mode")) {
+			if (args[i].equals("-mode") || args[i].equals("-m")) {
 				mode = args[++i];
+				continue;
+			}
+			
+			if (args[i].equals("-b")) {
+				System.setProperty("bind.address", args[++i]);
 				continue;
 			}
 			
@@ -151,8 +197,8 @@ public class Main {
 				continue;
 			}
 			
-			if (args[i].equals("-config")) {
-				configurationFile = args[++i];
+			if (args[i].equals("-config") || args[i].equals("-c")) {
+				configFile = args[++i];
 				continue;
 			}
 			
@@ -168,13 +214,13 @@ public class Main {
 			help();
 		}
 		
-		if (configurationFile == null) {
-			System.out.println("-config <path to configuration file to use> is mandatory" );
+		if (configFile == null) {
+			System.out.println("-config/-c <path to configuration file to use> is mandatory" );
 			help();
 		}
 		
 		if(mode == null) {
-			System.out.println("-mode <jgroups> <jbosscache> <infinispan> is mandatory" );
+			System.out.println("-mode/-m <jgroups> <jbosscache> <infinispan> is mandatory" );
 			help();
 		}
 	}

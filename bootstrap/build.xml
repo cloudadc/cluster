@@ -71,9 +71,8 @@
     		<fileset dir="${target.dir}" includes="bootstrap.jar"/>
     	</copy>
     	
-    	<copy todir="${build.dir}" >
-    		<fileset dir="${build.dir}/conf" includes="log4j.xml"/>
-    		<fileset dir="${build.dir}/conf" includes="total-replication.xml"/>
+    	<copy todir="${build.dir}/modules/test/main" >
+    		<fileset dir="${target.dir}" includes="bootstrap.jar"/>
     	</copy>
 
     </target>

@@ -10,7 +10,7 @@ public class ModularClassLoadingMain {
 		
 		String[] array = new String[]{"-mp" 
 									, "/home/kylin/work/project/TankWar/bootstrap/build/Demo/modules"
-									, "bootstrap"};
+									, "test"};
 		
 		Main.main(array);
 	}

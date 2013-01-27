@@ -64,6 +64,15 @@ public class JBossCacheView {
 	   this.useConsole = useConsole ;
 	   this.configurationFile = configurationFile ;
 	   this.isDebug = isDebug ;
+	   
+	   log.info("JBossCacheView Constructed");
+	   
+	   if(log.isDebugEnabled()) {
+		   log.debug("useBeanShellConsole: " + useBeanShellConsole);
+		   log.debug("useConsole: " + useConsole);
+		   log.debug("isDebug: " + isDebug);
+		   log.debug("configurationFile: " + configurationFile);
+	   }
    }
    
    public JBossCacheView(boolean useBeanShellConsole, boolean useConsole, String configurationFile, boolean isDebug, JBossCacheDelegate cacheDelegate) {
