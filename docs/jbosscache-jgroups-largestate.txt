@@ -1,0 +1,10 @@
+1. Take the JGroups <Config> element section within the relevant descriptor from .../deploy/cluster/jgroups-channelfactory.sar/META-INF/jgroups-channelfactory-stacks.xml
+   and put it in a separate file called config.xml.
+   Note that: you should select udp-async, because JBossCache use asynchronous RPCs.
+
+2. Run the following in one of cluster nodes that is supposed to provide the state or the farmed file and start a 10MB state provider:
+    java -Djava.net.preferIPv4Stack=true -Dbind.address=10.66.192.144 -cp lib/jgroups.jar:./../../common/lib/commons-logging.jar org.jgroups.tests.LargeState -props ./config.xml -provider -size 10000000
+
+3. Run the following in the other node that is supposed to receive the state or the farmed file and start a state requester:
+    java -Djava.net.preferIPv4Stack=true -Dbind.address=10.66.192.48 -cp lib/jgroups.jar:./../../common/lib/commons-logging.jar org.jgroups.tests.LargeState -props ./config.xml
+   
