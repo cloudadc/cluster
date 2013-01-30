@@ -4,11 +4,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.kylin.tankwar</groupId>
-    <artifactId>JGroups-stu</artifactId>
+    <artifactId>jgroups-stu</artifactId>
     <version>1.0</version>
     <packaging>jar</packaging>
 
-    <name>Groups Test</name>
+    <name>JGroups Test</name>
     <description>A jGroups Test Project </description>
 
     <properties>
@@ -46,7 +46,7 @@
 	<dependency>
            <groupId>org.jgroups</groupId>
            <artifactId>jgroups</artifactId>
-           <version>3.1.0.Final</version>
+           <version>3.2.6.Final</version>
        </dependency>
 	<dependency>
            <groupId>log4j</groupId>

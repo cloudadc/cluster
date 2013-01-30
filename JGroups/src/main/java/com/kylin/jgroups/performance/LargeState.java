@@ -28,18 +28,36 @@ import org.jgroups.util.Util;
  * socket have been increased (see ucast_send_buf_size and ucast_recv_buf_size below).<p>
  * If we didn't do this, we would have some retransmission, slowing the state transfer down.
  *
+ * How to build?
+ *   mvn clean install dependency:copy-dependenciesls
+ *
  * How to run?
- *   java -cp jgroups-3.1.0.Final.jar:JGroups-stu.jar -Djava.net.preferIPv4Stack=true com.kylin.jgroups.performance.LargeState -provider -size 1000000 -name node1 -props config.xml
- *   java -cp jgroups-3.1.0.Final.jar:JGroups-stu.jar -Djava.net.preferIPv4Stack=true com.kylin.jgroups.performance.LargeState -name node2 -props config.xml
+ *   java -cp jgroups-3.2.6.Final.jar:jgroups-stu.jar:log4j-1.2.16.jar -Djava.net.preferIPv4Stack=true com.kylin.jgroups.performance.LargeState -name node1 -props config.xml -provider -size 10000000
+ *   java -cp jgroups-3.2.6.Final.jar:jgroups-stu.jar:log4j-1.2.16.jar -Djava.net.preferIPv4Stack=true com.kylin.jgroups.performance.LargeState -name node2 -props config.xml -size 10000000
+ *   
+ *   java -cp jgroups-3.2.6.Final.jar:jgroups-stu.jar:log4j-1.2.16.jar -Djava.net.preferIPv4Stack=true com.kylin.jgroups.performance.LargeState -name node1 -props config.xml -provider -size 10000000 -delay 1000
+ *   java -cp jgroups-3.2.6.Final.jar:jgroups-stu.jar:log4j-1.2.16.jar -Djava.net.preferIPv4Stack=true com.kylin.jgroups.performance.LargeState -name node2 -props config.xml -size 10000000
  * 
+ *   java -cp jgroups-3.2.6.Final.jar:jgroups-stu.jar:log4j-1.2.16.jar -Djava.net.preferIPv4Stack=true com.kylin.jgroups.performance.LargeState -name node1 -props config.xml -provider -size 10000000 
+ *   java -cp jgroups-3.2.6.Final.jar:jgroups-stu.jar:log4j-1.2.16.jar -Djava.net.preferIPv4Stack=true com.kylin.jgroups.performance.LargeState -name node2 -props config.xml -size 10000000 -delay 1000
+ *   
+ *   java -cp jgroups-3.2.6.Final.jar:jgroups-stu.jar:log4j-1.2.16.jar -Djava.net.preferIPv4Stack=true com.kylin.jgroups.performance.LargeState -name node1 -props config.xml -provider -size 10000000 -provider_fails
+ *   java -cp jgroups-3.2.6.Final.jar:jgroups-stu.jar:log4j-1.2.16.jar -Djava.net.preferIPv4Stack=true com.kylin.jgroups.performance.LargeState -name node2 -props config.xml -size 10000000
+ *  
+ *   java -cp jgroups-3.2.6.Final.jar:jgroups-stu.jar -Djava.net.preferIPv4Stack=true com.kylin.jgroups.performance.LargeState -name node1 -props config.xml -provider -size 10000000
+ *   java -cp jgroups-3.2.6.Final.jar:jgroups-stu.jar -Djava.net.preferIPv4Stack=true com.kylin.jgroups.performance.LargeState -name node2 -props config.xml -size 10000000 -requester_fails
+ *   
  * Run results:
- *   node2 send state transfer request to coordinator(node1)
- *                        \|/
- *   node1's getState() method invoked, write via OutputStream
- *                        \|/
- *   node2's setState() method invoked, read from InputStream                        
+ *   			node2 send state transfer request to coordinator(node1)
+ *              			          \|/
+ *   			node1's getState() method invoked, write via OutputStream
+ *              			          \|/
+ *   			node2's setState() method invoked, read from InputStream                        
  */
 public class LargeState extends ReceiverAdapter{
+	
+	private static final String PROVIDER = "State Provider";
+	private static final String REQUESTER = "State Requester";
 	
 	boolean provider = true, provider_fails = false, requester_fails = false;
 	long delay = 0;
@@ -77,7 +95,7 @@ public class LargeState extends ReceiverAdapter{
         println("-- connected to channel");
         
 		if (provider) {
-			println("Waiting for other members to join and fetch large state");
+			println("-- Waiting for other members to join and fetch large state");
 			for (;;) {
 				Util.sleep(10000);
 			}
@@ -86,6 +104,7 @@ public class LargeState extends ReceiverAdapter{
 		start = System.currentTimeMillis();
 		
 		try {
+			println(REQUESTER + " [" + channel.getName() + "] send get State request");
 			channel.getState(null, 0);
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -95,7 +114,7 @@ public class LargeState extends ReceiverAdapter{
 	}
 	
 	private void println(Object obj) {
-		System.out.println(new SimpleDateFormat("[dd-MMM-yyyy HH:mm ss S]").format(new Date()) + " " + obj);
+		System.out.println(new SimpleDateFormat("[yyyy-MM-dd HH:mm:ss,S]").format(new Date()) + " " + obj);
 	}
 	
 	public void receive(Message msg) {
@@ -108,7 +127,7 @@ public class LargeState extends ReceiverAdapter{
     
     public void setState(InputStream istream) throws Exception {
     	
-    	println(channel.getName() + " set State start");
+    	println(REQUESTER + " " + channel.getName() + ": setState() invoked, Read State via InputStream");
     	
 		total_received = 0;
 		int received = 0;
@@ -136,7 +155,7 @@ public class LargeState extends ReceiverAdapter{
 
     public void getState(OutputStream ostream) throws Exception {
     	
-    	println(channel.getName() + " get State start");
+    	println(PROVIDER + " " + channel.getName() + ": getState() invoked, Write State via OutputStream");
     	
 		int frag_size = size / 10;
 		long bytes = 0;
@@ -215,8 +234,7 @@ public class LargeState extends ReceiverAdapter{
 	}
 
 	static void help() {
-		System.out.println("LargeState [-help] [-size <size of state in bytes] [-provider] [-name name] "
-						+ "[-props <properties>] [-provider_fails] [-requester_fails] [-delay <ms>]");
+		System.out.println("LargeState [-help] [-size <size of state in bytes] [-provider] [-name name] " + "[-props <properties>] [-provider_fails] [-requester_fails] [-delay <ms>]");
 	}
 
 }

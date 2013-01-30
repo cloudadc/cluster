@@ -2,46 +2,26 @@
 <!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">  
 <log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/" debug="false">  
    
-        <appender name="myConsole" class="org.apache.log4j.ConsoleAppender">  
-          <param name="Target" value="System.out"/>  
-          <param name="Threshold" value="INFO"/>  
-          <layout class="org.apache.log4j.PatternLayout">  
-            <param name="ConversionPattern" value="%d{ABSOLUTE} %-5p [%c{1}] %m%n"/>  
-          </layout>  
-      </appender>  
+	<appender name="myConsole" class="org.apache.log4j.ConsoleAppender">  
+		<param name="Target" value="System.out"/>  
+		<param name="Threshold" value="INFO"/>  
+		<layout class="org.apache.log4j.PatternLayout">  
+			<param name="ConversionPattern" value="%d{ABSOLUTE} %-5p [%c{1}] %m%n"/>  
+		</layout>  
+	</appender>  
       
-      <appender name="myFile" class="org.apache.log4j.DailyRollingFileAppender">  
-        <param name="File" value="server.log"/>  
+	<appender name="myFile" class="org.apache.log4j.DailyRollingFileAppender">  
+		<param name="File" value="jgroups.log"/>  
         <param name="Append" value="false"/>  
         <param name="DatePattern" value="’.’yyyy-MM-dd"/>    
         <layout class="org.apache.log4j.PatternLayout">  
-          <param name="ConversionPattern" value="%d %-5p [%c] %m%n"/>   
+			<param name="ConversionPattern" value="%d %-5p [%c] %m%n"/>   
         </layout>      
-      </appender>  
+	</appender>  
           
-      <appender name="ERROR_LOG" class="org.apache.log4j.DailyRollingFileAppender">  
-          <errorHandler class="org.apache.log4j.helpers.OnlyOnceErrorHandler"/>  
-          <param name="File" value="Error.log"/>  
-          <param name="Append" value="true"/>  
-          <param name="Threshold" value="INFO"/>  
-          <param name="DatePattern" value="'.'yyyy-MM-dd"/>  
-          <layout class="org.apache.log4j.PatternLayout">  
-          <param name="ConversionPattern" value="%d %-5p [%c] %m%n"/>  
-          </layout>  
-       </appender>      
-    
-        <logger name="DSErrorLog" additivity="false">  
-            <level class="org.apache.log4j.Level" value="DEBUG"/>  
-            <appender-ref ref="ERROR_LOG"/>  
-        </logger>  
-
-       <category name="org.hibernate.SQL">  
-         <priority value="DEBUG"/>  
-       </category>  
-                    
-         <root>      
-             <priority value ="TRACE"/>      
-             <appender-ref ref="myConsole"/>      
-             <appender-ref ref="myFile"/>         
-        </root>         
+	<root>      
+		<priority value ="TRACE"/>      
+		<appender-ref ref="myConsole"/>      
+		<appender-ref ref="myFile"/>         
+	</root>         
   </log4j:configuration>  
