@@ -3,11 +3,11 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.kylin.tankwar</groupId>
+    <groupId>com.kylin.cluster</groupId>
     <artifactId>parent</artifactId>
     <version>1.0</version>
     <packaging>pom</packaging>
-    <name>Parent for TankWar Project</name>
+    <name>Parent for Cluster Strategy Solution Project</name>
 
     <licenses>
         <license>
@@ -18,10 +18,9 @@
     </licenses>
 
     <modules>
-        <module>JGroups</module>
+        <module>jgroups</module>
         <module>jbosscache</module>
         <module>infinispan</module>
-	<module>sandbox</module>
 	<module>ehcache</module>
 	<module>bootstrap</module>
     </modules>

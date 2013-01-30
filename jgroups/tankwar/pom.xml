@@ -3,13 +3,13 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.kylin.tankwar</groupId>
-    <artifactId>TankWar</artifactId>
+    <groupId>com.kylin.jgroups</groupId>
+    <artifactId>jgroups-tankwar</artifactId>
     <version>1.0</version>
     <packaging>jar</packaging>
 
-    <name>TankWar</name>
-    <description>A jGroups and Infinispan Test Project </description>
+    <name>JGroups TankWar</name>
+    <description>A jGroups Test Project </description>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
