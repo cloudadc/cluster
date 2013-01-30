@@ -1,7 +1,8 @@
-package com.kylin.tankwar.jgroups.factory;
+package com.kylin.tankwar.jgroups.deprecated;
 
 import org.jgroups.conf.ProtocolStackConfigurator;
 
+@Deprecated
 public class ProtocolStackConfigInfo {
 
 	private final String name;

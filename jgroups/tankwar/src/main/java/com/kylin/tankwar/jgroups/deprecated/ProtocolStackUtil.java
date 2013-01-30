@@ -1,4 +1,4 @@
-package com.kylin.tankwar.jgroups.factory;
+package com.kylin.tankwar.jgroups.deprecated;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,6 +16,7 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+@Deprecated
 public class ProtocolStackUtil {
 	
 	private static final Logger log = Logger.getLogger(ProtocolStackUtil.class);

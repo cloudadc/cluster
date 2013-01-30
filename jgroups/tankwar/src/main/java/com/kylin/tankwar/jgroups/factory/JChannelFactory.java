@@ -1,148 +1,134 @@
 package com.kylin.tankwar.jgroups.factory;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.net.URL;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.WeakHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ThreadFactory;
+
+import javax.management.MBeanServer;
 
 import org.apache.log4j.Logger;
 import org.jgroups.Channel;
+import org.jgroups.ChannelListener;
 import org.jgroups.JChannel;
-import org.jgroups.conf.ConfiguratorFactory;
+import org.jgroups.conf.ProtocolConfiguration;
 import org.jgroups.conf.ProtocolStackConfigurator;
-import org.jgroups.util.Util;
+import org.jgroups.jmx.JmxConfigurator;
+import org.jgroups.protocols.TP;
 
-public class JChannelFactory implements ChannelFactory{
+public class JChannelFactory implements ChannelFactory, ChannelListener, ProtocolStackConfigurator {
 	
-	private static final Logger log = Logger.getLogger(JChannelFactory.class);
+	private static final Logger logger = Logger.getLogger(JChannelFactory.class);
 	
-	private final Map<String,ProtocolStackConfigInfo> stacks = new ConcurrentHashMap<String, ProtocolStackConfigInfo>(16, 0.75f, 2);
+	private final ProtocolStackConfiguration configuration ;
+	private final Map<Channel, String> channels = Collections.synchronizedMap(new WeakHashMap<Channel, String>());
 	
-	public void setMultiplexerConfig(File properties) throws Exception {
-		setMultiplexerConfig(properties, true);
+	public JChannelFactory(ProtocolStackConfiguration configuration) {
+		this.configuration = configuration ;
 	}
-	
-	public void setMultiplexerConfig(String properties) throws Exception {
-		setMultiplexerConfig(properties, true);
-	}
-	
-	public void setMultiplexerConfig(URL properties) throws Exception {
-		setMultiplexerConfig(properties, true);
-	}
-	
-	public void setMultiplexerConfig(File properties, boolean replace) throws Exception {
-		InputStream input = ConfiguratorFactory.getConfigStream(properties);
-		addConfigs(input, properties.toString(), replace);
-	}
-	
-	public void setMultiplexerConfig(URL properties, boolean replace) throws Exception {
-		InputStream input = ConfiguratorFactory.getConfigStream(properties);
-		addConfigs(input, properties.toString(), replace);
-	}
-	
-	public void setMultiplexerConfig(String properties, boolean replace) throws Exception {
-		InputStream input = ConfiguratorFactory.getConfigStream(properties);
-		addConfigs(input, properties, replace);
-	}
-	
-	private void addConfigs(InputStream input, String source, boolean replace) throws Exception {
+
+	public Channel createChannel(String id) throws Exception {
 		
-		if (input == null) {
-			throw new FileNotFoundException(source);
-		}
+		JChannel channel = new MuxChannel(this);
 		
-		Map<String, ProtocolStackConfigInfo> map = null;
-		try {
-			map = ProtocolStackUtil.parse(input);
-		} catch (Exception ex) {
-			throw new Exception("failed parsing " + source, ex);
-		} finally {
-			Util.close(input);
-		}
-		
-		for (Map.Entry<String, ProtocolStackConfigInfo> entry : map.entrySet()) {
-			addConfig(entry.getKey(), entry.getValue(), replace);
-		}
-	}
-	
-	private boolean addConfig(String st_name, ProtocolStackConfigInfo val, boolean replace) {
-		
-		boolean added = replace;
-		
-		if (replace) {
-			stacks.put(st_name, val);
-			if (log.isTraceEnabled())
-				log.trace("added config '" + st_name + "'");
-		} else {
-			if (!stacks.containsKey(st_name)) {
-				stacks.put(st_name, val);
-				if (log.isTraceEnabled())
-					log.trace("added config '" + st_name + "'");
-				added = true;
-			} else {
-				if (log.isTraceEnabled())
-	               log.trace("didn't add config '" + st_name + " because one of the same name already existed");
+		// We need to synchronize on shared transport,
+        // so we don't attempt to init a shared transport multiple times
+		TP transport = channel.getProtocolStack().getTransport();
+		if(transport.isSingleton()) {
+			synchronized(transport) {
+				init(transport);
 			}
+		} else {
+			init(transport);
 		}
-		return added;
-	}
-	
-	public void clearConfigurations() {
-		this.stacks.clear();
-	}
-
-	public String dumpChannels() {
-		return "";
-	}
-
-	public String dumpConfiguration() {
-		return stacks.keySet().toString();
-	}
-
-	public String getConfig(String stack_name) throws Exception {
-		ProtocolStackConfigInfo cfg = stacks.get(stack_name);
-		if (cfg == null)
-			throw new Exception("stack \"" + stack_name + "\" not found in " + stacks.keySet());
-		return cfg.getConfigurator().getProtocolStackString();
-	}
-
-	public String getMultiplexerConfig() {
-		StringBuilder sb = new StringBuilder();
-		for (Map.Entry<String, ProtocolStackConfigInfo> entry : stacks.entrySet()) {
-			sb.append(entry.getKey()).append(": ").append(entry.getValue().getConfigurator().getProtocolStackString()).append("\n");
+		
+		channel.setName(configuration.getNodeName() + "/" + id);
+		
+		TransportConfiguration.Topology topology = configuration.getTransport().getTopology();
+		if (topology != null) {
+			channel.setAddressGenerator(new TopologyAddressGenerator(channel, topology.getSite(), topology.getRack(), topology.getMachine()));
 		}
-		return sb.toString();
-	}
-
-	public boolean removeConfig(String stack_name) {
-		return stack_name != null && this.stacks.remove(stack_name) != null;
-	}
-	
-	public JChannel createChannel(String stack_name) throws Exception {
-		return createChannelFromRegisteredStack(stack_name, null, false);
-	}
-	
-	private JChannel createChannelFromRegisteredStack(String stack_name, String id, boolean forceSingletonStack) throws Exception {
-	      
-		ProtocolStackConfigInfo config = stacks.get(stack_name);
-	      
-		if (config == null)
-			throw new IllegalArgumentException("Unknown stack_name " + stack_name);
-	      
-		JChannel channel = initializeChannel(config.getConfigurator(), stack_name);
-	      
+		
+		MBeanServer server = configuration.getMBeanServer();
+		if (server != null) {
+            try {
+                this.channels.put(channel, id);
+                JmxConfigurator.registerChannel(channel, server, id);
+            } catch (Exception e) {
+            	logger.warn(e.getMessage(), e);
+            }
+            channel.addChannelListener(this);
+        }
+		
 		return channel;
 	}
-	   
-	private JChannel initializeChannel(ProtocolStackConfigurator config, String stack_name ) throws Exception  {  
 	
-	      JChannel channel = new JChannel(config);
-	       
-	      log.info("Create Channel via " + stack_name);
-	      
-	      return channel;
-	   }
+	private void init(TP transport) {
+		
+		TransportConfiguration transportConfig = configuration.getTransport();
+		
+		ThreadFactory threadFactory = transportConfig.getThreadFactory();
+		if (threadFactory != null) {
+			if (!(transport.getThreadFactory() instanceof ThreadFactoryAdapter)) {
+                transport.setThreadFactory(new ThreadFactoryAdapter(threadFactory));
+            }
+		}
+		
+		ExecutorService defaultExecutor = transportConfig.getDefaultExecutor();
+		if (defaultExecutor != null) {
+            if (!(transport.getDefaultThreadPool() instanceof ManagedExecutorService)) {
+                transport.setDefaultThreadPool(new ManagedExecutorService(defaultExecutor));
+            }
+        }
+		
+		ExecutorService oobExecutor = transportConfig.getOOBExecutor();
+        if (oobExecutor != null) {
+            if (!(transport.getOOBThreadPool() instanceof ManagedExecutorService)) {
+                transport.setOOBThreadPool(new ManagedExecutorService(oobExecutor));
+            }
+        }
+        
+        ScheduledExecutorService timerExecutor = transportConfig.getTimerExecutor();
+        if (timerExecutor != null) {
+        	
+        }
+	}
+
+	public ProtocolStackConfiguration getProtocolStackConfiguration() {
+		return configuration;
+	}
+
+	@Override
+	public String getProtocolStackString() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<ProtocolConfiguration> getProtocolStack() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void channelConnected(Channel channel) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void channelDisconnected(Channel channel) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void channelClosed(Channel channel) {
+		// TODO Auto-generated method stub
+		
+	}
 
 }

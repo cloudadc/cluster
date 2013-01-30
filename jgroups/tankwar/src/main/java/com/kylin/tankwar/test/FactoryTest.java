@@ -2,8 +2,8 @@ package com.kylin.tankwar.test;
 
 import org.jgroups.JChannel;
 
-import com.kylin.tankwar.jgroups.factory.ChannelFactory;
-import com.kylin.tankwar.jgroups.factory.JChannelFactory;
+import com.kylin.tankwar.jgroups.deprecated.ChannelFactory;
+import com.kylin.tankwar.jgroups.deprecated.JChannelFactory;
 
 public class FactoryTest {
 

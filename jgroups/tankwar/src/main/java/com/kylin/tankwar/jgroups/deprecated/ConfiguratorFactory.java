@@ -1,4 +1,4 @@
-package com.kylin.tankwar.jgroups.factory;
+package com.kylin.tankwar.jgroups.deprecated;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -10,6 +10,7 @@ import java.net.URL;
 import org.apache.log4j.Logger;
 import org.jgroups.util.Util;
 
+@Deprecated
 public class ConfiguratorFactory {
 	
 	private static final Logger logger = Logger.getLogger(ConfiguratorFactory.class);
