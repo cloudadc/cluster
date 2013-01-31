@@ -29,7 +29,7 @@ import org.jgroups.util.Util;
  * If we didn't do this, we would have some retransmission, slowing the state transfer down.
  *
  * How to build?
- *   mvn clean install dependency:copy-dependenciesls
+ *   mvn clean install dependency:copy-dependencies
  *
  * How to run?
  *   java -cp jgroups-3.2.6.Final.jar:jgroups-stu.jar:log4j-1.2.16.jar -Djava.net.preferIPv4Stack=true com.kylin.jgroups.performance.LargeState -name node1 -props config.xml -provider -size 10000000
