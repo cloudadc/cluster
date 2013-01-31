@@ -1,20 +1,21 @@
-package bootstrap;
+package bootstrap.jbosscache;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 
 import org.apache.log4j.Logger;
 
+import bootstrap.Bootstrap;
+
 import com.kylin.jbosscache.demo.JBossCacheView;
 
-public class Main extends Bootstrap {
+public class JBossCacheDemoMain extends Bootstrap {
+	
+	private final static Logger logger = Logger.getLogger(JBossCacheDemoMain.class);
 
-	private final static Logger logger = Logger.getLogger(Main.class);
-	
-	
 	public static void main(String[] args) throws Exception {
 		
-		logger.info("JBoss Cluster FrameWork Demo Bootstrap");
+		logger.info("JBossCache Demo Bootstrap");
 		
 		parseParameters(args);
 		
@@ -32,13 +33,7 @@ public class Main extends Bootstrap {
 		
 		validateParams();
 
-		if(mode.compareTo(JGROUPS) == 0) {
-			runJGroupsDemo();
-		} else if(mode.compareTo(JBOSSCACHE) == 0) {
-			runJBossCacheDemo();
-		} else if(mode.compareTo(INFINISPAN) == 0) {
-			runInfinispanDemo();
-		}
+		runJBossCacheDemo();
 	}
 
 	static void validateParams() throws FileNotFoundException {
@@ -61,9 +56,7 @@ public class Main extends Bootstrap {
 			}
 			
 			throw new FileNotFoundException(sb.toString());
-		}
-		
-		
+		}	
 	}
 
 	static void runJGroupsDemo() {
@@ -77,12 +70,6 @@ public class Main extends Bootstrap {
 	static void runInfinispanDemo() {
 		
 	}
-
-	static final String JGROUPS = "jgroups";
-	static final String JBOSSCACHE = "jbosscache";
-	static final String INFINISPAN = "infinispan";
-	
-	static String mode = null;
 	
 	static boolean useBeanShellConsole = false;
 	static boolean isDebug = false;
@@ -95,30 +82,18 @@ public class Main extends Bootstrap {
 		System.out.println();
 		
 		System.out.println("[-help] [-h] Lists All Available Commands");
-		System.out.println("[-mode/-m <jgroups> <jbosscache> <infinispan>] Selects a JBoss Cluster Framework");
 		System.out.println("[-b <bind address>] Binds a address");
-		System.out.println("Run JBoss Cluster Framework Demo in Linux:");
-		System.out.println("	run.sh [-mode/-m jgroups] [-b <IP>]");
-		System.out.println("	run.sh [-mode/-m jbosscache] [-b <IP>] [-console/-bsh] [-debug] [-config <JBossCache Configuration File>]");
-		System.out.println("	rim.sh [-mode/-m infinispan] [-b <IP>]");
-		System.out.println("Run JBoss Cluster Framework Demo in Windows:");
-		System.out.println("	run.bat [-mode/-m jgroups] [-b <IP>]");
-		System.out.println("	run.bat [-mode/-m jbosscache] [-b <IP>] [-console/-bsh] [-debug] [-config <JBossCache Configuration File>]");
-		System.out.println("	rim.bat [-mode/-m infinispan] [-b <IP>]");
-
-		System.out.println();
-		System.out.println("JGroups Params:");
-		
-		System.out.println();
-		System.out.println("JBossCache Params:");
 		System.out.println("[-bsh]  Enables The Embedded BeanShell Console");
 		System.out.println("[-console]  Enables The Command Line Console");
 		System.out.println("[-debug] Enables Print cache content and TreeNode content");
 		System.out.println("[-config/-c <configuration file>] Points To A JBossCache Configuration File ");
-		
-
 		System.out.println();
-		System.out.println("Infinispan Params:");
+		System.out.println("Run JBossCache Demo in Linux:");
+		System.out.println("	run.sh [-b <IP>] [-console/-bsh] [-debug] [-config <JBossCache Configuration File>]");
+		System.out.println("Run JBossCache Demo in Windows:");
+		System.out.println("	run.bat [-b <IP>] [-console/-bsh] [-debug] [-config <JBossCache Configuration File>]");
+		
+		
 		
 		Runtime.getRuntime().exit(0); 
 	}
@@ -126,11 +101,6 @@ public class Main extends Bootstrap {
 	private static void parseParameters(String[] args) {
 		
 		for (int i = 0; i < args.length; i++) {
-			
-			if (args[i].equals("-mode") || args[i].equals("-m")) {
-				mode = args[++i];
-				continue;
-			}
 			
 			if (args[i].equals("-b")) {
 				System.setProperty("bind.address", args[++i]);
@@ -171,11 +141,6 @@ public class Main extends Bootstrap {
 		
 		if (configFile == null) {
 			System.out.println("-config/-c <path to configuration file to use> is mandatory" );
-			help();
-		}
-		
-		if(mode == null) {
-			System.out.println("-mode/-m <jgroups> <jbosscache> <infinispan> is mandatory" );
 			help();
 		}
 	}

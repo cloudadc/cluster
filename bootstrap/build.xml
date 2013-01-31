@@ -39,7 +39,9 @@
     	<copy todir="${build.dir}/bin" >
     		<fileset dir="${resource.dir}/conf" includes="run.sh"/>
     		<fileset dir="${resource.dir}/conf" includes="run.bat"/>
-		<fileset dir="${resource.dir}/conf" includes="run.conf"/>
+    		<fileset dir="${resource.dir}/conf" includes="jbosscache.sh"/>
+    		<fileset dir="${resource.dir}/conf" includes="jbosscache.bat"/>
+		    <fileset dir="${resource.dir}/conf" includes="run.conf"/>
     	</copy>
 
 		<copy todir="${build.dir}/modules" >
@@ -68,6 +70,10 @@
     	</copy>
     	
     	<copy todir="${build.dir}/modules/bootstrap/main" >
+    		<fileset dir="${target.dir}" includes="bootstrap.jar"/>
+    	</copy>
+    	
+    	<copy todir="${build.dir}/modules/bootstrap/jbosscache/main" >
     		<fileset dir="${target.dir}" includes="bootstrap.jar"/>
     	</copy>
     	
