@@ -100,37 +100,41 @@ public class JBossCacheDemoMain extends Bootstrap {
 	
 	private static void parseParameters(String[] args) {
 		
-		for (int i = 0; i < args.length; i++) {
-			
-			if (args[i].equals("-b")) {
-				System.setProperty("bind.address", args[++i]);
-				continue;
-			}
-			
-			if (args[i].equals("-bsh")) {
-				useBeanShellConsole = true;
-				continue;
-			}
-			
-			if (args[i].equals("-console")) {
-				useConsole = true;
-				continue;
-			}
-			
-			if (args[i].equals("-debug")) {
-				isDebug = true;
-				continue;
-			}
-			
-			if (args[i].equals("-config") || args[i].equals("-c")) {
-				configFile = args[++i];
-				continue;
-			}
-			
-			if (args[i].equals("-help") || args[i].equals("-h")) {
+		try {
+			for (int i = 0; i < args.length; i++) {
+				
+				if (args[i].equals("-b")) {
+					System.setProperty("bind.address", args[++i]);
+					continue;
+				}
+				
+				if (args[i].equals("-bsh")) {
+					useBeanShellConsole = true;
+					continue;
+				}
+				
+				if (args[i].equals("-console")) {
+					useConsole = true;
+					continue;
+				}
+				
+				if (args[i].equals("-debug")) {
+					isDebug = true;
+					continue;
+				}
+				
+				if (args[i].equals("-config") || args[i].equals("-c")) {
+					configFile = args[++i];
+					continue;
+				}
+				
+				if (args[i].equals("-help") || args[i].equals("-h")) {
+					help();
+				}
+				
 				help();
 			}
-			
+		} catch (Exception e) {
 			help();
 		}
 		

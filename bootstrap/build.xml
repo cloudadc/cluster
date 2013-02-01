@@ -69,6 +69,10 @@
     		<fileset dir="${dependency.dir}" includes="jbosscache-helloworld-1.0.jar"/>
     	</copy>
     	
+    	<copy todir="${build.dir}/modules/com/customized/tools/cli/main" >
+    	   <fileset dir="${dependency.dir}" includes="cst-cli-2.0.jar"/>
+    	</copy>
+    	
     	<copy todir="${build.dir}/modules/bootstrap/main" >
     		<fileset dir="${target.dir}" includes="bootstrap.jar"/>
     	</copy>

@@ -10,6 +10,7 @@
     <dependencies>
     	<module name="javax.api" export="true"/>
     	<module name="com.kylin.jbosscache" services="import"/>
+    	<module name="org.jboss.cache" services="import"/>
     	<module name="org.apache.log4j" services="import"/>
     </dependencies>
 </module>
