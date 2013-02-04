@@ -6,8 +6,6 @@ import javax.enterprise.inject.spi.InjectionPoint;
 import javax.inject.Inject;
 import org.infinispan.manager.DefaultCacheManager;
 
-import com.kylin.infinispan.common.User;
-
 /**
  * Provides various resources including a cache manager.
  */

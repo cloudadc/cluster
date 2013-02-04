@@ -7,8 +7,6 @@ import javax.inject.Named;
 import org.infinispan.manager.DefaultCacheManager;
 import org.infinispan.Cache;
 
-import com.kylin.infinispan.common.User;
-
 /**
  * Stores entries into the cache.
  */

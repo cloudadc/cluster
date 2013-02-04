@@ -20,7 +20,7 @@
    <properties>
       <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
       
-      <infinispan.version>5.2.0.Beta1</infinispan.version>
+      <infinispan.version>5.2.0.Final</infinispan.version>
    </properties>
 
    <dependencies>
