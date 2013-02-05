@@ -6,7 +6,7 @@ import org.infinispan.eviction.EvictionStrategy;
 import org.infinispan.manager.DefaultCacheManager;
 import org.infinispan.manager.EmbeddedCacheManager;
 
-import com.kylin.infinispan.helloworld.User;
+import com.kylin.infinispan.common.User;
 
 
 public class HelloWorldNamedCache {

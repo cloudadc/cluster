@@ -13,7 +13,7 @@
    <properties>
       <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-      <infinispan.version>5.2.0.Beta6</infinispan.version>
+      <infinispan.version>5.2.0.Final</infinispan.version>
    </properties>
 
    <dependencies>
@@ -27,6 +27,12 @@
          <groupId>org.infinispan</groupId>
          <artifactId>infinispan-client-hotrod</artifactId>
          <version>${infinispan.version}</version>
+      </dependency>
+      
+      <dependency>
+         <groupId>com.kylin.infinispan</groupId>
+         <artifactId>infinispan-stu-common</artifactId>
+         <version>${project.version}</version>
       </dependency>
       
    </dependencies>

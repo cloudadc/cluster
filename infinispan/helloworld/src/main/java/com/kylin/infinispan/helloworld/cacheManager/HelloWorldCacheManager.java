@@ -5,7 +5,7 @@ import java.util.Properties;
 import org.infinispan.client.hotrod.RemoteCache;
 import org.infinispan.client.hotrod.RemoteCacheManager;
 
-import com.kylin.infinispan.helloworld.User;
+import com.kylin.infinispan.common.User;
 
 public class HelloWorldCacheManager {
 
