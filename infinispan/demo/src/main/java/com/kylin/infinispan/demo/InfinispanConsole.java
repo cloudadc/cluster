@@ -16,17 +16,30 @@ public class InfinispanConsole extends TreeInputConsole {
 	}
 	
 	protected void handleRM(String pointer) {
-
+		String key = readString("Enter Key:", "key", true);
+		if(isRemoving(key)){
+			removeTreeNode(key);
+		}
 	}
 
 	protected void handleADD(String pointer) {
 
-		String key = readString("Enter Key:", true);
-		String value = readString("Enter Value:", true);
+		String key = readString("Enter Key:", "key", true);
+		String value = readString("Enter Value:", "value", true);
+		long lifespan = readLong("Enter lifespan:", -1);
+		long maxIdle = readLong("Enter maxIdle:", -1);
+		CachedEntry entry = new CachedEntry(key, value, lifespan, maxIdle, "");
+		TreeNode node = new TreeNode(key, entry.toString(), getCurrentNode(), null);
+		addTreeNode(node);
 	}
 	
 	protected void handleHELP(String pointer) {
-
+		println("[<ls>] list all nodes");
+		println("[<rm>] remove node");
+		println("[<add>] add new node");
+		println("[<tree>] list whole node architecture");
+		println("[<tree> <-l>] list whole node architecture with contents");
+		println("[<tree> <-list>] list whole node architecture with contents");
 	}
 
 	protected void handlePWD(String pointer) {
