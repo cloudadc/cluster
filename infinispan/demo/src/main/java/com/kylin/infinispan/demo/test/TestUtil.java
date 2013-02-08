@@ -1,4 +1,5 @@
-package com.kylin.infinispan.stu.api;
+package com.kylin.infinispan.demo.test;
+
 
 import org.infinispan.Cache;
 import org.infinispan.configuration.cache.CacheMode;
@@ -12,7 +13,11 @@ import org.infinispan.configuration.global.TransportConfigurationBuilder;
 import org.infinispan.manager.DefaultCacheManager;
 import org.infinispan.manager.EmbeddedCacheManager;
 
-public class DefaultCacheManagerTest {
+import com.kylin.infinispan.demo.CacheDelegate;
+import com.kylin.infinispan.demo.CacheDelegateImpl;
+import com.kylin.infinispan.demo.CacheListener;
+
+public class TestUtil {
 	
 	private static GlobalConfiguration initGlobalConfiguration() {
 		
@@ -44,7 +49,7 @@ public class DefaultCacheManagerTest {
 		return configuration ;
 	}
 	
-	public static void test() {
+	public void test() {
 		
 		EmbeddedCacheManager cacheManager = new DefaultCacheManager(initGlobalConfiguration(), initConfiguration());
 	
@@ -53,10 +58,22 @@ public class DefaultCacheManagerTest {
 		System.out.println(cache.getCacheManager().getAddress());
 	}
 	
+	public static CacheDelegate getDelegate() {
+		try {
+			DefaultCacheManager cacheManager = new DefaultCacheManager(initGlobalConfiguration(), initConfiguration());
+			Cache<String, String> cache = cacheManager.getCache("Infinispan Test");
+			cache.addListener(new CacheListener());
+			cache.start();
+			return new CacheDelegateImpl(cache);
+		} catch (Exception e) {
+			throw new IllegalStateException("Initialize CacheDelegate Error", e);
+		} 
+	}
+	
 	
 	public static void main(String[] args) {
 		
-		new DefaultCacheManagerTest().test();
+		new TestUtil().test();
 	}
 
 }

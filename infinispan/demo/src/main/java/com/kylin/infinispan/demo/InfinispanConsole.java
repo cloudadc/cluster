@@ -1,12 +1,47 @@
 package com.kylin.infinispan.demo;
 
+import java.io.InputStream;
+
+import org.infinispan.Cache;
+import org.infinispan.manager.DefaultCacheManager;
+import org.infinispan.util.Util;
+
 import com.customized.tools.cli.TreeInputConsole;
 import com.customized.tools.cli.TreeNode;
+import com.customized.tools.common.ResourceLoader;
 
 public class InfinispanConsole extends TreeInputConsole {
+	
+	private static final String IMAGE_NAME = "infinispan_icon_32px.gif";
+	private static final String TITLE_PREFIX = "Infinispan Demo - " ;
+	private static final String CACHE_NAME = "Infinispan-Demo";
+	
+	private CacheDelegate delegate ;
+	
+	private InfinispanTableImpl table ;
 
-	public InfinispanConsole() {
+	public InfinispanConsole(String cacheConfigFile) {
 		super("Infinispan");
+		
+		initCacheDelegate(cacheConfigFile);
+		
+		String title = TITLE_PREFIX + delegate.getGenericCache().getCacheManager().getAddress();
+		table = new InfinispanTableImpl(title, IMAGE_NAME, this, delegate);
+	}
+
+	private void initCacheDelegate(String cacheConfigFile) {
+		InputStream in = ResourceLoader.getInstance().getResourceAsStream(cacheConfigFile);
+		try {
+			DefaultCacheManager cacheManager = new DefaultCacheManager(in);
+			Cache<String, String> cache = cacheManager.getCache(CACHE_NAME);
+			cache.addListener(new CacheListener());
+			cache.start();
+			delegate = new CacheDelegateImpl(cache);
+		} catch (Exception e) {
+			throw new IllegalStateException("Initialize CacheDelegate Error", e);
+		} finally {
+			Util.close(in);
+		}
 	}
 
 	protected void handleLS(String pointer) {
