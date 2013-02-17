@@ -5,7 +5,7 @@
       xmlns="urn:infinispan:config:5.2">
    
    <global>
-      <transport clusterName="demoCluster1">
+      <transport clusterName="demoCluster">
          <properties>
             <property name="configurationFile" value="infinispan-config-jgroups.xml" />
          </properties>

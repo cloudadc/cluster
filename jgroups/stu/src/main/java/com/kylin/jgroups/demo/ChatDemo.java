@@ -21,8 +21,8 @@ import org.jgroups.util.Util;
  *   mvn clean install dependency:copy-dependencies
  *   
  * How to Run?
- *     
- * 
+ *   java -cp jgroups-3.2.6.Final.jar:jgroups-stu.jar:log4j-1.2.16.jar -Djava.net.preferIPv4Stack=true com.kylin.jgroups.demo.ChatDemo -n node1 -p udp.xml -discardOwn    
+ *   java -cp jgroups-3.2.6.Final.jar:jgroups-stu.jar:log4j-1.2.16.jar -Djava.net.preferIPv4Stack=true com.kylin.jgroups.demo.ChatDemo -n node2 -p udp.xml -discardOwn
  * 
  * @author kylin
  *
@@ -111,7 +111,7 @@ public class ChatDemo extends ReceiverAdapter{
 		 
 		
 		if (null == clusterName) {
-			clusterName = "KylinSoongTestCluster";
+			clusterName = "ChatCluster";
 		}
 		
 		if(null == props) {

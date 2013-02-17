@@ -1,13 +1,3 @@
-
-<!--
-  Fast configuration for local mode, ie. all members reside on the same host. Setting ip_ttl to 0 means that
-  no multicast packet will make it outside the local host.
-  Therefore, this configuration will NOT work to cluster members residing on different hosts !
-
-  Author: Bela Ban
-  Version: $Id: fast-local.xml,v 1.9 2009/12/18 14:50:00 belaban Exp $
--->
-
 <config xmlns="urn:org:jgroups"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="urn:org:jgroups http://www.jgroups.org/schema/JGroups-3.2.xsd">
@@ -51,27 +41,18 @@
          oob_thread_pool.queue_max_size="100"
          oob_thread_pool.rejection_policy="discard"/>
 
-    <PING timeout="2000"
-            num_initial_members="3"/>
-    <MERGE2 max_interval="30000"
-            min_interval="10000"/>
+    <PING timeout="2000" num_initial_members="3"/>
+    <MERGE2 max_interval="30000" min_interval="10000"/>
     <FD_SOCK />
     <FD_ALL />
     <VERIFY_SUSPECT timeout="1500"  />
     <BARRIER />
-    <pbcast.NAKACK use_mcast_xmit="true"
-                   retransmit_timeout="100,300,600,1200"
-                   discard_delivered_msgs="true"/>
-    <UNICAST2 timeout="300,600,1200"/>
-    <pbcast.STABLE stability_delay="1000" desired_avg_gossip="50000"
-                   max_bytes="1000000"/>
-    <pbcast.GMS print_local_addr="true" join_timeout="5000"
-                max_bundling_time="200"
-                view_bundling="true"/>
-    <FC max_credits="2M"
-        min_threshold="0.40"/>
+    <pbcast.NAKACK use_mcast_xmit="true" retransmit_timeout="100,300,600,1200" discard_delivered_msgs="true"/>
+    <UNICAST2 />
+    <pbcast.STABLE stability_delay="1000" desired_avg_gossip="50000" max_bytes="1000000"/>
+    <pbcast.GMS print_local_addr="true" join_timeout="5000" max_bundling_time="200" view_bundling="true"/>
+    <FC max_credits="2M" min_threshold="0.40"/>
     <FRAG2 frag_size="60000"  />
     <pbcast.FLUSH />
     <RELAY site="nyc" bridge_props="jgroups-tcp.xml" />
-
 </config>
