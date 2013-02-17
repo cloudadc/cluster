@@ -8,7 +8,7 @@ public class InfinispanConsoleTest {
 
 	public static void main(String[] args) throws IOException {
 
-		InfinispanConsole console = new InfinispanConsole("infinispan-config.xml");
+		InfinispanConsole console = new InfinispanConsole("infinispan-config.xml", false);
 		console.start();
 	}
 

@@ -41,11 +41,33 @@ public class InfinispanTableImpl extends DefaultTableImpl {
 	    columns.add(new Column("Alias", 100));
 	    fillTableColumns(columns, table);
 	    
-	    List<String[]> items = new ArrayList<String[]>();
-	    items.add(new String[]{"key-1", "value", "-1", "-1", "localhost"});
-	    items.add(new String[]{"key-2", "value", "-1", "-1", "localhost"});
-	    items.add(new String[]{"key-3", "value", "-1", "-1", "localhost"});
-	    fillTableItems(items, table);
+	    updateTableItems();
+	}
+	
+	public void updateTableItems() {
+		
+		getTable().setRedraw(false);
+		dispose(getTable().getItems());
+		
+		List<String[]> items = new ArrayList<String[]>();
+		
+		String lifespan = delegate.getGenericCache().getCacheConfiguration().expiration().lifespan() + "";
+		String maxIdle = delegate.getGenericCache().getCacheConfiguration().expiration().maxIdle() + "";	
+		String alias = delegate.getGenericCache().getCacheManager().getAddress().toString();
+		
+		for(String key : delegate.getGenericCache().keySet()) {
+			items.add(new String[]{key, delegate.getGenericCache().get(key), lifespan, maxIdle, alias});
+		}
+		
+		fillTableItems(items, getTable());
+		
+		getTable().setRedraw(true);
+	}
+	
+	public void insertEntry(CacheEntry e) {
+
+		final TableItem item = new TableItem(getTable(), SWT.NONE);
+		item.setText(new String[]{e.getKey(), e.getValue(), String.valueOf(e.getLifespan()), String.valueOf(e.getMaxIdle()), e.getAlias()});
 	}
 
 	protected void fillToolBarItem(ToolBar toolBar) {
@@ -180,5 +202,7 @@ public class InfinispanTableImpl extends DefaultTableImpl {
 			return msgBox.open();
 		}
 	}
+
+	
 
 }

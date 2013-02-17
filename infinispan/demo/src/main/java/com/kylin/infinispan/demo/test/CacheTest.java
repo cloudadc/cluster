@@ -3,6 +3,7 @@ package com.kylin.infinispan.demo.test;
 import java.io.InputStream;
 import java.net.URL;
 
+import org.infinispan.Cache;
 import org.infinispan.manager.DefaultCacheManager;
 
 import com.customized.tools.common.ResourceLoader;
@@ -22,7 +23,14 @@ public class CacheTest {
 		cacheManager = new DefaultCacheManager(stream);
 		cacheManager.getCache().start();
 		
-		System.out.println(cacheManager);
+		Cache cache = cacheManager.getCache();
+		
+		long lifespan = cache.getCacheConfiguration().expiration().lifespan();
+		long maxIdle = cache.getCacheConfiguration().expiration().maxIdle();
+				
+		String alias = cache.getCacheManager().getAddress().toString();
+		
+		System.out.println(alias);
 	}
 
 }

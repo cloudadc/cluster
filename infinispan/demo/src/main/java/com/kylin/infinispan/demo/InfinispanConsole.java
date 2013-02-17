@@ -1,6 +1,9 @@
 package com.kylin.infinispan.demo;
 
 import java.io.InputStream;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import org.infinispan.Cache;
 import org.infinispan.manager.DefaultCacheManager;
@@ -17,16 +20,31 @@ public class InfinispanConsole extends TreeInputConsole {
 	private static final String CACHE_NAME = "Infinispan-Demo";
 	
 	private CacheDelegate delegate ;
+	private String address;
 	
-	private InfinispanTableImpl table ;
+	private final InfinispanTableImpl table ;
+	
+	private ExecutorService asyncExecutor;
 
-	public InfinispanConsole(String cacheConfigFile) {
+	public InfinispanConsole(String cacheConfigFile, boolean isVisible) {
 		super("Infinispan");
+		
+		asyncExecutor = Executors.newFixedThreadPool(1);
 		
 		initCacheDelegate(cacheConfigFile);
 		
+		address = delegate.getGenericCache().getCacheManager().getAddress().toString();
+		
 		String title = TITLE_PREFIX + delegate.getGenericCache().getCacheManager().getAddress();
 		table = new InfinispanTableImpl(title, IMAGE_NAME, this, delegate);
+		
+		if(isVisible) {
+			new Thread(new Runnable() {
+				public void run() {
+					table.start();
+				}
+			}).start();
+		}
 	}
 
 	private void initCacheDelegate(String cacheConfigFile) {
@@ -63,9 +81,23 @@ public class InfinispanConsole extends TreeInputConsole {
 		String value = readString("Enter Value:", "value", true);
 		long lifespan = readLong("Enter lifespan:", -1);
 		long maxIdle = readLong("Enter maxIdle:", -1);
-		CachedEntry entry = new CachedEntry(key, value, lifespan, maxIdle, "");
+		
+		final CacheEntry entry = new CacheEntry(key, value, lifespan, maxIdle, address);
+		
+		// add to Infinispan
+		delegate.getGenericCache().put(key, value, lifespan, TimeUnit.MILLISECONDS, maxIdle, TimeUnit.MILLISECONDS);
+		
+		// add to tree console
 		TreeNode node = new TreeNode(key, entry.toString(), getCurrentNode(), null);
 		addTreeNode(node);
+		
+		// add to SWT table
+		asyncExecutor.execute(new Runnable() {
+
+			public void run() {
+				table.insertEntry(entry);
+			}
+		});
 	}
 	
 	protected void handleHELP(String pointer) {
@@ -88,57 +120,17 @@ public class InfinispanConsole extends TreeInputConsole {
 	protected void handleOther(String pointer) {
 		handleHELP(pointer);
 	}
-	
-	class CachedEntry {
-		String key, value, alias;
-		long lifespan = -1, maxIdle = -1;
 
-		public CachedEntry(String key, String value) {
-			super();
-			this.key = key;
-			this.value = value;
+	private class TableThread implements Runnable {
+		
+		public TableThread() {
+			
 		}
 
-		public CachedEntry(String key, String value, long lifespan, long maxIdle, String alias) {
-			super();
-			this.key = key;
-			this.value = value;
-			this.lifespan = lifespan;
-			this.maxIdle = maxIdle;
-			this.alias = alias ;
+		public void run() {
+			
 		}
-
-		public boolean equals(Object o) {
-			if (this == o)
-				return true;
-			if (o == null || getClass() != o.getClass())
-				return false;
-
-			CachedEntry that = (CachedEntry) o;
-
-			if (lifespan != that.lifespan)
-				return false;
-			if (maxIdle != that.maxIdle)
-				return false;
-			if (key != null ? !key.equals(that.key) : that.key != null)
-				return false;
-			if (value != null ? !value.equals(that.value) : that.value != null)
-				return false;
-
-			return true;
-		}
-
-		public int hashCode() {
-			int result = key != null ? key.hashCode() : 0;
-			result = 31 * result + (value != null ? value.hashCode() : 0);
-			result = 31 * result + (int) (lifespan ^ (lifespan >>> 32));
-			result = 31 * result + (int) (maxIdle ^ (maxIdle >>> 32));
-			return result;
-		}
-
-		public String toString() {
-			return "[key=" + key + ", value=" + value + ", lifespan=" + lifespan + ", maxIdle=" + maxIdle + ", alias=" + alias + "]";
-		}
+		
 	}
-
+	
 }
