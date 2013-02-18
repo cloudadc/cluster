@@ -1,5 +1,7 @@
 package com.kylin.jbosscache.custom;
 
+import java.text.NumberFormat;
+
 import javax.ejb.Local;
 import javax.ejb.Remote;
 import javax.ejb.Stateless;
@@ -8,6 +10,7 @@ import javax.naming.InitialContext;
 
 import org.apache.log4j.Logger;
 import org.jboss.cache.Cache;
+import org.jboss.cache.Fqn;
 import org.jboss.ha.cachemanager.CacheManager;
 
 @Stateless
@@ -19,8 +22,16 @@ public class JBossCacheSession implements JBossCacheServiceLocal, JBossCacheServ
 	
 	private static final String CACHE_KEY = "my-custom-cache";
 	
+	private NumberFormat f;
+	
 	private CacheManager cacheManager;
 	private Cache cache;
+	
+	public JBossCacheSession() {
+		f = NumberFormat.getNumberInstance();
+		f.setGroupingUsed(false);
+		f.setMaximumFractionDigits(2);
+	}
 
 	public void start() throws Exception {
 		
@@ -36,10 +47,54 @@ public class JBossCacheSession implements JBossCacheServiceLocal, JBossCacheServ
 		cacheManager.releaseCache(CACHE_KEY);
 	}
 
-	public Cache getCache() throws Exception {
+	public void showCache() throws Exception {
+
 		if (null == cache)
 			start();
-		return cache;
+		
+		logger.info("Show Cache Info");
+		logger.info("Cache Version: " + cache.getVersion());
+		logger.info("Cache Status: " + cache.getCacheStatus());
+		
 	}
+
+	public void put(int size) throws Exception {
+
+		if (null == cache)
+			start();
+		
+		byte[] buf = new byte[size];
+		cache.put(Fqn.fromString("/a/b/c"), "key", buf);
+		logger.info("write " + printBytes(buf.length) + " to JBossCache");
+	}
+
+	public void put(String fqn, int size) throws Exception {
+
+		if (null == cache)
+			start();
+		
+		byte[] buf = new byte[size];
+		cache.put(Fqn.fromString("/a/b/c"), "key", buf);
+		logger.info("write " + printBytes(buf.length) + " to JBossCache [" + fqn + "]");
+	}
+	
+	private String printBytes(long bytes) {
+        double tmp;
+
+        if(bytes < 1000)
+            return bytes + "b";
+        if(bytes < 1000000) {
+            tmp=bytes / 1000.0;
+            return f.format(tmp) + "KB";
+        }
+        if(bytes < 1000000000) {
+            tmp=bytes / 1000000.0;
+            return f.format(tmp) + "MB";
+        }
+        else {
+            tmp=bytes / 1000000000.0;
+            return f.format(tmp) + "GB";
+        }
+    }
 
 }
