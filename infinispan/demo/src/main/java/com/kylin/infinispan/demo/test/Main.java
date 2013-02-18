@@ -1,5 +1,14 @@
 package com.kylin.infinispan.demo.test;
 
+/**
+ * 
+ * How to Build?
+ *   mvn clean install dependency:copy-dependencies
+ * 
+ * How to Run?
+ *   java -cp target/infinispan-demo-1.0.jar:target/dependency/* -Djava.net.preferIPv4Stack=true com.kylin.infininfinispan-config.xml
+ *
+ */
 public class Main {
 	
 	static {

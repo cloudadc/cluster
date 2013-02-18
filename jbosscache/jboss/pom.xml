@@ -4,10 +4,10 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.kylin.jbosscache</groupId>
-    <artifactId>parent</artifactId>
+    <artifactId>jbosscache-jboss-parent</artifactId>
     <version>1.0</version>
     <packaging>pom</packaging>
-    <name>Parent for jbosscache</name>
+    <name>Parent for remote JBoss Cache EJB and Java client</name>
 
     <licenses>
         <license>
@@ -17,10 +17,13 @@
         </license>
     </licenses>
 
+    <!-- This quickstart consists of a server side component and a client that accesses
+	 the server side component. Each component has its own self contain pom. However,
+	 you can add these modules here to keep things modular.
+	 -->
     <modules>
-        <module>helloworld</module>
-	<module>rpcmanager</module>
-	<module>jboss</module>
+        <module>server</module>
+        <module>client</module>
     </modules>
 
 </project>
