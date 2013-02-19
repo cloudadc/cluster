@@ -78,7 +78,10 @@ package com.kylin.jbosscache.custom;
 
 
 2. Start JBoss 
-    ./run.sh -c all -g test
+      ./run.sh -c all -g test
+   If test Cache replicate between cluster nodes, simply start nodes as below:
+      ./run.sh -c node1 -b 10.66.192.231 -g test -u 239.255.100.100
+      ./run.sh -c node2 -b 10.66.192.48 -g test -u 239.255.100.100
     
 3. How to Build?
    1) modify .../server/pom.xml, make sure jboss.home point to correct position.
@@ -87,8 +90,11 @@ package com.kylin.jbosscache.custom;
 4. How to Run?
    1) deploy remote-server.jar to JBoss
    2) run client  
-       java -cp server/target/remote-server-client.jar:client/target/jbosscache-jboss-ejb-remote-client-1.0.jar:/home/kylin/work/eap/jboss-eap-5.1/jboss-as/client/* com.kylin.ejb.remote.client.CustomServiceClient
-
+       java -cp server/target/remote-server-client.jar:client/target/jbosscache-jboss-ejb-remote-client-1.0.jar:/home/kylin/work/eap/jboss-eap-5.1/jboss-as/client/* com.kylin.ejb.remote.client.JBossCacheServiceClient
+   3) import project to eclipse, there are clients existed which expose request to EJB
+         JBossCacheServiceClient
+         JBossCacheService2NodesClient
+         JBossCacheService2NodesReplClient
 
 
 */

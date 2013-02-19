@@ -1,6 +1,7 @@
 package com.kylin.jbosscache.custom;
 
 import java.text.NumberFormat;
+import java.util.Map;
 
 import javax.ejb.Local;
 import javax.ejb.Remote;
@@ -36,6 +37,9 @@ public class JBossCacheSession implements JBossCacheServiceLocal, JBossCacheServ
 	public void start() throws Exception {
 		
 		logger.info("CustomService Start");
+		
+		if(null != cache)
+			return ;
 		
 		Context ctx = new InitialContext();
 		cacheManager = (CacheManager) ctx.lookup("java:CacheManager");
@@ -96,5 +100,22 @@ public class JBossCacheSession implements JBossCacheServiceLocal, JBossCacheServ
             return f.format(tmp) + "GB";
         }
     }
+
+	public void put(String fqn, Map map) throws Exception {
+		
+		if (null == cache)
+			start();
+		
+		cache.put(Fqn.fromString(fqn), map);
+		logger.info("write " + map + " to JBossCache [" + fqn + "]");
+	}
+
+	public Map get(String fqn) throws Exception {
+		
+		if (null == cache)
+			start();
+		
+		return cache.getNode(Fqn.fromString(fqn)).getData();
+	}
 
 }

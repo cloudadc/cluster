@@ -8,8 +8,6 @@ import com.kylin.jbosscache.custom.JBossCacheService;
 
 public class JBossCacheServiceClient extends ClientBase {
 	
-	private static final String STR_JNDI = "JBossCacheSession/remote-com.kylin.jbosscache.custom.JBossCacheService";
-	
 	private JBossCacheService service ;
 	
 	public JBossCacheServiceClient() throws NamingException {
@@ -25,7 +23,8 @@ public class JBossCacheServiceClient extends ClientBase {
 	}
 	
 	public void testPut() throws Exception {
-		service.put(10000000);
+//		service.put(10000000);
+		service.put("/a/b/c/d", 10000000);
 	}
 
 	public static void main(String[] args) throws Exception {

@@ -1,6 +1,5 @@
 package com.kylin.jbosscache.demo.test;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -137,6 +136,14 @@ public class CacheTest {
 		test.addContent();
 		test.getALlFqn();
 		test.testNode();
+		test.testGetContent();
+		
+	}
+
+	private void testGetContent() {
+		
+		console.pauseln("Test Get Contents");
+		
 	}
 	
 
