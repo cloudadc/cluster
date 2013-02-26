@@ -1,0 +1,29 @@
+本文档包括以下两个部分：
+-----------------------
+* 在 `JBoss AS 7` standalone 模式下创建本地缓存
+* 在 `JBoss AS 7` standalone-ha 模式下创建分布式网格缓存
+
+在 `JBoss AS 7` standalone 模式下创建本地缓存
+---------------------------------------------
+* 编辑 `standalone/configuration/standalone.xml`，在<subsystem xmlns="urn:jboss:domain:infinispan:1.3"> 中添加缓存配置，配置文件如下：
+----
+<cache-container name="custom-cache-container" default-cache="local-cache-1">
+    <local-cache name="local-cache-1"/>
+    <local-cache name="local-cache-2"/>
+    <local-cache name="local-cache-3"/>
+</cache-container>
+----
+
+* 启动 JBoss 服务器
+----
+bin/standalone.sh
+----
+ 
+* 打包编译 EJB 服务器端工程
+----
+mvn clean package
+----
+
+* 部署之前步骤生成的 jar 包到 JBoss 服务器
+
+* 运行 EJB 客户端代码 `InfinispanServiceClient`, 客户端代码通过 EJB 提供的服务对缓存进行添加，删除，修改，查询等操作。 

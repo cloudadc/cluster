@@ -1,6 +1,5 @@
 package com.kylin.infinispan.hotrod.api;
 
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 import org.infinispan.client.hotrod.RemoteCache;
