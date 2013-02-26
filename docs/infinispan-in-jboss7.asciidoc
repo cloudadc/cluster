@@ -1,6 +1,5 @@
 本文档包括以下两个部分：
 -----------------------
-
 * 在 `JBoss AS 7` standalone 模式下创建本地缓存
 * 在 `JBoss AS 7` standalone-ha 模式下创建分布式网格缓存
 
