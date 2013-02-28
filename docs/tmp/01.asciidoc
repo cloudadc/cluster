@@ -14,7 +14,7 @@
 
 第二章：软件安装及资料下载
 1. 操作系统安装
-2. httpd 安装
+2. Apache httpd 安装
 3. Java 安装
 4. Maven 安装
 5. Ant 安装

@@ -4,13 +4,62 @@
 * http://www.jboss.org/jbossas/downloads 选择版本 6 模块，点击相关版本下载，比如 6.1.0.Final
 
 * 解压下载的 .zip 文件
-----
 unzip jboss-as-distribution-6.1.0.Final.zip
-----
 
 * 启动 JBoss Application Server 6
-----
 ./run.sh
----- 
 
 * 测试，启动完成后点击 http://localhost:8080/ 查看 JBoss Application Server 6 欢迎页面
+
+
+安装 JBoss Application Server 7
+--------------------------------
+
+* http://www.jboss.org/jbossas/downloads 选择版本 7 模块，点击相关版本下载，比如 7.1.1.Final
+
+* 解压下载的 .zip 文件
+unzip jboss-as-7.1.1.Final.zip
+
+* 启动 JBoss Application Server 7
+.
+
+* 测试，启动完成后点击 http://localhost:8080/ 查看 JBoss Application Server 6 欢迎页面
+
+
+
+安装 Apache httpd
+------------------
+
+* 从当前用户下切换到root用户
+su - root
+
+* 使用如下yum 命令安装，安装完成后会显示完成提示。
+yum install httpd
+
+* 启动，重启，查看状态，关闭Apache httpd的一组命令:
+service httpd start
+service httpd restart
+service httpd status
+service httpd stop
+
+* 如何确认Apache httpd启动正常
+执行启动命令没有出错，启动完成后点击http://localhost/查看Apache httpd欢迎页面，欢迎页面可达表明安装成功。/etc/httpd目录生成，conf，conf.d，modules等目录位于该目录下。
+
+* 使用其他方式安装
+我们可以使用编译源代码的方式来安装，详细参照Apache httpd官方文档http://httpd.apache.org/docs/2.2/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
