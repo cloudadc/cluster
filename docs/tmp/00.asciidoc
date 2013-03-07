@@ -49,11 +49,76 @@ service httpd stop
 我们可以使用编译源代码的方式来安装，详细参照Apache httpd官方文档http://httpd.apache.org/docs/2.2/
 
 
+Java 安装
+本处说明如何在Linux操作系统中安装Java.
+1 下载
+从Oracle网站选择下载相应版本，例如选择下载jdk-7u10-linux-i586.tar.gz。
+2 安装
+直接解压jdk-7u10-linux-i586.tar.gz，会得到jdk1.7.0_10目录
+tar -xzvf jdk-7u10-linux-i586.tar.gz
+编辑当前用户下面.bash_profile文件，添加JAVA_HOME如下：
+JAVA_HOME=/usr/java/jdk1.7.0_10
+export JAVA_HOME
+编辑当前用户下面.bash_profile文件，将java添加到当前环境变量：
+PATH=$JAVA_HOME/bin:$PATH
+export PATH
+创建java软链接
+ln -s /usr/java/jdk1.7.0_10/bin/java /etc/alternatives/java
+ln -s /etc/alternatives/java /usr/bin/java
+检查java安装是否正确，安装完成后，新打开一个终端窗口，执行
+java -version
+如果输出如下信息则表明安装成功。
+java version "1.7.0_10"
+Java(TM) SE Runtime Environment (build 1.7.0_10-b18)
+Java HotSpot(TM) Server VM (build 23.6-b04, mixed mode)
+
+
+Maven 安装
 
 
 
 
+Ant 安装
+本处说明如何在Linux操作系统中安装Ant.
+1 下载
+从Ant网站（http://ant.apache.org/）下载响应版本，例如我们下载apache-ant-1.8.1-bin.zip
+2 安装
+解压下载的zip文件
+unzip apache-ant-1.8.1-bin.zip
+解压完成apache-ant-1.8.1文件夹生成，编辑当前用户下面.bash_profile文件，添加ANT_HOME如下：
+ANT_HOME=/usr/ant/apache-ant-1.8.1
+export ANT_HOME
+编辑当前用户下面.bash_profile文件，将Ant添加到当前环境变量：
+PATH=$ANT_HOME/bin:$PATH
+export PATH
+检查Ant安装是否正确，安装完成后，新打开一个终端窗口，执行
+ant -version
+如果输出如下信息则表明安装成功。
+Apache Ant version 1.8.1 compiled on April 30 2010
+3 一个使用Ant例子
+创建build.xml，添加如下内容
+<?xml version="1.0"?>
+<project name="testProject" default="test" basedir=".">
+      <property environment="env" />
+      <property name="app.dir" value="${basedir}" />
+      <property name="ant.home" value="${env.ANT_HOME}" />
+      <property name="mvn.home" value="${env.M3_HOME}" />
+      <property name="java.home" value="${env.JAVA_HOME}" />
+        <target name="test" >
+            <echo>app.dir: ${app.dir}</echo>
+            <echo>Ant Home: ${ant.home}</echo>
+           <echo>Maven Home: ${mvn.home}</echo>
+           <echo>Java Home: ${java.home}</echo>
+        </target>
+</project>
+保存文件，在当前文件下执行
+ant
+命令，会输出Ant安装目录，Maven安装目录，Java安装目录。
 
+Eclipse 安装
+
+
+Git 客户端安装
 
 
 
