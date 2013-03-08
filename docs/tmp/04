@@ -1,0 +1,50 @@
+本处说明如何在Linux操作系统中安装Maven.
+1.下载
+从Maven网站（http://maven.apache.org/）下载相应版本，例如我们下载apache-maven-3.0.4-bin.zip。
+2.安装
+解压下载的zip文件
+unzip apache-maven-3.0.4-bin.zip
+解压完成apache-maven-3.0.4文件夹生成，编辑当前用户下面.bash_profile文件，添加M3_HOME，将mvn添加到当前用户环境变量，添加Mavan运行的初始堆栈大小，如下：
+export M3_HOME="/usr/maven/apache-maven-3.0.4"
+export PATH="$M3_HOME/bin:$PATH"
+export MAVEN_OPTS="-Xms256m -Xmx1024m -XX:MaxPermSize=512m"
+检查Maven安装是否正确，安装完成后，新打开一个终端窗口，执行
+mvn -version
+如果输出如下信息则表明安装成功。
+Apache Maven 3.0.4 (r1232337; 2012-01-17 16:44:56+0800)
+3.一个使用Maven的简单例子
+这里我们使用Maven编译一个简单的WebService helloworld 项目，将编译完成的jar包部署到JBoss 7,运行该WebService客户端。
+到helloworld项目的根目录下，执行
+mvn clean install
+jaxws-helloworld.jar会编译生成，位于当期目录下target目录中。jaxws-helloworld-1.0.jar会安装到本地仓库.m2/repository中。
+在pom.xml中添加如下插件
+<plugin>
+    <groupId>org.jboss.as.plugins</groupId>
+    <artifactId>jboss-as-maven-plugin</artifactId>
+    <version>7.3.Final</version>
+</plugin>
+当有JBoss 7运行时，该插件可以直接将生成的jaxws-helloworld.jar直接部署到JBoss 7，具体执行
+mvn jboss-as:deploy
+我们也可以通mvn命令将jaxws-helloworld.jar从JBoss 7移除，具体执行：
+mvn jboss-as:undeploy
+在pom.xml中添加如下插件
+<plugin>
+    <artifactId>maven-jar-plugin</artifactId>
+    <configuration>
+        <archive>
+            <manifest>
+                <mainClass>com.kylin.jaxws.helloworld.client.HelloWorldClient</mainClass>
+            </manifest>
+            <manifestEntries>
+                <Jar-Version>${project.version}</Jar-Version>
+                <Jar-Name>${project.artifactId}</Jar-Name>
+            </manifestEntries>
+        </archive>
+    </configuration>
+</plugin>
+该插件会使jaxws-helloworld.jar可执行，实质是在/META-INF/MANIFEST.MF中添加如下项
+Main-Class: com.kylin.jaxws.helloworld.client.HelloWorldClient
+这样当我们执行
+java -jar jaxws-helloworld.jar
+时，com.kylin.jaxws.helloworld.client.HelloWorldClient Main方法被调运。
+

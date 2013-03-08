@@ -1,0 +1,15 @@
+﻿https://help.github.com/articles/set-up-git
+1 下载并安装git
+从git客户端网站下载客户端，如我们从http://git-scm.com/downloads下载Git-1.8.1.2-preview20130201.exe，下载完成安装。
+2 配置
+如上安装完成后，在windows操作系统桌面点击快捷按钮进入Git Bash。
+1）设定用户名，在Git Bash中执行
+git config --global user.name "ksoong"
+2)设定默认邮件地址，在Git Bash中执行
+git config --global user.mail "songzhiqi_1214@yahoo.com.cn"
+3)设定SSH安全认证公钥和私钥
+1. 生成一个新SSH认证文件
+ssh-keygen -t rsa -C "songzhiqi_1214@yahoo.com.cn"
+运行时需要输入文件保存路径和加密串，生成完成后，当前用户下会创建.ssh目录，该目录下存在公钥和私钥文件分别为id_rsa.pub，id_rsa.
+2. 将公钥添加到github
+4) 测试
