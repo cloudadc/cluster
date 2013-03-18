@@ -1,0 +1,15 @@
+2002年JBoss 2.4.64被JavaWorld评选为最好的Java应用服务器，2003年，JBoss 3.0再次入选，这标志着开源中间件进入人们视野。而且JBoss在3.0版本之后，借助与JGroups，JBossCache JBoss具备了集群的功能。 从2002年05月29日发布JBoss AS 3.0.0到今天JBoss AS 7，JBoss及JBoss缓存相关的技术主要可分为三个阶段，如下表格：
+3.x, 4.x
+2002年5月-2008年6月
+第一代JBoss，纯的JMX MBean架构
+JBoss Cache 1.x，JBoss Cache 2.x, JGroups 2.4.x
+
+5.x, 6.x
+2006年11月-2011年8月
+第二代JBoss，JMX MBean和POJO Bean架构
+JBoss Cache 3.x, JGroups 2.6.x
+
+7.x
+2010年11月-现在
+第三代JBoss，模块化（Modular Service Container）架构
+Infinispan 5.1.x, JGroups 3.0.x

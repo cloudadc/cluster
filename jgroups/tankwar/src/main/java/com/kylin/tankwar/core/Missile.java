@@ -13,7 +13,7 @@ import org.apache.log4j.Logger;
 
 public class Missile {
 	
-	private static final Logger logger = Logger.getLogger(Missile.class);
+//	private static final Logger logger = Logger.getLogger(Missile.class);
 	
 	public static final int XSPEED = 20;
 	public static final int YSPEED = 20;
@@ -192,7 +192,7 @@ public class Missile {
 		
 		if(tank.isGood() != isGood && getRect().intersects(tank.getRect())) {
 			tank.setLife(tank.getLife() - 20);
-			logger.debug("Missile " + getMissileView() + " hit Tank"  + tank.getView());
+//			logger.debug("Missile " + getMissileView() + " hit Tank"  + tank.getView());
 			return true ;
 		}
 		

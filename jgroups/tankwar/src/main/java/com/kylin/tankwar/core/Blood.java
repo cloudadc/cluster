@@ -7,7 +7,7 @@ public class Blood {
 	
 	private int x, y, w, h;
 	
-	private static final Logger logger = Logger.getLogger(Blood.class);
+//	private static final Logger logger = Logger.getLogger(Blood.class);
 	
 	int step = 0;
 	private boolean live = true;
@@ -27,7 +27,7 @@ public class Blood {
 		w = h = 15;
 		this.mainFrame = mainFrame;
 		
-		logger.info("initialize a Blood instance");
+//		logger.info("initialize a Blood instance");
 	}
 	
 	private void initArray() {

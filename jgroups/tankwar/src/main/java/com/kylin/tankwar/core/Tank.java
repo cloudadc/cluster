@@ -23,7 +23,7 @@ public class Tank {
 	public static final int XSPEED = 5;
 	public static final int YSPEED = 5;
 	
-	private static final Logger logger = Logger.getLogger(Tank.class);
+//	private static final Logger logger = Logger.getLogger(Tank.class);
 	
 	private static Random r = new Random();
 	
@@ -386,7 +386,7 @@ public class Tank {
 	
 	private void locateDirection() {
 		
-		logger.debug("locate direction [bL= " + bL + ", bU= " + bU + ", bR= " + bR + ", bD= " + bD + "]");
+//		logger.debug("locate direction [bL= " + bL + ", bU= " + bU + ", bR= " + bR + ", bD= " + bD + "]");
 		
 		if(bL && !bU && !bR && !bD) {
 			dir = Direction.L;
@@ -408,7 +408,7 @@ public class Tank {
 			dir = Direction.STOP;
 		}
 		
-		logger.debug("Tank direction: " + dir);
+//		logger.debug("Tank direction: " + dir);
 		
 		mainFrame.replicateTank(Event.TM);
 	}

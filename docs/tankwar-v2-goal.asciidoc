@@ -1,0 +1,14 @@
+What's this?
+------------
+
+This is JGroups TankWar Example Version 2
+
+Goals of TankWar Version 2
+--------------------------
+* Simplify Object mutual reference
+* Spilit Session out to TankView, MissleView, BloodView, etc, Send view instead of whole Session, Session merge will retire
+* 10 times performance enhance
+* use multiple channels, Sharing a transport between multiple channels
+
+
+
