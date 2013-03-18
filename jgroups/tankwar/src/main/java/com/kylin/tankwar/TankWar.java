@@ -2,6 +2,7 @@ package com.kylin.tankwar;
 
 import com.kylin.tankwar.core.MainFrame;
 
+
 public class TankWar {
 
 	public static void main(String[] args) {

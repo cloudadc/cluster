@@ -13,8 +13,8 @@ import javax.management.ObjectName;
 
 import org.apache.log4j.Logger;
 
-import com.kylin.tankwar.core.Tank;
 import com.kylin.tankwar.jmx.annotations.MBean;
+import com.kylin.tankwar.model.Tank;
 
 public class JMXUtil {
 	

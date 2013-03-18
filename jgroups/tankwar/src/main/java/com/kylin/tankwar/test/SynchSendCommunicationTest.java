@@ -5,10 +5,10 @@ import java.util.UUID;
 
 import org.jgroups.util.Util;
 
-import com.kylin.tankwar.core.Direction;
-import com.kylin.tankwar.core.TankView;
 import com.kylin.tankwar.jgroups.Session;
 import com.kylin.tankwar.jgroups.SynchCommunication;
+import com.kylin.tankwar.model.Direction;
+import com.kylin.tankwar.model.TankView;
 
 /**
  * Use maven build project, copy jgroups-3.1.0.Final.jar and log4j-1.2.16.jar to target folder, use the following command can test the code

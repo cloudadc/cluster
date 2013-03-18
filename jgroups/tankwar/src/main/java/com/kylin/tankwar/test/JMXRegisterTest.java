@@ -2,9 +2,9 @@ package com.kylin.tankwar.test;
 
 import javax.management.MBeanServer;
 
-import com.kylin.tankwar.core.Direction;
-import com.kylin.tankwar.core.Tank;
 import com.kylin.tankwar.jmx.JMXUtil;
+import com.kylin.tankwar.model.Direction;
+import com.kylin.tankwar.model.Tank;
 
 /**
  *  How to run?

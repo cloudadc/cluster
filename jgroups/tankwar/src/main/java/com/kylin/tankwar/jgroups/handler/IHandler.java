@@ -4,14 +4,14 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import com.kylin.tankwar.core.Blood;
-import com.kylin.tankwar.core.Event;
-import com.kylin.tankwar.core.Explode;
 import com.kylin.tankwar.core.MainFrame;
-import com.kylin.tankwar.core.Missile;
-import com.kylin.tankwar.core.Tank;
 import com.kylin.tankwar.jgroups.Communication;
 import com.kylin.tankwar.jgroups.Session;
+import com.kylin.tankwar.model.Blood;
+import com.kylin.tankwar.model.Event;
+import com.kylin.tankwar.model.Explode;
+import com.kylin.tankwar.model.Missile;
+import com.kylin.tankwar.model.Tank;
 
 public interface IHandler {
 

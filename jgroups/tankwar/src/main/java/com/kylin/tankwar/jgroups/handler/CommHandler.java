@@ -7,18 +7,18 @@ import java.util.Map.Entry;
 
 import org.apache.log4j.Logger;
 
-import com.kylin.tankwar.core.Blood;
-import com.kylin.tankwar.core.BloodView;
-import com.kylin.tankwar.core.Event;
-import com.kylin.tankwar.core.Explode;
-import com.kylin.tankwar.core.ExplodeView;
 import com.kylin.tankwar.core.MainFrame;
-import com.kylin.tankwar.core.Missile;
-import com.kylin.tankwar.core.MissileView;
-import com.kylin.tankwar.core.Tank;
-import com.kylin.tankwar.core.TankView;
 import com.kylin.tankwar.jgroups.Communication;
 import com.kylin.tankwar.jgroups.Session;
+import com.kylin.tankwar.model.Blood;
+import com.kylin.tankwar.model.BloodView;
+import com.kylin.tankwar.model.Event;
+import com.kylin.tankwar.model.Explode;
+import com.kylin.tankwar.model.ExplodeView;
+import com.kylin.tankwar.model.Missile;
+import com.kylin.tankwar.model.MissileView;
+import com.kylin.tankwar.model.Tank;
+import com.kylin.tankwar.model.TankView;
 
 public class CommHandler implements IHandler {
 	

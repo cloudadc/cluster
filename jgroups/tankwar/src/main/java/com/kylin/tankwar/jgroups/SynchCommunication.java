@@ -11,7 +11,6 @@ import org.jgroups.util.RspList;
 
 import com.kylin.tankwar.core.MainFrame;
 
-
 public class SynchCommunication extends Communication implements RequestHandler {
 
 	public SynchCommunication(MainFrame mainFrame) {

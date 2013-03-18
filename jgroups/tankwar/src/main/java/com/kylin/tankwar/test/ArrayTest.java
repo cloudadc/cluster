@@ -1,6 +1,6 @@
 package com.kylin.tankwar.test;
 
-import com.kylin.tankwar.core.Point;
+import com.kylin.tankwar.model.Point;
 
 public class ArrayTest {
 

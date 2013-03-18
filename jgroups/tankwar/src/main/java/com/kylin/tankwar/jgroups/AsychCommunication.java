@@ -5,6 +5,7 @@ import org.jgroups.JChannel;
 
 import com.kylin.tankwar.core.MainFrame;
 
+
 public class AsychCommunication extends Communication {
 	
 	private static final Logger logger = Logger.getLogger(AsychCommunication.class);

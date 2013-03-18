@@ -5,8 +5,8 @@ import org.jgroups.Message;
 import org.jgroups.ReceiverAdapter;
 import org.jgroups.View;
 
-import com.kylin.tankwar.core.Event;
 import com.kylin.tankwar.core.MainFrame;
+import com.kylin.tankwar.model.Event;
 
 public class AsychReceiver extends ReceiverAdapter {
 	

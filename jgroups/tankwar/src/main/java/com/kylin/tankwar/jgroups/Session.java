@@ -7,11 +7,11 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
-import com.kylin.tankwar.core.BloodView;
-import com.kylin.tankwar.core.Event;
-import com.kylin.tankwar.core.ExplodeView;
-import com.kylin.tankwar.core.MissileView;
-import com.kylin.tankwar.core.TankView;
+import com.kylin.tankwar.model.BloodView;
+import com.kylin.tankwar.model.Event;
+import com.kylin.tankwar.model.ExplodeView;
+import com.kylin.tankwar.model.MissileView;
+import com.kylin.tankwar.model.TankView;
 
 public class Session implements Serializable {
 

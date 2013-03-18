@@ -1,6 +1,6 @@
 package com.kylin.tankwar.test;
 
-import com.kylin.tankwar.core.Counter;
+import com.kylin.tankwar.model.Counter;
 
 public class CounterTest {
 

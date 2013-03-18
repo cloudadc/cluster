@@ -21,13 +21,6 @@ import com.kylin.tankwar.jgroups.AsychCommunication;
 import com.kylin.tankwar.jgroups.Communication;
 import com.kylin.tankwar.jgroups.handler.CommHandler;
 import com.kylin.tankwar.jgroups.handler.IHandler;
-import com.kylin.tankwar.model.Blood;
-import com.kylin.tankwar.model.Direction;
-import com.kylin.tankwar.model.Event;
-import com.kylin.tankwar.model.Explode;
-import com.kylin.tankwar.model.Missile;
-import com.kylin.tankwar.model.Tank;
-import com.kylin.tankwar.model.Wall;
 
 public class MainFrame extends Frame {
 
@@ -90,27 +83,21 @@ public class MainFrame extends Frame {
 	public Blood getBlood() {
 		return blood ;
 	}
-	
+
 	public MainFrame() {
 		
-	}
-
-	public MainFrame(Communication comm) {
-		
-		this.comm = comm ;
-		initTank();	
-		launchFrame();
-		
-		logger.info("initialize  MainFrame");
 	}
 	
 	public MainFrame(String props, String name) {
 		
-		initComm(props, name);
-		initTank();
-		launchFrame();
-		
 		logger.info("initialize  MainFrame");
+		
+		initComm(props, name);
+		
+		initTank();
+		
+		launchFrame();
+
 	}
 
 	private void initTank() {
@@ -127,12 +114,11 @@ public class MainFrame extends Frame {
 		int y = getRandom(GAME_HEIGHT - 100);
 		
 		myTank = new Tank(id, isGood, true, 100, x, y, Direction.STOP, Direction.D, this);
+		tankMap.put(id, myTank);
+		logger.info("initialized a Tank, " + myTank.getView());
 		
-		comm.put(id, myTank);		
-		comm.replicateTank(myTank.getView());
-		comm.replicateBlood(blood.getBooldView());
-//		replicateTank(Event.TN);
-//		replicateBlood(Event.B);
+		replicateTank(Event.TN);
+		replicateBlood(Event.B);
 	}
 	
 	public int getRandom(int max) {
@@ -160,8 +146,12 @@ public class MainFrame extends Frame {
 		logger.info("launch Frame Start");
 		
 		this.setSize(GAME_WIDTH, GAME_HEIGHT);
-	
-		this.setTitle("TankWar" + " - " + comm.getChannelName());
+		
+		String name = "TankWar";
+		if(null != comm) {
+			name = name + " - " + comm.getChannelName();
+		}
+		this.setTitle(name);
 		
 		this.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
@@ -215,7 +205,7 @@ public class MainFrame extends Frame {
 	/**
 	 *  keep each time death missiles
 	 */
-	public Vector<String> vactor = new Vector<String>(2, 2);
+	Vector<String> vactor = new Vector<String>(2, 2);
 	
 	public void paint(Graphics g) {
 		
@@ -247,18 +237,18 @@ public class MainFrame extends Frame {
 			getComm().getSession().romoveMissileView(id);
 		}
 		
-		for(Tank tank : comm.getTankMap().values()) {
+		for(Tank tank : tankMap.values()) {
 			
 			if(!tank.isLive()) {
 				continue;
 			} else if(myTank.getId().compareTo(tank.getId()) == 0 && myTank.getLife() > 0 && myTank.getRect().intersects(blood.getRect()) && blood.isLive()) {
 				myTank.setLife(100);
-				comm.replicateTank(myTank.getView());
+				replicateTank(Event.TM);
 				blood.setLive(false);
-				comm.replicateBlood(blood.getBooldView());
+				replicateBlood(Event.B);
 			}else if(myTank.getId().compareTo(tank.getId()) == 0 && myTank.getLife() <= 0) {
 				myTank.setLive(false);
-				comm.replicateTank(myTank.getView());
+				replicateTank(Event.TM);
 				continue;
 			} else if(myTank.getId().compareTo(tank.getId()) != 0 && myTank.getRect().intersects(tank.getRect())) {
 
@@ -268,7 +258,7 @@ public class MainFrame extends Frame {
 					myTank.setLife(myTank.getLife() - 20);
 				}
 				
-				comm.replicateTank(myTank.getView());
+				replicateTank(Event.TM);
 			}
 			
 			blood.draw(g);
