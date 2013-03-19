@@ -60,6 +60,23 @@ public class Session implements Serializable {
 	public Type type() {
 		return type;
 	}
+
+	public String toString() {
+		
+		StringBuffer sb = new StringBuffer();
+		sb.append("Session [type = " + type + ", ");
+		if (null != tankView && !"".equals(tankView))
+			sb.append("tankView = " + tankView);
+		if (null != bloodView && !"".equals(bloodView))
+			sb.append("bloodView = " + bloodView);
+		if (null != explodeView && !"".equals(explodeView))
+			sb.append("explodeView = " + explodeView);
+		if (null != missileView && !"".equals(missileView))
+			sb.append("missileView = " + missileView);
+		sb.append("]");
+		
+		return sb.toString();
+	}
 	
 	
 

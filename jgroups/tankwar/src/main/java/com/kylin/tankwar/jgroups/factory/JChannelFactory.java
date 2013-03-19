@@ -14,6 +14,7 @@ import org.apache.log4j.Logger;
 import org.jgroups.Channel;
 import org.jgroups.ChannelListener;
 import org.jgroups.JChannel;
+import org.jgroups.ReceiverAdapter;
 import org.jgroups.conf.ProtocolConfiguration;
 import org.jgroups.conf.ProtocolStackConfigurator;
 import org.jgroups.jmx.JmxConfigurator;
@@ -129,6 +130,13 @@ public class JChannelFactory implements ChannelFactory, ChannelListener, Protoco
 	public void channelClosed(Channel channel) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public JChannel createChannel(String name, String cluster,
+			ReceiverAdapter reciever) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

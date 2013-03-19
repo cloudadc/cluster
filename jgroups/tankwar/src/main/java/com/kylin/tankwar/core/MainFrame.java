@@ -106,7 +106,7 @@ public class MainFrame extends Frame {
 	
 	public MainFrame(String props, String name) {
 		
-		initComm(props, name);
+//		initComm(props, name);
 		initTank();
 		launchFrame();
 		
@@ -146,14 +146,14 @@ public class MainFrame extends Frame {
 		}
 	}
 
-	private void initComm(String props, String name) {
-		
-		logger.info("initialize communication");
-		
-		comm = new AsychCommunication(this);
-		
-		comm.connect(props, name);
-	}
+//	private void initComm(String props, String name) {
+//		
+//		logger.info("initialize communication");
+//		
+//		comm = new AsychCommunication(this);
+//		
+//		comm.connect(props, name);
+//	}
 	
 	private void launchFrame() {
 		
@@ -244,7 +244,7 @@ public class MainFrame extends Frame {
 		
 		for(String id : vactor) {
 			missileMap.remove(id);
-			getComm().getSession().romoveMissileView(id);
+//			getComm().getSession().romoveMissileView(id);
 		}
 		
 		for(Tank tank : comm.getTankMap().values()) {

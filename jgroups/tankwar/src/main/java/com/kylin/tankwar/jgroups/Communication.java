@@ -1,7 +1,10 @@
 package com.kylin.tankwar.jgroups;
 
 import java.util.Map;
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 import org.jgroups.JChannel;
 
@@ -30,7 +33,6 @@ public abstract class Communication implements ICommunication, IReplication, IJG
 		tankMap.put(key, value);
 	}
 	
-	
 
 	public void replicateTank(TankView view) {
 		asychSend(new Session(view, Type.T));
@@ -48,7 +50,39 @@ public abstract class Communication implements ICommunication, IReplication, IJG
 		asychSend(new Session(view, Type.M));
 	}
 	
+	protected Executor tankExecutor, missileExecutor, otherExecutor ;
+	protected ArrayBlockingQueue<Session> tankQueue, missileQueue, otherQueue ;
 	
+	protected String tankChannelName, missileChannelName, otherChannelName ;
+	protected String tankClusterlName, missileClusterName, otherClusterName ;
+	
+	protected String jgroupsProps;
+	
+	public Communication(String jgroupsProps){
+		
+		this.jgroupsProps = jgroupsProps ;
+		
+		tankExecutor = Executors.newCachedThreadPool();
+		missileExecutor = Executors.newCachedThreadPool();
+		otherExecutor = Executors.newCachedThreadPool();
+		
+		tankQueue = new ArrayBlockingQueue<Session> (500);
+		missileQueue = new ArrayBlockingQueue<Session> (500);
+		otherQueue = new ArrayBlockingQueue<Session> (500);
+		
+		tankChannelName = "TankWar-Tank";
+		missileChannelName = "TankWar-Missile";
+		otherChannelName = "TankWar-Other";
+		
+		tankClusterlName = "TankWar-Tank-Cluster";
+		missileClusterName = "TankWar-Missile-Cluster";
+		otherClusterName = "TankWar-Other-Cluster";
+		
+		startThreads();
+	}
+	
+
+	protected abstract void startThreads() ;
 
 	protected static final String CLUSTER_NAME = "TankWarCluster";
 
@@ -65,10 +99,6 @@ public abstract class Communication implements ICommunication, IReplication, IJG
 		this.mainFrame = mainFrame;
 	}
 
-	/**
-	 * The session keep all group instance, sessions received from any member in group will be merged to this session.
-	 */
-//	Session session = new Session();
 	
 	public int getMemberSize() {
 		
@@ -86,15 +116,9 @@ public abstract class Communication implements ICommunication, IReplication, IJG
 			return channel.getName();
 		}
 	}
-	
-//	public Session getSession() {
-//		return session;
-//	}
 
 	
 
-	public abstract void connect(String props, String name);
 	
-	public abstract void close(); 
 
 }

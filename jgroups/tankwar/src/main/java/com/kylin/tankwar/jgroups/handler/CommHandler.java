@@ -38,7 +38,7 @@ public class CommHandler implements IHandler {
 		session.addTankView(tank.getId(), tank.getView());
 		
 		// use asych currently
-		comm.asychSend(session);
+//		comm.asychSend(session);
 	}
 	
 	public void sendHandler(Missile missile, Communication comm, Event event) {
@@ -52,7 +52,7 @@ public class CommHandler implements IHandler {
 		session.addMissileView(missile.getId(), missile.getMissileView());
 		
 		// use asych currently
-		comm.asychSend(session);
+//		comm.asychSend(session);
 	}
 	
 	public void sendHandler(Explode explode, Communication comm, Event event) {
@@ -66,7 +66,7 @@ public class CommHandler implements IHandler {
 		session.setExplodeView(explode.getView());
 		
 		// use asych currently
-		comm.asychSend(session);
+//		comm.asychSend(session);
 	}
 	
 	public void sendHandler(Blood blood, Communication comm, Event event) {
@@ -80,7 +80,7 @@ public class CommHandler implements IHandler {
 		session.setBloodView(blood.getBooldView());
 		
 		// use asych currently
-		comm.asychSend(session);
+//		comm.asychSend(session);
 	}
 
 	public void recieveHandler(MainFrame mainFrame, Session session, Session rec) {
@@ -209,7 +209,7 @@ public class CommHandler implements IHandler {
 		}
 		
 		// use asych currently
-		comm.asychSend(session);
+//		comm.asychSend(session);
 	}
 
 	public void recieveHandler(String id, Map<String, Missile> missileMap, Session session, MainFrame mainFrame) {
