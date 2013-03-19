@@ -34,6 +34,7 @@
     	<copy todir="${build.dir}/conf" >
     		<fileset dir="${resource.dir}/conf" includes="log4j.xml"/>
     		<fileset dir="${resource.dir}/conf" includes="total-replication.xml"/>
+    		<fileset dir="${resource.dir}/conf" includes="tankwar-udp.xml"/>
     	</copy>
     	
     	<copy todir="${build.dir}/bin" >
@@ -41,6 +42,8 @@
     		<fileset dir="${resource.dir}/conf" includes="run.bat"/>
     		<fileset dir="${resource.dir}/conf" includes="jbosscache.sh"/>
     		<fileset dir="${resource.dir}/conf" includes="jbosscache.bat"/>
+    		<fileset dir="${resource.dir}/conf" includes="tankwar.sh"/>
+    		<fileset dir="${resource.dir}/conf" includes="tankwar.bat"/>
 		    <fileset dir="${resource.dir}/conf" includes="run.conf"/>
     	</copy>
 
@@ -69,6 +72,18 @@
     		<fileset dir="${dependency.dir}" includes="jbosscache-helloworld-1.0.jar"/>
     	</copy>
     	
+    	<copy todir="${build.dir}/modules/com/kylin/tankwar/main" >
+    		<fileset dir="${dependency.dir}" includes="jgroups-tankwar-1.0.jar"/>
+    	</copy>
+    	
+    	<copy todir="${build.dir}/modules/org/jgroups/main" >
+    		<fileset dir="${dependency.dir}" includes="jgroups-3.2.7.Final.jar"/>
+    	</copy>
+    	
+    	<copy todir="${build.dir}/modules/org/hamcrest/main" >
+    		<fileset dir="${dependency.dir}" includes="hamcrest-core-1.1.jar"/>
+    	</copy>
+    	
     	<copy todir="${build.dir}/modules/com/customized/tools/cli/main" >
     	   <fileset dir="${dependency.dir}" includes="cst-cli-2.0.jar"/>
     	</copy>
@@ -84,6 +99,11 @@
     	<copy todir="${build.dir}/modules/test/main" >
     		<fileset dir="${target.dir}" includes="bootstrap.jar"/>
     	</copy>
+    	
+    	<copy todir="${build.dir}/modules/bootstrap/tankwar/main" >
+    		<fileset dir="${target.dir}" includes="bootstrap.jar"/>
+    	</copy>
 
+    	<chmod file="${build.dir}/bin/*.sh" perm="g+w" type="both"/>
     </target>
 </project> 

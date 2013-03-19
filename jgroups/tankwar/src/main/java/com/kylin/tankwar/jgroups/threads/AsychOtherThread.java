@@ -36,7 +36,7 @@ public class AsychOtherThread extends ThreadBase implements Runnable {
 		
 		Session session = (Session) msg.getObject();
 		
-		if(session.type().equals(Type.B)) {
+		if(session.type().equals(Type.B) && null != blood) {
 			blood.updateBlood(session.bloodView());
 		} else if(session.type().equals(Type.E)) {
 			explodes.add(new Explode(session.explodeView()));
