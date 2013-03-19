@@ -3,6 +3,8 @@ package com.kylin.tankwar.jgroups;
 import org.apache.log4j.Logger;
 
 import com.kylin.tankwar.core.Session;
+import com.kylin.tankwar.jgroups.threads.AsychMissileThread;
+import com.kylin.tankwar.jgroups.threads.AsychOtherThread;
 import com.kylin.tankwar.jgroups.threads.AsychTankThread;
 
 
@@ -17,6 +19,8 @@ public class AsychCommunication extends Communication {
 		logger.info("Start Thread");
 		
 		tankExecutor.execute(new AsychTankThread(tankQueue, getTankMap(), tankChannelName, tankClusterlName, jgroupsProps));
+		missileExecutor.execute(new AsychMissileThread(missileQueue, getMissileMap(), missileChannelName, missileClusterName, jgroupsProps));
+		otherExecutor.execute(new AsychOtherThread(otherQueue, explodes, getBlood(), otherChannelName, otherClusterName, jgroupsProps));
 	}	
 	
 

@@ -8,12 +8,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 import java.util.Random;
-import java.util.Vector;
-import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.log4j.Logger;
 
@@ -22,7 +17,6 @@ import com.kylin.tankwar.jgroups.handler.CommHandler;
 import com.kylin.tankwar.jgroups.handler.IHandler;
 import com.kylin.tankwar.model.Blood;
 import com.kylin.tankwar.model.Direction;
-import com.kylin.tankwar.model.Event;
 import com.kylin.tankwar.model.Explode;
 import com.kylin.tankwar.model.Missile;
 import com.kylin.tankwar.model.Tank;
@@ -49,7 +43,6 @@ public class MainFrame extends Frame {
 		return handler;
 	}
 	
-	
 	Wall w1 = new Wall(100, 200, 20, 200);
 	Wall w2 = new Wall(300, 100, 200, 20);
 	Wall w3 = new Wall(650, 200, 20, 200);
@@ -59,55 +52,25 @@ public class MainFrame extends Frame {
 	
 	
 	Tank myTank ;
-	Map<String,Tank> tankMap = new ConcurrentHashMap<String,Tank>();
 
-	public Map<String, Tank> getTankMap() {
-		return tankMap;
-	}
-	
-	public Tank getMyTank() {
-		return myTank;
-	}
-	
-	Map<String, Missile> missileMap = new ConcurrentHashMap<String, Missile>();
-	
-
-	public Map<String, Missile> getMissileMap() {
-		return missileMap;
-	}
-	
 	Explode myExplode = null;
-	List<Explode> explodes = new ArrayList<Explode>();
-
-	public List<Explode> getExplodes() {
-		return explodes;
-	}
 	
-	Blood blood = new Blood(this);
-	
-	public Blood getBlood() {
-		return blood ;
-	}
-	
-	public MainFrame() {
-		
-	}
+	Blood blood = null;
 
 	public MainFrame(Communication comm, boolean isGood) {
 		
 		this.comm = comm ;
 		initTank(isGood);	
+		initBlood();
 		launchFrame();
 		
 		logger.info("initialize  MainFrame");
 	}
-	
-	public MainFrame(String props, String name) {
-		
-		initTank(false);
-		launchFrame();
-		
-		logger.info("initialize  MainFrame");
+
+	private void initBlood() {
+		blood = new Blood(this);
+		comm.setBlood(blood);
+		comm.replicateBlood(blood.getBooldView());
 	}
 
 	private void initTank(boolean isGood) {
@@ -121,7 +84,6 @@ public class MainFrame extends Frame {
 		
 		comm.put(id, myTank);		
 		comm.replicateTank(myTank.getView());
-		comm.replicateBlood(blood.getBooldView());
 	}
 	
 	public int getRandom(int max) {
@@ -135,15 +97,6 @@ public class MainFrame extends Frame {
 		}
 	}
 
-//	private void initComm(String props, String name) {
-//		
-//		logger.info("initialize communication");
-//		
-//		comm = new AsychCommunication(this);
-//		
-//		comm.connect(props, name);
-//	}
-	
 	private void launchFrame() {
 		
 		logger.info("launch Frame Start");
@@ -180,65 +133,28 @@ public class MainFrame extends Frame {
 		new Thread(new PaintThread()).start();
 	}
 	
-//	public void replicateTank(Event event) {
-//		handler.sendHandler(myTank, comm, event);
-//	}
-	
-	@Deprecated
-	public void replicateMissile(Event event) {
-		handler.sendHandler(myTank.getId(), missileMap.values(), comm, event);
-	}
-	
-	public void replicateExplode(Event event) {
-		handler.sendHandler(myExplode, comm, event);
-	}
-	
-	public void replicateBlood(Event event) {
-		handler.sendHandler(blood, comm, event);
-	}
-	
-	public void replicateMissile(Missile missile, Event event) {
-		handler.sendHandler(missile, comm, event);
-	}
-	
-	/**
-	 *  keep each time death missiles
-	 */
-	public Vector<String> vactor = new Vector<String>(2, 2);
-	
 	public void paint(Graphics g) {
 		
-		g.drawString("Tanks count: " + tankMap.keySet().size() + ", Missiles count: " + missileMap.size() + ", Life: " + myTank.getLife() + ", Rank: 1", 10, 50);
-		
-		vactor.clear();
-		
-		for(Missile missile : missileMap.values()) {
-			
+		g.drawString("Tanks count: " + comm.getMemberSize()+ ", Missiles count: " + comm.getMissileMap().size() +  ", Rank: 1", 10, 50);
+				
+		for(Missile missile : comm.getMissileMap().values()) {
 			if(missile.getTankId().compareTo(myTank.getId()) == 0) {
-				
-				if(hitWall(missile) || missile.hitTank(getTankMap().values())){
-					vactor.add(missile.getId());
-				}
-				
+				hitWall(missile) ;
+				missile.hitTank(comm.getTankMap().values());
 				missile.draw(g, true);
 			} else {
 				
 				if(missile.hitTank(myTank)) {
 					comm.replicateTank(myTank.getView());
 				}
-				
 				missile.draw(g, false);
 			}				
 		}
-		
-		for(String id : vactor) {
-			missileMap.remove(id);
-//			getComm().getSession().romoveMissileView(id);
-		}
-		
+
 		for(Tank tank : comm.getTankMap().values()) {
 			
 			if(!tank.isLive()) {
+				comm.getTankMap().remove(tank.getId());
 				continue;
 			} else if(myTank.getId().compareTo(tank.getId()) == 0 && myTank.getLife() > 0 && myTank.getRect().intersects(blood.getRect()) && blood.isLive()) {
 				myTank.setLife(100);
@@ -260,14 +176,14 @@ public class MainFrame extends Frame {
 				comm.replicateTank(myTank.getView());
 			}
 			
-			blood.draw(g);
+			comm.getBlood().draw(g);
 			
 			tank.draw(g);
 		}
 		
 		if(!myTank.isLive() && myTank.isExplode()){
 			myExplode = new Explode(myTank.getX(), myTank.getY(), myTank.getId());
-			replicateExplode(Event.EM);
+			comm.replicateExplode(myExplode.getView());
 			myTank.setExplode(false);
 		}
 		
@@ -288,12 +204,13 @@ public class MainFrame extends Frame {
 			}
 		}
 		
-		for(int i = 0 ; i < getExplodes().size() ; i ++ ) {
-			Explode e = explodes.get(i);
+		int size = comm.getExplodes().size();
+		for(int i = 0 ; i < size ; i ++ ) {
+			Explode e = comm.getExplodes().get(i);
 			e.draw(g);
 			
 			if(!e.isLive()) {
-				explodes.remove(i);
+				comm.getExplodes().remove(i);
 			}
 		}
 		
@@ -327,14 +244,6 @@ public class MainFrame extends Frame {
 		g.drawImage(offScreenImage, 0, 0, null);
 	}
 
-	public static void main(String[] args) {
-
-		MainFrame main = new MainFrame();
-		main.initTank(false);
-		main.launchFrame();
-	}
-
-
 	private class PaintThread implements Runnable {
 
 		public void run() {
@@ -358,7 +267,6 @@ public class MainFrame extends Frame {
 		public void keyPressed(KeyEvent e) {
 			myTank.keyPressed(e);
 		}
-		
 	}
 
 }

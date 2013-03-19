@@ -37,4 +37,8 @@ public class ThreadBase extends ReceiverAdapter {
 		}
 
 	}
+	
+	public boolean isCoordinator() {
+		return channel.getView().getCreator().equals(channel.getView().getMembers().get(0));
+	}
 }

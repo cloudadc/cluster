@@ -89,23 +89,23 @@ public class CommHandler implements IHandler {
 		
 		session.merge(rec);
 		
-		for(TankView view : rec.getTankViewMap().values()) {
+/*		for(TankView view : rec.getTankViewMap().values()) {
 			
-			if(view.isLive()) {
+			if(view.isLive()) {*/
 				
-				Tank tank = mainFrame.getTankMap().get(view.getId());
-				
-				if(null == tank) {
-					Tank groupTank = new Tank(view);
-					mainFrame.getTankMap().put(view.getId(), groupTank);
-				} else {
-					tank.updateTank(view);
-				}
-			} else {
-				session.removeTankView(view.getId());
-				mainFrame.getTankMap().remove(view.getId());
-			}
-		}
+//				Tank tank = mainFrame.getTankMap().get(view.getId());
+//				
+//				if(null == tank) {
+//					Tank groupTank = new Tank(view);
+//					mainFrame.getTankMap().put(view.getId(), groupTank);
+//				} else {
+//					tank.updateTank(view);
+//				}
+//			} else {
+//				session.removeTankView(view.getId());
+//				mainFrame.getTankMap().remove(view.getId());
+//			}
+//		}
 		
 		if(rec.getEvent() == Event.TN) {
 //			mainFrame.replicateTank(Event.TM);
@@ -237,7 +237,7 @@ public class CommHandler implements IHandler {
 		}
 		
 		if(null != missileId) {
-			mainFrame.getMissileMap().remove(missileId);
+//			mainFrame.getMissileMap().remove(missileId);
 			session.romoveMissileView(missileId);
 		}
 		
@@ -263,9 +263,9 @@ public class CommHandler implements IHandler {
 		
 		logBeforeSession(session);
 		
-		mainFrame.getTankMap().get(tankId).updateTank(session.getTankView(tankId));
-		mainFrame.getMissileMap().remove(missileId);
-		session.romoveMissileView(missileId);
+//		mainFrame.getTankMap().get(tankId).updateTank(session.getTankView(tankId));
+//		mainFrame.getMissileMap().remove(missileId);
+//		session.romoveMissileView(missileId);
 		
 		logAfterSession(session);
 	}

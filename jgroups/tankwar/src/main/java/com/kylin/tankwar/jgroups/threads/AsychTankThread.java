@@ -28,7 +28,7 @@ public class AsychTankThread extends ThreadBase implements Runnable {
 	public void receive(Message msg) {
 		
 		if(logger.isDebugEnabled()) {
-			logger.debug("handle message, " + msg.printHeaders() + " | " + msg.getSrc() + " | " + msg.toString()) ;
+			logger.debug("handle message, " + msg.printHeaders() + " | " + msg.getSrc()  + " | "  + msg.getObject()) ;
 		}
 		
 		Session session = (Session) msg.getObject();

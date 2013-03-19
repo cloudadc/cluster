@@ -59,7 +59,7 @@ public class Blood {
 			if(count == 1000) {
 				count = 0;
 				live = true;
-				mainFrame.replicateBlood(Event.B);
+				mainFrame.getComm().replicateBlood(getBooldView());
 			}
 			
 			return;

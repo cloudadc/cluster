@@ -8,15 +8,11 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
-
 import com.kylin.tankwar.core.MainFrame;
 
 
 public class Missile {
-	
-//	private static final Logger logger = Logger.getLogger(Missile.class);
-	
+		
 	public static final int XSPEED = 20;
 	public static final int YSPEED = 20;
 	
@@ -165,10 +161,13 @@ public class Missile {
 		
 		if(x < 0 || y < 0 || y > MainFrame.GAME_HEIGHT || x > MainFrame.GAME_WIDTH) {
 			isLive = false;
-			mainFrame.vactor.add(getId());
 		}
 		
-		mainFrame.replicateMissile(this, Event.MM);
+		mainFrame.getComm().replicateMissile(getMissileView());
+		
+		if(!isLive) {
+			mainFrame.getComm().getMissileMap().remove(id);
+		}
 	}
 	
 	public Rectangle getRect() {
@@ -194,7 +193,6 @@ public class Missile {
 		
 		if(tank.isGood() != isGood && getRect().intersects(tank.getRect())) {
 			tank.setLife(tank.getLife() - 20);
-//			logger.debug("Missile " + getMissileView() + " hit Tank"  + tank.getView());
 			return true ;
 		}
 		

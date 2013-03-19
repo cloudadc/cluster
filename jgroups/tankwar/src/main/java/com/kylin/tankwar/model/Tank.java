@@ -10,8 +10,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-import org.apache.log4j.Logger;
-
 import com.kylin.tankwar.core.MainFrame;
 import com.kylin.tankwar.jmx.annotations.MBean;
 
@@ -23,9 +21,7 @@ public class Tank {
 	
 	public static final int XSPEED = 5;
 	public static final int YSPEED = 5;
-	
-//	private static final Logger logger = Logger.getLogger(Tank.class);
-	
+		
 	private static Random r = new Random();
 	
 	private boolean bL = false;
@@ -330,15 +326,6 @@ public class Tank {
 		locateDirection();
 		
 	}
-	
-//	private boolean isFire() {
-//		
-//		for(Missile view : mainFrame.getMissileMap().values()) {
-//			
-//		}
-//		
-//		return false;
-//	}
 
 	private void recover() {
 		
@@ -379,16 +366,14 @@ public class Tank {
 			y = this.y + Tank.HEIGHT/2 - Missile.HEIGHT/2 + 10;
 		}
 		
-		String id = mainFrame.getComm().getChannelName() + "-missile-" + Counter.MISSILE_ID_GEN.getAndIncrement();
+		String id = mainFrame.getComm().getName() + "-missile-" + Counter.MISSILE_ID_GEN.getAndIncrement();
 		Missile missile = new Missile(id, getId(),x, y, dir, isGood, true, mainFrame);
-		mainFrame.getMissileMap().put(id, missile);
+		mainFrame.getComm().getMissileMap().put(id, missile);
 		
 	}
 	
 	private void locateDirection() {
-		
-//		logger.debug("locate direction [bL= " + bL + ", bU= " + bU + ", bR= " + bR + ", bD= " + bD + "]");
-		
+				
 		if(bL && !bU && !bR && !bD) {
 			dir = Direction.L;
 		} else if(bL && bU && !bR && !bD) {
@@ -408,9 +393,7 @@ public class Tank {
 		} else if(!bL && !bU && !bR && !bD) {
 			dir = Direction.STOP;
 		}
-		
-//		logger.debug("Tank direction: " + dir);
-		
+				
 		mainFrame.getComm().replicateTank(getView());
 	}
 	
