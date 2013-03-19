@@ -7,8 +7,8 @@ import com.kylin.tankwar.core.Session;
 
 public class SynchCommunication extends Communication implements RequestHandler {
 
-	public SynchCommunication(String jgroupsProps) {
-		super(jgroupsProps);
+	public SynchCommunication(String jgroupsProps, String name) {
+		super(jgroupsProps, name);
 	}
 
 	@Override
@@ -34,6 +34,12 @@ public class SynchCommunication extends Communication implements RequestHandler 
 	protected void startThreads() {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public String getChannelName() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 

@@ -6,6 +6,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
+import org.apache.log4j.Logger;
 import org.jgroups.JChannel;
 
 import com.kylin.tankwar.core.ICommunication;
@@ -23,6 +24,8 @@ import com.kylin.tankwar.model.TankView;
 
 public abstract class Communication implements ICommunication, IReplication, IJGroups, ITank{
 	
+	private final static Logger logger = Logger.getLogger(Communication.class);
+	
 	Map<String,Tank> tankMap = new ConcurrentHashMap<String,Tank>();
 	
 	public Map<String, Tank> getTankMap() {
@@ -33,9 +36,21 @@ public abstract class Communication implements ICommunication, IReplication, IJG
 		tankMap.put(key, value);
 	}
 	
+	public String getName() {
+		return name ;
+	}
+	
+	public int getMemberSize() {	
+		return getTankMap().size();
+	}
+	
 
 	public void replicateTank(TankView view) {
-		asychSend(new Session(view, Type.T));
+		try {
+			tankQueue.put(new Session(view, Type.T));
+		} catch (InterruptedException e) {
+			throw new TankWarCommunicationException("replicate Tank Error", e);
+		}
 	}
 
 	public void replicateBlood(BloodView view) {
@@ -57,22 +72,26 @@ public abstract class Communication implements ICommunication, IReplication, IJG
 	protected String tankClusterlName, missileClusterName, otherClusterName ;
 	
 	protected String jgroupsProps;
+	private String name;
 	
-	public Communication(String jgroupsProps){
+	public Communication(String jgroupsProps, String name){
 		
 		this.jgroupsProps = jgroupsProps ;
+		this.name = name;
 		
 		tankExecutor = Executors.newCachedThreadPool();
 		missileExecutor = Executors.newCachedThreadPool();
 		otherExecutor = Executors.newCachedThreadPool();
+		logger.info("initialized ThreadPools");
 		
 		tankQueue = new ArrayBlockingQueue<Session> (500);
 		missileQueue = new ArrayBlockingQueue<Session> (500);
 		otherQueue = new ArrayBlockingQueue<Session> (500);
+		logger.info("initialized blocking queue");
 		
-		tankChannelName = "TankWar-Tank";
-		missileChannelName = "TankWar-Missile";
-		otherChannelName = "TankWar-Other";
+		tankChannelName = name + "-Tank";
+		missileChannelName = name + "-Missile";
+		otherChannelName = name + "-Other";
 		
 		tankClusterlName = "TankWar-Tank-Cluster";
 		missileClusterName = "TankWar-Missile-Cluster";
@@ -100,22 +119,8 @@ public abstract class Communication implements ICommunication, IReplication, IJG
 	}
 
 	
-	public int getMemberSize() {
-		
-		if(null == channel) {
-			return 0 ;
-		} else {
-			return channel.getView().getMembers().size();
-		}
-	}
 	
-	public String getChannelName() {
-		if(null == channel) {
-			return "";
-		} else {
-			return channel.getName();
-		}
-	}
+	
 
 	
 

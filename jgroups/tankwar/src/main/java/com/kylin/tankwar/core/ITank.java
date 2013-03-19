@@ -9,4 +9,8 @@ public interface ITank {
 	public Map<String, Tank> getTankMap();
 	
 	public void put(String key, Tank value);
+	
+	public String getName();
+	
+	public int getMemberSize();
 }

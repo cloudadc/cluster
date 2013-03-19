@@ -1,8 +1,11 @@
 package com.kylin.tankwar.jgroups.threads;
 
 import org.apache.log4j.Logger;
+import org.jgroups.JChannel;
 import org.jgroups.ReceiverAdapter;
 import org.jgroups.View;
+
+import com.kylin.tankwar.jgroups.factory.JChannelDefaultFactory;
 
 public class ThreadBase extends ReceiverAdapter {
 	
@@ -12,10 +15,14 @@ public class ThreadBase extends ReceiverAdapter {
 	protected String cluster;
 	protected String jgroupsProps;
 	
+	protected JChannel channel;
+	
 	public ThreadBase(String name, String cluster, String jgroupsProps){
 		this.name = name ;
 		this.cluster = cluster ;
 		this.jgroupsProps = jgroupsProps;
+		
+		channel = JChannelDefaultFactory.newInstance().setJgroupsProps(jgroupsProps).createChannel(name, cluster, this);
 	}
 
 	public void viewAccepted(View view) {

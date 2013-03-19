@@ -17,7 +17,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.log4j.Logger;
 
-import com.kylin.tankwar.jgroups.AsychCommunication;
 import com.kylin.tankwar.jgroups.Communication;
 import com.kylin.tankwar.jgroups.handler.CommHandler;
 import com.kylin.tankwar.jgroups.handler.IHandler;
@@ -50,7 +49,6 @@ public class MainFrame extends Frame {
 		return handler;
 	}
 	
-	private boolean isGood ;
 	
 	Wall w1 = new Wall(100, 200, 20, 200);
 	Wall w2 = new Wall(300, 100, 200, 20);
@@ -95,10 +93,10 @@ public class MainFrame extends Frame {
 		
 	}
 
-	public MainFrame(Communication comm) {
+	public MainFrame(Communication comm, boolean isGood) {
 		
 		this.comm = comm ;
-		initTank();	
+		initTank(isGood);	
 		launchFrame();
 		
 		logger.info("initialize  MainFrame");
@@ -106,22 +104,15 @@ public class MainFrame extends Frame {
 	
 	public MainFrame(String props, String name) {
 		
-//		initComm(props, name);
-		initTank();
+		initTank(false);
 		launchFrame();
 		
 		logger.info("initialize  MainFrame");
 	}
 
-	private void initTank() {
+	private void initTank(boolean isGood) {
 		
-		String id = comm.getChannelName();
-		
-		if(comm != null && comm.getMemberSize() % 2 == 0) {
-			isGood = false ;
-		} else {
-			isGood = true ;
-		}
+		String id = comm.getName();
 		
 		int x = getRandom(GAME_WIDTH - 100);
 		int y = getRandom(GAME_HEIGHT - 100);
@@ -131,8 +122,6 @@ public class MainFrame extends Frame {
 		comm.put(id, myTank);		
 		comm.replicateTank(myTank.getView());
 		comm.replicateBlood(blood.getBooldView());
-//		replicateTank(Event.TN);
-//		replicateBlood(Event.B);
 	}
 	
 	public int getRandom(int max) {
@@ -161,12 +150,12 @@ public class MainFrame extends Frame {
 		
 		this.setSize(GAME_WIDTH, GAME_HEIGHT);
 	
-		this.setTitle("TankWar" + " - " + comm.getChannelName());
+		this.setTitle("TankWar" + " - " + comm.getName());
 		
 		this.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
 				myTank.setLive(false);
-				replicateTank(Event.TM);
+				comm.replicateTank(myTank.getView());
 				
 				new Thread(new Runnable(){
 
@@ -191,9 +180,9 @@ public class MainFrame extends Frame {
 		new Thread(new PaintThread()).start();
 	}
 	
-	public void replicateTank(Event event) {
-		handler.sendHandler(myTank, comm, event);
-	}
+//	public void replicateTank(Event event) {
+//		handler.sendHandler(myTank, comm, event);
+//	}
 	
 	@Deprecated
 	public void replicateMissile(Event event) {
@@ -235,7 +224,7 @@ public class MainFrame extends Frame {
 			} else {
 				
 				if(missile.hitTank(myTank)) {
-					replicateTank(Event.TM);
+					comm.replicateTank(myTank.getView());
 				}
 				
 				missile.draw(g, false);
@@ -341,7 +330,7 @@ public class MainFrame extends Frame {
 	public static void main(String[] args) {
 
 		MainFrame main = new MainFrame();
-		main.initTank();
+		main.initTank(false);
 		main.launchFrame();
 	}
 

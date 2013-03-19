@@ -8,11 +8,13 @@ import com.kylin.tankwar.jgroups.threads.AsychTankThread;
 
 public class AsychCommunication extends Communication {
 	
-	public AsychCommunication(String jgroupsProps) {
-		super(jgroupsProps);
+	public AsychCommunication(String jgroupsProps, String name) {
+		super(jgroupsProps, name);
 	}
 	
 	protected void startThreads() {
+		
+		logger.info("Start Thread");
 		
 		tankExecutor.execute(new AsychTankThread(tankQueue, getTankMap(), tankChannelName, tankClusterlName, jgroupsProps));
 	}	
@@ -33,6 +35,14 @@ public class AsychCommunication extends Communication {
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public String getChannelName() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	
 	
 
 

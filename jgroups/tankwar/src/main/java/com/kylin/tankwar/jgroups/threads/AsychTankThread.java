@@ -4,11 +4,9 @@ import java.util.Map;
 import java.util.concurrent.ArrayBlockingQueue;
 
 import org.apache.log4j.Logger;
-import org.jgroups.JChannel;
 import org.jgroups.Message;
 
 import com.kylin.tankwar.core.Session;
-import com.kylin.tankwar.jgroups.factory.JChannelDefaultFactory;
 import com.kylin.tankwar.model.Tank;
 import com.kylin.tankwar.model.TankView;
 
@@ -18,8 +16,6 @@ public class AsychTankThread extends ThreadBase implements Runnable {
 	private static final Logger logger = Logger.getLogger(AsychTankThread.class);
 	
 	private ArrayBlockingQueue<Session> queue ;
-	
-	private JChannel channel;
 	
 	private Map<String,Tank> tankMap;
 
@@ -54,15 +50,15 @@ public class AsychTankThread extends ThreadBase implements Runnable {
 		
 		Thread.currentThread().setName("TankWar-Asych-Tank");
 		
-		channel = JChannelDefaultFactory.newInstance().setJgroupsProps(jgroupsProps).createChannel(name, cluster, this);
-		
+		logger.info("Start Running");
+				
 		while(true) {
 			
 			try {
 				Session session = queue.take();
 				
 				if(logger.isDebugEnabled()){
-					logger.debug("send message " + session + ", queue size =" + queue.size());
+					logger.debug("send message " + session + ", queue size =" + queue.size() + ", tankMap size = " + tankMap.size());
 				}
 				
 				channel.send(null, session);

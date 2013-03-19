@@ -1,5 +1,6 @@
 package com.kylin.tankwar.jgroups.factory;
 
+import org.apache.log4j.Logger;
 import org.jgroups.Channel;
 import org.jgroups.JChannel;
 import org.jgroups.ReceiverAdapter;
@@ -7,6 +8,8 @@ import org.jgroups.ReceiverAdapter;
 import com.kylin.tankwar.jgroups.TankWarCommunicationException;
 
 public class JChannelDefaultFactory implements ChannelFactory {
+	
+	private static final Logger logger = Logger.getLogger(JChannelDefaultFactory.class);
 	
 	private static JChannelDefaultFactory instance = null;
 	
@@ -37,11 +40,14 @@ public class JChannelDefaultFactory implements ChannelFactory {
 
 	public JChannel createChannel(String name, String cluster, ReceiverAdapter reciever) {
 
+		logger.info("Create JGroups Channel, name = " + name + ", cluster = " + cluster);
+		
 		try {
 			JChannel channel = new JChannel(jgroupsProps);
 			channel.setName(name);
 			channel.setReceiver(reciever);
 			channel.setDiscardOwnMessages(true);
+			channel.connect(cluster);
 			return channel ;
 		} catch (Exception e) {
 			throw new TankWarCommunicationException("connect to " + cluster + " error", e);

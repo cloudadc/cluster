@@ -411,7 +411,7 @@ public class Tank {
 		
 //		logger.debug("Tank direction: " + dir);
 		
-		mainFrame.replicateTank(Event.TM);
+		mainFrame.getComm().replicateTank(getView());
 	}
 	
 	public Rectangle getRect() {

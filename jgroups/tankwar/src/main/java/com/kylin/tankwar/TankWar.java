@@ -1,6 +1,7 @@
 package com.kylin.tankwar;
 
 import com.kylin.tankwar.core.MainFrame;
+import com.kylin.tankwar.jgroups.AsychCommunication;
 
 
 public class TankWar {
@@ -9,6 +10,7 @@ public class TankWar {
 
 		String props = "udp.xml";
 		String name = null;
+		boolean isGood = false ;
 		
 		for(int i=0; i < args.length; i++) {
 
@@ -21,12 +23,19 @@ public class TankWar {
 				name = args[++i];
 				continue;
 			}
+			
+			if (args[i].equals("isGood")) {
+				isGood = true ;
+				continue;
+			}
 
-			System.out.println("Run Application with [-p <props>] [-n <name>] ");
+			System.out.println("Run Application with [-p <props>] [-n <name>] [isGood]");
 			System.exit(1);
 		}
 		
-		MainFrame mainFrame = new MainFrame(props, name);
+		AsychCommunication comm = new AsychCommunication(props, name);
+		
+		MainFrame mainFrame = new MainFrame(comm, isGood);
 	}
 
 }

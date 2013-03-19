@@ -108,7 +108,7 @@ public class CommHandler implements IHandler {
 		}
 		
 		if(rec.getEvent() == Event.TN) {
-			mainFrame.replicateTank(Event.TM);
+//			mainFrame.replicateTank(Event.TM);
 		}
 		
 		logAfterSession(session);

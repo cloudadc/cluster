@@ -18,26 +18,6 @@
           <param name="ConversionPattern" value="%d %-5p [%c] %m%n"/>   
         </layout>      
       </appender>  
-          
-      <appender name="ERROR_LOG" class="org.apache.log4j.DailyRollingFileAppender">  
-          <errorHandler class="org.apache.log4j.helpers.OnlyOnceErrorHandler"/>  
-          <param name="File" value="Error.log"/>  
-          <param name="Append" value="true"/>  
-          <param name="Threshold" value="INFO"/>  
-          <param name="DatePattern" value="'.'yyyy-MM-dd"/>  
-          <layout class="org.apache.log4j.PatternLayout">  
-          <param name="ConversionPattern" value="%d %-5p [%c] %m%n"/>  
-          </layout>  
-       </appender>      
-    
-        <logger name="DSErrorLog" additivity="false">  
-            <level class="org.apache.log4j.Level" value="DEBUG"/>  
-            <appender-ref ref="ERROR_LOG"/>  
-        </logger>  
-
-       <category name="org.hibernate.SQL">  
-         <priority value="DEBUG"/>  
-       </category>  
                     
          <root>      
              <priority value ="DEBUG"/>      
