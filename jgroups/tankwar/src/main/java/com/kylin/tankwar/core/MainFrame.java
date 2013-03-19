@@ -13,8 +13,6 @@ import java.util.Random;
 import org.apache.log4j.Logger;
 
 import com.kylin.tankwar.jgroups.Communication;
-import com.kylin.tankwar.jgroups.handler.CommHandler;
-import com.kylin.tankwar.jgroups.handler.IHandler;
 import com.kylin.tankwar.model.Blood;
 import com.kylin.tankwar.model.Direction;
 import com.kylin.tankwar.model.Explode;
@@ -36,12 +34,6 @@ public class MainFrame extends Frame {
 	public Communication getComm() {
 		return comm;
 	}
-
-	IHandler handler = new CommHandler();
-	
-	public IHandler getHandler() {
-		return handler;
-	}
 	
 	Wall w1 = new Wall(100, 200, 20, 200);
 	Wall w2 = new Wall(300, 100, 200, 20);
@@ -49,7 +41,6 @@ public class MainFrame extends Frame {
 	Wall w4 = new Wall(300, 500, 200, 20);
 	
 	private Image offScreenImage = null;
-	
 	
 	Tank myTank ;
 

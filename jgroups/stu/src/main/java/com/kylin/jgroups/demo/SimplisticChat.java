@@ -26,6 +26,8 @@ public class SimplisticChat {
 		
 		channel.connect("ChatCluster");
 		
+		System.out.println(channel.getView().getCreator().equals(channel.getView().getMembers().get(0)));
+		
 		for (;;) {
 			String line = Util.readStringFromStdin(": ");
 			channel.send(null, line);
