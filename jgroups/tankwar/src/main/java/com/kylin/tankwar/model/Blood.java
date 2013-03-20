@@ -1,16 +1,12 @@
 package com.kylin.tankwar.model;
 import java.awt.*;
 
-import org.apache.log4j.Logger;
-
 import com.kylin.tankwar.core.MainFrame;
 
 public class Blood {
 	
 	private int x, y, w, h;
-	
-//	private static final Logger logger = Logger.getLogger(Blood.class);
-	
+		
 	int step = 0;
 	private boolean live = true;
 	
@@ -29,22 +25,27 @@ public class Blood {
 		w = h = 15;
 		this.mainFrame = mainFrame;
 		
-//		logger.info("initialize a Blood instance");
 	}
 	
 	private void initArray() {
 
 		Point[] tmp = new Point[75];
-		array = new Point[150];
+		Point[] tmpArray = new Point[150];
+		array = new Point[300];
 		
 		for(int i = 0 ; i < 75 ; i ++){
 			Point p = new Point(350 + i, 300 - i);
 			tmp[i] = p;
-			array[i] = p;
+			tmpArray[i] = p;
 		}
 		
 		for(int i = 75 ; i > 0 ; i --) {
-			array[150 - i] = tmp[i - 1];
+			tmpArray[150 - i] = tmp[i - 1];
+		}
+		
+		for(int i = 0, index = 0 ; i < tmpArray.length ; i ++) {
+			array[index++] = tmpArray[i];
+			array[index++] = tmpArray[i];
 		}
 	}
 
@@ -56,7 +57,7 @@ public class Blood {
 			
 			count ++ ;
 			
-			if(count == 1000) {
+			if(count == 2000) {
 				count = 0;
 				live = true;
 				mainFrame.getComm().replicateBlood(getBooldView());
@@ -106,12 +107,13 @@ public class Blood {
 	}
 	
 	public BloodView getBooldView() {
-		return new BloodView(step, live);
+		return new BloodView(step, live, count);
 	}
 	
 	public void updateBlood(BloodView view) {
 		this.step = view.getStep();
-		this.live = view.isLive();		
+		this.live = view.isLive();	
+		this.count = view.getCount();
 	}
 	
 }

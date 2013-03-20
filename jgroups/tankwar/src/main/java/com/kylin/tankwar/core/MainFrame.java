@@ -60,7 +60,7 @@ public class MainFrame extends Frame {
 
 	private void initBlood() {
 		blood = new Blood(this);
-		comm.setBlood(blood);
+		comm.add(blood);
 		comm.replicateBlood(blood.getBooldView());
 	}
 
@@ -167,7 +167,7 @@ public class MainFrame extends Frame {
 				comm.replicateTank(myTank.getView());
 			}
 			
-			comm.getBlood().draw(g);
+			comm.getBloods().get(0).draw(g);
 			
 			tank.draw(g);
 		}

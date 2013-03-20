@@ -9,11 +9,14 @@ public class BloodView implements Serializable {
 	private int step;
 	
 	private boolean isLive;
+	
+	private int count;
 
-	public BloodView(int step, boolean isLive) {
+	public BloodView(int step, boolean isLive, int count) {
 		super();
 		this.step = step;
 		this.isLive = isLive;
+		this.count = count;
 	}
 
 	public int getStep() {
@@ -32,9 +35,18 @@ public class BloodView implements Serializable {
 		this.isLive = isLive;
 	}
 
+	public int getCount() {
+		return count;
+	}
+
+	public void setCount(int count) {
+		this.count = count;
+	}
+
 	@Override
 	public String toString() {
-		return "BloodView [step=" + step + ", isLive=" + isLive + "]";
+		return "BloodView [step=" + step + ", isLive=" + isLive + ", count="
+				+ count + "]";
 	}
 
 }

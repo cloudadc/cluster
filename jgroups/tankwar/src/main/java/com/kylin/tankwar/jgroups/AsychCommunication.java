@@ -20,7 +20,7 @@ public class AsychCommunication extends Communication {
 		
 		tankExecutor.execute(new AsychTankThread(tankQueue, getTankMap(), tankChannelName, tankClusterlName, jgroupsProps));
 		missileExecutor.execute(new AsychMissileThread(missileQueue, getMissileMap(), missileChannelName, missileClusterName, jgroupsProps));
-		otherExecutor.execute(new AsychOtherThread(otherQueue, explodes, getBlood(), otherChannelName, otherClusterName, jgroupsProps));
+		otherExecutor.execute(new AsychOtherThread(otherQueue, explodes, getBloods(), otherChannelName, otherClusterName, jgroupsProps));
 	}	
 	
 

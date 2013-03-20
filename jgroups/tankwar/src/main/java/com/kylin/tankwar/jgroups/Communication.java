@@ -60,14 +60,14 @@ public abstract class Communication implements ICommunication, IReplication, IJG
 		return explodes;
 	}
 	
-	private Blood blood;
-
-	public Blood getBlood() {
-		return blood;
+	List<Blood> bloods = Collections.synchronizedList(new ArrayList<Blood>()); 
+	
+	public void add(Blood blood) {
+		bloods.add(blood);
 	}
-
-	public void setBlood(Blood blood) {
-		this.blood = blood;
+	
+	public List<Blood> getBloods() {
+		return bloods ;
 	}
 
 	public String getName() {
