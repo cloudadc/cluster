@@ -18,7 +18,7 @@
         <!-- Rollover at the top of each hour
            <param name="DatePattern" value="'.'yyyy-MM-dd-HH"/>
         -->
-        <param name="Threshold" value="DEBUG"/>
+        <param name="Threshold" value="INFO"/>
 
         <layout class="org.apache.log4j.PatternLayout">
             <!-- The default pattern: Date Priority [Category] Message\n -->
@@ -83,7 +83,7 @@ make a lot of noise in DEBUG or TRACE -->
     <!-- ======================= -->
 
     <root>
-        <priority value="DEBUG"/>
+        <priority value="INFO"/>
         <appender-ref ref="FILE"/>
         <!--<appender-ref ref="CONSOLE"/>-->
     </root>

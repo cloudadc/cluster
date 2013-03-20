@@ -104,6 +104,7 @@
     		<fileset dir="${target.dir}" includes="bootstrap.jar"/>
     	</copy>
 
-    	<chmod file="${build.dir}/bin/*.sh" perm="g+w" type="both"/>
+	<echo>chmod 777 *.sh under ${build.dir}/bin</echo>
+	<chmod dir="${build.dir}/bin" perm="ugo+rx" includes="*.sh"/>
     </target>
 </project> 
