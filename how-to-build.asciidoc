@@ -20,8 +20,11 @@ ant
 
 .
 ├── bin
+
 ├── conf
+
 ├── jboss-modules-1.1.2.GA.jar
+
 └── modules
 
 `bin` - contain all bootstrap scripts
