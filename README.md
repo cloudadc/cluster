@@ -1,18 +1,17 @@
-TankWar
-=======
+JGroups TankWar Demo
+====================
 
-* A JGroups Usage Demo: TankWar need a group of members plan together, JGroups be used to replicate each member's status to other group members
+* [Build cluster project](how-to-build.asciidoc), navigate to bin folder execute:
 
-* A Infinispan Usage Demo: Each gourp member need share game data to whole group and fetch other group members' game data
+	./tankwar.sh -n node1 isGood
+	./tankwar.sh -n node2
+Now, node1 is good tank, node2 is enemy tank, they can attack each other.
 
-* How to plan?
-https://github.com/kylinsoong/TankWar/blob/master/docs/how_to_plan.asciidoc
+* TankWar need a group of members plan together, JGroups be used to replicate each member's status to other group members, [more details](https://github.com/kylinsoong/cluster/blob/master/docs/how_to_plan.asciidoc)
 
-* Original Code came from my college homework
+JBossCache HelloWorld Demo 
+==========================
 
-Project Agenda 
-===============
-https://github.com/kylinsoong/TankWar/blob/master/docs/agenda.asciidoc
 
 
 Related Link
@@ -23,7 +22,3 @@ Related Link
 * http://www.jboss.org/projects
 
 
-Gist
-====
-
-<script src="https://gist.github.com/4350065.js"></script>

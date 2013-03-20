@@ -333,6 +333,8 @@ public class Tank {
 			isLive = true ;
 			life = 100 ;
 			this.setExplode(true);
+			mainFrame.getComm().put(getId(), this);
+			mainFrame.getComm().replicateTank(getView());
 		}
 	}
 
