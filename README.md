@@ -2,7 +2,7 @@ JGroups TankWar Demo
 ====================
 
 * [Build cluster project](how-to-build.asciidoc), navigate to bin folder execute:
-* 
+ 
 ~~~
 ./tankwar.sh -n node1 isGood
 ~~~
