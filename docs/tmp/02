@@ -1,12 +1,14 @@
-3. JBoss 缓存简介
+﻿3. JBoss 缓存简介
    1. 发展历程
 
    2. JGroups 简介
-    JGroups作者Bela Ban于1998-1999在康奈尔大学（http://www.cornell.edu/）计算机科学学院攻读博士后（Post-Doc）。当时作者在Ken Birman（http://www.cs.cornell.edu/ken/）导师的组中研究群组通信和分布式系统，他们研究群组通信原型产品为Ensemble。Ensemble使用OCaml语言开发，OCaml语言相当复杂，Ensemble提供一个Java接口，作者的学期项目就是实现Java接口，使Ensemble作为底层的通信工具，能够广泛的被Java应用使用。尽管实现 Ensemble Java接口可以是Java应用使用Ensemble，但是Ensemble编译安装比较复杂，平台依赖性强，所以作者开始用Java重写Ensemble，就是后来的JGroups。作者自己曾说：“使用纯Java的实现会对群组通信产生重大影响，所以花费了大量时间于此项研究。”
-    2000年5月左右，SourceForge成立，作者决定使用SourceForge保存维护JGroups代码，将JGroups开源。就在此时，其他开发者加入到JGroups开发，JGroups得到了快速发展，与此同时，SourceForge JGroups 点击率直线上升，很多Java分布式的框架和产品底层基于JGroups。
-    2002年秋季，当时JBoss创始人，后来红帽CIO，现在CloudBees CEO Sacha Labourey 联系作者，并告诉作者JBoss集群实现将使用JGroups。作者于2003年加入到JBoss，负责JGroups和JBoss Cache产品。JBoss Cache 是基于JGroups之上的分布式缓存，作为JBoss Cache项目管理者，作者和他的团队的目标就是让JGroups成为最被广泛使用的Java多播通信框架。
-    JGroups是一个开源的纯java编写的可靠的群组通讯工具。其是一个可靠的组播/多播通讯工具包（需要说明的是，这并不是说必须要使用IP Multicast,JGroups也可以使用TCP来实现）。其工作模式基于IP多播，但可以在可靠性和群组成员管理上进行扩展。其结构上设计灵活，提供了一种灵活兼容多种协议的协议栈。协议栈可以相互组合使用，用来适应不同产品的可靠性需求。这种协议栈可以让用户根据自己的应用的需求，定制适合自己的协议栈。JGroups可以用来创建一个组，这个组中的成员可以给其他成员发送消息或接收其他成员发出的消息。
-    众所周知，网络多播传输没有纠错机制，发生丢包错包后难以弥补，并且多播通信易受网络环境的影响。JGroups设计的目的是基于多播如何进行可靠的传输，JGroups通过接收者确认和发送者重发机制，能够确保对所有接收者的消息的无丢失传输。JGroups扩展了多播传输，消息分割和消息重组协议栈能够满足您发送任意大小的消息（100M）。JGroups消息能够顺序发送和接收，消息头可以包含很多确认策略，最大传输时间等，变于管理。
+    JGroups作者Bela Ban于1998-1999在康奈尔大学（http://www.cornell.edu/）计算机科学学院攻读博士后（Post-Doc）学位。当时作者在Ken Birman（http://www.cs.cornell.edu/ken/）导师的引导下研究群组通信和分布式系统。当时他们研究群组通信原型产品为Ensemble，Ensemble使用OCaml语言开发，OCaml语言语法结构相当复杂，Ensemble提供Java接口，作者的学期项目就是实现这些Java接口，使Ensemble作为底层的通信工具，能够广泛的被Java应用使用。尽管实现 Ensemble Java接口可以是Java应用使用Ensemble，但是Ensemble编译安装比较复杂，平台依赖性强，所以作者开始用Java重写Ensemble，就是后来的JGroups。作者自己曾说：“使用纯Java的实现会对群组通信产生重大影响，所以花费了大量时间于此项研究。”
+2000年5月，SourceForge成立，SourceForge后来成为最大的开源软件平台和开源软件代码管理平台。作者决定使用SourceForge保存维护JGroups代码，将JGroups开源。就在此时，其他开发者加入到JGroups开发，这使JGroups得到了快速发展，与此同时，SourceForge JGroups  链接点击率直线上升，很多Java分布式的框架和产品底层状态复制基于JGroups。
+2002年秋季，当时JBoss创始人，后来红帽（Red Hat）CIO，现在CloudBees CEO Sacha Labourey 联系作者，并告诉作者JBoss集群实现将使用JGroups。作者于2003年加入到JBoss，负责JGroups和JBoss Cache产品。JBoss Cache 是基于JGroups之上的分布式缓存，作为JBoss Cache项目管理者，作者和他的团队的目标就是让JGroups成为最被广泛使用的Java多播通信框架和解决方案。
+2006年5月，Linux计算机操作系统最大的代表者红帽软件宣布收购JBoss，做为全球最大开源中间件供应商的JBoss加入红帽软件，巩固了红帽开源软件方案供应商的领头羊地位。当然JGroups作者Bela Ban同样也加入了红帽。在红帽软件良好生态系统的带动下，JGroups也得到了很好的发展，越来越多的开发者参与到JGroups项目， 时至今日，JGroups 有30多个版本的发布。基于JGroups 的 JBoss Cache产品在企业应用领域取得了很大成功，特别在中间件服务器或平台。基于JGroups的Infinispan是非常有战略性的产品，该产品能够为企业应用提供分布式数据网格、大数据、No-SQL等解决方案。
+ JGroups是一个开源的纯java编写的可靠的群组通讯工具。其是一个可靠的组播/多播通讯工具包（需要说明的是，这并不是说必须要使用IP Multicast，JGroups也可以使用TCP来实现）。其工作模式基于IP多播，但可以在可靠性和群组成员管理上进行扩展。其结构上设计灵活，提供了一种灵活兼容多种协议的协议栈。协议栈可以相互组合使用，用来适应不同产品的可靠性需求。这种协议栈可以让用户根据自己的应用的需求，定制适合自己的协议栈。JGroups可以用来创建一个组，这个组中的成员可以给其他成员发送消息或接收其他成员发出的消息。
+众所周知，网络多播传输没有纠错机制，发生丢包错包后难以弥补，并且多播通信易受网络环境的影响。JGroups设计的目的是基于多播如何进行可靠的传输，JGroups通过接收者确认和发送者重发机制，能够确保对所有接收者的消息的无丢失传输。JGroups扩展了多播传输，消息分割和消息重组协议栈能够满足您发送任意大小的消息（100M）。JGroups消息能够顺序发送和接收，消息头可以包含很多确认策略，最大传输时间等，变于管理。
+
 	
 http://www.cornell.edu/
 http://www.cs.cornell.edu/home/bba/resume.html
