@@ -43,6 +43,11 @@
          <version>1.0</version>
       </dependency>
       <dependency>
+         <groupId>com.kylin.jgroups</groupId>
+         <artifactId>jgroups-stu</artifactId>
+         <version>1.0</version>
+      </dependency>
+      <dependency>
 		<groupId>log4j</groupId>
 		<artifactId>log4j</artifactId>
 		<version>1.2.16</version>

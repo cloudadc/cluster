@@ -1,0 +1,32 @@
+示例-0 编译打包示例代码
+本处给出如何编译打包示例代码的过程，执行下面步骤前，我们需要Maven，Ant，Git客户端，Eclipse，Java等安装在您机器上。具体安装步骤请参照第二章软件安装部分。
+
+1. 下载源代码
+确保Git客户端安装完成后，打开新的命令行窗口，执行如下命令克隆源代码：
+git clone git@github.com:kylinsoong/cluster.git
+克隆完成后cluster目录会出现，该目录包含所有示例代码，我们将该目录称作示例代码的根目录。
+
+2. 使用Maven编译打包
+进入到示例代码的根目录，执行如下Maven命令：
+mvn clean install dependency:copy-dependencies
+该命令执行完成会将打包完成的jar文件部署到本地仓库，这方便我们将示例代码导入Eclipse； 并且将示例代码依赖的jar包拷贝到本地，这方便我们下一步使用Ant编译。
+
+3. 使用Ant编译生成示例代码运行环境目录
+在示例代码的根目录下存在bootstrap目录，我们进入bootstrap目录后执行:
+ant
+该命令执行完成后build/Demo会生成，Demo为示例代码运行环境主目录。
+
+4. 示例代码运行环境主目录简介
+如上第3步生成了示例代码运行环境主目录Demo，该目录结构如下：
+cluster_architecture.png
+如上图Demo包括：
+bin - 示例代码启动脚本，我们可以修改此目录下run.conf，run.conf.bat来改变JVM初始启动参数，及远程调试功能
+conf - 示例代码运行所需的配置文件，log4j配置文件，jGroups配置文件，JBossCache配置文件，Infinispan配置文件等都在此目录下
+jboss-modules-1.1.2.GA.jar - 我们使用模块化类加载机制启动示例代码，此为模块化类加载机制的包
+log - 示例代码运行时日志输出目录
+modules - 包括示例打包文件和示例依赖文件
+
+5. 将示例代码导入Eclipse进行编辑
+运行Eclipse，在Eclipse工作面板选择File -> Import -> Maven -> Existing Maven Project，如下图：
+maven_eclipse_import.png
+点击Next，在弹出窗口中点击选择按钮，选中示例代码的根目录下pom.xml文件，然后点击完成按钮，示例代码导入到Eclipse中。

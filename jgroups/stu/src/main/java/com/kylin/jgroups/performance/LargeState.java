@@ -70,7 +70,7 @@ public class LargeState extends ReceiverAdapter{
 	
 	int total_received = 0;
 	
-	private void start(boolean provider, int size, String props, boolean provider_fails, boolean requester_fails, long delay, String name) throws Exception{
+	public void start(boolean provider, int size, String props, boolean provider_fails, boolean requester_fails, long delay, String name) throws Exception{
 		
 		this.provider = provider;
 		this.provider_fails = provider_fails;
@@ -233,7 +233,7 @@ public class LargeState extends ReceiverAdapter{
         }
 	}
 
-	static void help() {
+	public static void help() {
 		System.out.println("LargeState [-help] [-size <size of state in bytes] [-provider] [-name name] " + "[-props <properties>] [-provider_fails] [-requester_fails] [-delay <ms>]");
 	}
 

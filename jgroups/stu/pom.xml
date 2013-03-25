@@ -46,7 +46,7 @@
 	<dependency>
            <groupId>org.jgroups</groupId>
            <artifactId>jgroups</artifactId>
-           <version>3.2.6.Final</version>
+           <version>3.2.7.Final</version>
        </dependency>
 	<dependency>
            <groupId>log4j</groupId>
@@ -64,10 +64,6 @@
     </dependencies>
 
     <build>
-        <!-- Maven will append the version to the finalName (which is the name
-            given to the generated war, and hence the context root) -->
-        <finalName>${project.artifactId}</finalName>
-
         <!-- Define plugin versions required for Deployment and Testing Tools -->
         <pluginManagement>
         </pluginManagement>

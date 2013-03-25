@@ -35,6 +35,7 @@
     		<fileset dir="${resource.dir}/conf" includes="log4j.xml"/>
     		<fileset dir="${resource.dir}/conf" includes="total-replication.xml"/>
     		<fileset dir="${resource.dir}/conf" includes="tankwar-udp.xml"/>
+    		<fileset dir="${resource.dir}/conf" includes="config.xml"/>
     	</copy>
     	
     	<copy todir="${build.dir}/bin" >
@@ -44,6 +45,8 @@
     		<fileset dir="${resource.dir}/conf" includes="jbosscache.bat"/>
     		<fileset dir="${resource.dir}/conf" includes="tankwar.sh"/>
     		<fileset dir="${resource.dir}/conf" includes="tankwar.bat"/>
+    		<fileset dir="${resource.dir}/conf" includes="largestate.sh"/>
+    		<fileset dir="${resource.dir}/conf" includes="largestate.bat"/>
 		    <fileset dir="${resource.dir}/conf" includes="run.conf"/>
     	</copy>
 
@@ -76,6 +79,10 @@
     		<fileset dir="${dependency.dir}" includes="jgroups-tankwar-1.0.jar"/>
     	</copy>
     	
+    	<copy todir="${build.dir}/modules/com/kylin/jgroups/main" >
+    		<fileset dir="${dependency.dir}" includes="jgroups-stu-1.0.jar"/>
+    	</copy>
+    	
     	<copy todir="${build.dir}/modules/org/jgroups/main" >
     		<fileset dir="${dependency.dir}" includes="jgroups-3.2.7.Final.jar"/>
     	</copy>
@@ -101,6 +108,10 @@
     	</copy>
     	
     	<copy todir="${build.dir}/modules/bootstrap/tankwar/main" >
+    		<fileset dir="${target.dir}" includes="bootstrap.jar"/>
+    	</copy>
+    	
+    	<copy todir="${build.dir}/modules/bootstrap/jgroups/state/main" >
     		<fileset dir="${target.dir}" includes="bootstrap.jar"/>
     	</copy>
 

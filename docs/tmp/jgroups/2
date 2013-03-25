@@ -1,0 +1,69 @@
+实验一： 客户端参与群组状态变化测试
+-----------------------------------
+实验目的：通过实验测试群组通信的成员获取群组状态的具体过程，明白 JGroups 状态变化原理。测试群组通信状态交换的吞吐量。
+
+实验描述：本实验集群中有两个成员： node1，node2，node1 为协调者（第一个启动）作为状态提供者，node2 作为状态变化请求者通过 Channel.getState() 发送状态交换请求给集群，集群协调者node1负责将集群状态交换给node2。大体流程如下：
+jgroups_largeState.png
+如上图所示，状态交换一般可以分为以下四步：
+首先，node1启动创建集群，node1第一个加入集群，作为协调者
+
+
+. node4 通过 JChannel.getState() 发送状态交换请求后，集群协调者（第一个成员） node1 getState() 方法被调运 
+. node1 getState() 方法以输入流的形式将当前状态输出
+. 状态变化请求者 node4 setState() 被调运，node4 以输入流的方式读取从 node1 检索出的状态，并打印输出
+. node4 JChannel.getState() 方法返回，注意只有当集群状态交换请求完成后此方法才返回，否则 JGroups 抛出异常
+
+如下代码端显示状态交换请求者和提供者如何参与群组状态变化：
+----
+	List<String> state = new ArrayList<String>();
+	
+	public void getState(OutputStream output) throws Exception {
+		
+		logger.info("getState() method invoked");
+		state.add("JChannelStateTest test state provider is " + name);
+		synchronized(state) {
+			Util.objectToStream(state, new DataOutputStream(output));
+		}
+	}
+
+	public void setState(InputStream input) throws Exception {
+		
+		logger.info("setState() method invoked");
+		
+		List<String> list;
+		list=(List<String>)Util.objectFromStream(new DataInputStream(input));
+		synchronized (state) {
+			state.clear();
+			state.addAll(list);
+		}
+		System.out.println(list);
+		
+	}
+----
+
+实验步骤：
+* 确保 JGroups-stu.jar，jgroups-3.1.0.Final.jar，log4j-1.2.16.jar 存在，执行如下 Maven 命令可以生成这些 jar 包
+----
+mvn clean dependency:copy-dependencies install
+---- 
+
+* 启动 4 个命令行窗口，分别执行如下命令
+----
+java -cp JGroups-stu.jar:jgroups-3.1.0.Final.jar:log4j-1.2.16.jar  -Djava.net.preferIPv4Stack=true com.kylin.jgroups.test.JChannelStateTest -n node1
+java -cp JGroups-stu.jar:jgroups-3.1.0.Final.jar:log4j-1.2.16.jar  -Djava.net.preferIPv4Stack=true com.kylin.jgroups.test.JChannelStateTest -n node2
+java -cp JGroups-stu.jar:jgroups-3.1.0.Final.jar:log4j-1.2.16.jar  -Djava.net.preferIPv4Stack=true com.kylin.jgroups.test.JChannelStateTest -n node3
+java -cp JGroups-stu.jar:jgroups-3.1.0.Final.jar:log4j-1.2.16.jar  -Djava.net.preferIPv4Stack=true com.kylin.jgroups.test.JChannelStateTest -n node4 get
+----
+
+* 运行结果:
+
+node1 节点如下日志输出：
+----
+17:42:47,597 INFO  [JChannelStateTest] getState() method invoked
+----
+
+node4 节点如下日志输出：
+----
+17:42:47,605 INFO  [JChannelStateTest] setState() method invoked
+[JChannelStateTest test state provider is node1]
+----
