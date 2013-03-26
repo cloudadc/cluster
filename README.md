@@ -10,9 +10,7 @@ JGroups TankWar Demo
 ~~~
 ./tankwar.sh -n node2
 ~~~
-Now, node1 is alliance tank, node2 is enemy tank, they can attack each other.
-
-* TankWar need a group of members plan together, JGroups be used to replicate each member's status to other group members, [more details](https://github.com/kylinsoong/cluster/blob/master/docs/how_to_plan.asciidoc)
+Now, node1 play as alliance tank, node2 play as enemy tank, they can attack each other. [See more underlying theory](https://community.jboss.org/wiki/JGroupsTankWarDemo)
 
 JBossCache HelloWorld Demo 
 ==========================
