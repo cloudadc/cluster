@@ -16,7 +16,7 @@ public class SimplisticChat {
 		channel.setReceiver(new ReceiverAdapter(){
 
 			public void receive(Message msg) {
-				Address sender=msg.getSrc();
+				Address sender = msg.getSrc();
 				System.out.println(msg.getObject() + " [" + sender + "]");
 			}
 
