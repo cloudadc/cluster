@@ -55,18 +55,7 @@ public class CacheEntry {
 	}
 
 	public String toString() {
-		StringBuffer sb = new StringBuffer();
-		sb.append("CacheEntry [key=" + key + ", value=" + value );
-		if(lifespan != null || !lifespan.equals("")) {
-			sb.append(", lifespan=" + lifespan);
-		}
-		if(maxIdle != null || !maxIdle.equals("")) {
-			sb.append(", maxIdle=" + maxIdle);
-		}
-		if(alias != null || !alias.equals("")) {
-			sb.append(", alias=" + alias);
-		}
-		sb.append("]");
-		return sb.toString();
+		return "CacheEntry [key=" + key + ", value=" + value + ", lifespan=" + lifespan + ", maxIdle=" + maxIdle + ", alias=" + alias + "]";
 	}
+
 }
