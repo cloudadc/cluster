@@ -23,6 +23,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.swt.widgets.Widget;
+import org.infinispan.container.entries.InternalCacheEntry;
 
 import com.customized.tools.ui.swt.Column;
 import com.customized.tools.ui.swt.DefaultTableImpl;
@@ -65,11 +66,11 @@ public class DataGridTable extends DefaultTableImpl {
 		
 		List<String[]> items = new ArrayList<String[]>();
 		
-		String lifespan = delegate.getGenericCache().getCacheConfiguration().expiration().lifespan() + "";
-		String maxIdle = delegate.getGenericCache().getCacheConfiguration().expiration().maxIdle() + "";	
 		String alias = delegate.getGenericCache().getCacheManager().getAddress().toString();
 		
 		for(String key : delegate.getGenericCache().keySet()) {
+			String lifespan = delegate.getGenericCache().getAdvancedCache().getDataContainer().get(key).getLifespan() + "";
+			String maxIdle = delegate.getGenericCache().getAdvancedCache().getDataContainer().get(key).getMaxIdle() + "";
 			items.add(new String[]{key, delegate.getGenericCache().get(key), lifespan, maxIdle, alias});
 		}
 		
@@ -84,6 +85,10 @@ public class DataGridTable extends DefaultTableImpl {
 		ToolItem add = new ToolItem(toolBar, SWT.PUSH);
 		add.setText("Add");
 		add.addListener(SWT.Selection, new AddListener());
+		
+		ToolItem search = new ToolItem(toolBar, SWT.PUSH);
+		search.setText("Search");
+		search.addListener(SWT.Selection, new SearchListener());
 		
 		ToolItem delete = new ToolItem(toolBar, SWT.PUSH);
 		delete.setText("Delete");
@@ -121,6 +126,26 @@ public class DataGridTable extends DefaultTableImpl {
 		
 	}
 	
+	private class SearchListener implements Listener {
+
+		public void handleEvent(Event event) {
+			SearchDialog dialog = new SearchDialog(getShell());
+			dialog.open();
+			if(dialog.getEntity() != null) {
+				MessageBox msgBox = new MessageBox(getShell(), SWT.OK);
+				msgBox.setText("Search Result:");
+				msgBox.setMessage("\n" + dialog.getEntity());
+				msgBox.open();
+			} else {
+				MessageBox msgBox = new MessageBox(getShell(), SWT.OK);
+				msgBox.setText("Search Result:");
+				msgBox.setMessage("\n" + "CacheEntry does not exist");
+				msgBox.open();
+			}
+		}
+	
+	}
+	
 	private class AddListener implements Listener {
 
 		public void handleEvent(Event event) {
@@ -128,7 +153,7 @@ public class DataGridTable extends DefaultTableImpl {
 			AddDialog dialog = new AddDialog(getShell());
 			dialog.open();
 			if(dialog.isSet()) {
-				CacheEntity entity = dialog.getEntity();
+				CacheEntry entity = dialog.getEntity();
 				delegate.getGenericCache().put(entity.getKey(), entity.getValue(), Long.parseLong(entity.getLifespan()), TimeUnit.MILLISECONDS, Long.parseLong(entity.getMaxIdle()), TimeUnit.MILLISECONDS);
 				updateTableItems();
 			}
@@ -213,6 +238,76 @@ public class DataGridTable extends DefaultTableImpl {
 		
 	}
 	
+	private class SearchDialog extends Dialog {
+
+		public SearchDialog(Shell parent) {
+			super(parent);
+		}
+		
+		CacheEntry entity = null;
+		
+		public CacheEntry getEntity() {
+			return entity;
+		}
+		
+		public void open() {
+			Shell parent = getParent();
+		    final Shell shell = new Shell(parent, SWT.TITLE | SWT.BORDER | SWT.APPLICATION_MODAL);
+
+		    shell.setLayout(new GridLayout(2, true));
+		    
+		    Label keylabel = new Label(shell, SWT.NULL);
+		    keylabel.setText("Key:");
+		    final Text keytext = new Text(shell, SWT.BORDER);
+		    keytext.setText("Input the Key");
+		    
+		    final Button buttonSearch = new Button(shell, SWT.PUSH);
+		    buttonSearch.setText("Search");
+		    buttonSearch.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_END));
+		    Button buttonCancel = new Button(shell, SWT.PUSH);
+		    buttonCancel.setText("Cancel");
+
+			buttonSearch.addListener(SWT.Selection, new Listener() {
+				public void handleEvent(Event event) {
+					String key = keytext.getText();
+					String value = delegate.getGenericCache().get(key);
+					InternalCacheEntry cacheEntry = delegate.getGenericCache().getAdvancedCache().getDataContainer().get(key);
+					if(value != null) {
+						if(null != cacheEntry){
+							entity = new CacheEntry(key, value, cacheEntry.getLifespan() + "", cacheEntry.getMaxIdle() + "", "");
+						} else {
+							entity = new CacheEntry(key, value, "", "", "");
+						}
+					}
+					shell.dispose();
+				}
+			});
+
+			buttonCancel.addListener(SWT.Selection, new Listener() {
+				public void handleEvent(Event event) {
+					shell.dispose();
+				}
+			});
+		    
+		    shell.addListener(SWT.Traverse, new Listener() {
+		      public void handleEvent(Event event) {
+		        if(event.detail == SWT.TRAVERSE_ESCAPE)
+		          event.doit = false;
+		      }
+		    });
+
+		    shell.pack();
+		    shell.open();
+
+		    Display display = parent.getDisplay();
+		    while (!shell.isDisposed()) {
+		      if (!display.readAndDispatch())
+		        display.sleep();
+		    }
+		}
+		
+	}
+	
 	private class AddDialog extends Dialog {
 
 		public AddDialog(Shell parent) {
@@ -221,9 +316,9 @@ public class DataGridTable extends DefaultTableImpl {
 		}
 		String key = "Key", value = "Value", lifespan = "-1", maxIdle = "-1";
 		
-		CacheEntity entity;
+		CacheEntry entity;
 		
-		public CacheEntity getEntity() {
+		public CacheEntry getEntity() {
 			return entity;
 		}
 
@@ -272,7 +367,7 @@ public class DataGridTable extends DefaultTableImpl {
 			buttonOK.addListener(SWT.Selection, new Listener() {
 				public void handleEvent(Event event) {
 					
-					entity = new CacheEntity(keytext.getText(), valuetext.getText(), lifespantext.getText(), maxIdletext.getText(), "-");
+					entity = new CacheEntry(keytext.getText(), valuetext.getText(), lifespantext.getText(), maxIdletext.getText(), "-");
 					setSet(true);
 					shell.dispose();
 				}
@@ -324,6 +419,7 @@ public class DataGridTable extends DefaultTableImpl {
 	public static void main(String[] args) {
 		
 		new DataGridTable("infinispan_icon_32px.gif", new CacheDelegateImpl()).start();
+
 	}
 
 }

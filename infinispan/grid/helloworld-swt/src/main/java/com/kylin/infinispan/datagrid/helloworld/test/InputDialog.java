@@ -12,7 +12,7 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
-import com.kylin.infinispan.datagrid.helloworld.CacheEntity;
+import com.kylin.infinispan.datagrid.helloworld.CacheEntry;
 
 public class InputDialog extends Dialog {
 
@@ -22,9 +22,9 @@ public class InputDialog extends Dialog {
 	
 	String key = "Key", value = "Value", lifespan = "-1", maxIdle = "-1";
 	
-	CacheEntity entity;
+	CacheEntry entity;
 	
-	public CacheEntity getEntity() {
+	public CacheEntry getEntity() {
 		return entity;
 	}
 
@@ -67,7 +67,7 @@ public class InputDialog extends Dialog {
 		buttonOK.addListener(SWT.Selection, new Listener() {
 			public void handleEvent(Event event) {
 				
-				entity = new CacheEntity(keytext.getText(), valuetext.getText(), lifespantext.getText(), maxIdletext.getText(), "-");
+				entity = new CacheEntry(keytext.getText(), valuetext.getText(), lifespantext.getText(), maxIdletext.getText(), "-");
 				
 				shell.dispose();
 			}

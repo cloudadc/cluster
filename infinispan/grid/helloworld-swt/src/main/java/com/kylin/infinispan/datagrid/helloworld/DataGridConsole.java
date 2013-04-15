@@ -3,6 +3,8 @@ package com.kylin.infinispan.datagrid.helloworld;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
+import org.infinispan.container.entries.InternalCacheEntry;
+
 import com.customized.tools.cli.TreeInputConsole;
 import com.customized.tools.cli.TreeNode;
 
@@ -34,13 +36,13 @@ public class DataGridConsole extends TreeInputConsole {
 	private void updateTreeNode() {
 		
 		getCurrentNode().getSons().clear();
-		
-		String lifespan = delegate.getGenericCache().getCacheConfiguration().expiration().lifespan() + "";
-		String maxIdle = delegate.getGenericCache().getCacheConfiguration().expiration().maxIdle() + "";	
+			
 		String alias = delegate.getGenericCache().getCacheManager().getAddress().toString();
 		
 		for(String key : delegate.getGenericCache().keySet()) {
-			CacheEntity entity = new CacheEntity(key, delegate.getGenericCache().get(key), lifespan, maxIdle,alias);
+			String lifespan = delegate.getGenericCache().getAdvancedCache().getDataContainer().get(key).getLifespan() + "";
+			String maxIdle = delegate.getGenericCache().getAdvancedCache().getDataContainer().get(key).getMaxIdle() + "";
+			CacheEntry entity = new CacheEntry(key, delegate.getGenericCache().get(key), lifespan, maxIdle,alias);
 			TreeNode node = new TreeNode(key, entity.toString(), getCurrentNode(), null);
 			addTreeNode(node);
 		}
@@ -61,7 +63,7 @@ public class DataGridConsole extends TreeInputConsole {
 		long lifespan = readLong("Enter lifespan:", -1);
 		long maxIdle = readLong("Enter maxIdle:", -1);
 		
-		CacheEntity entity = new CacheEntity(key, value, lifespan + "", maxIdle + "", delegate.getGenericCache().getCacheManager().getAddress().toString());
+		CacheEntry entity = new CacheEntry(key, value, lifespan + "", maxIdle + "", delegate.getGenericCache().getCacheManager().getAddress().toString());
 		
 		prompt("Add " + entity);
 		
@@ -81,6 +83,7 @@ public class DataGridConsole extends TreeInputConsole {
 		println("[<tree>] list whole node architecture");
 		println("[<tree> <-l>] list whole node architecture with contents");
 		println("[<tree> <-list>] list whole node architecture with contents");
+		println("[<search>] Search the CacheEntry");
 		println("[<exit>] exit the Console, CacheDelegate will destory Cache");
 		println("[<quit>] quit the Console");
 	}
@@ -108,12 +111,33 @@ public class DataGridConsole extends TreeInputConsole {
 			if(isQuit()){
 				Runtime.getRuntime().exit(0);
 			}
-		} else {
+		} else if(pointer.equals("search")) {
+			handleSearch(pointer);
+		}else {
 			handleHELP(pointer);
 		}
 		
 	}
 	
+	private void handleSearch(String pointer) {
+
+		String key = readString("Enter Key:", "key", true);
+		String value = delegate.getGenericCache().get(key);
+		InternalCacheEntry cacheEntry = delegate.getGenericCache().getAdvancedCache().getDataContainer().get(key);
+		println("Search Result:");
+		if(value != null) {
+			CacheEntry entity = null;
+			if(null != cacheEntry) {
+				entity = new CacheEntry(key, value, cacheEntry.getLifespan() + "", cacheEntry.getMaxIdle() + "", "");
+			} else {
+				entity = new CacheEntry(key, value, "", "", "");
+			}
+			prompt(entity);
+		} else {
+			prompt("CacheEntry does not exist");
+		}
+	}
+
 	public static void main(String[] args) throws IOException {
 		
 		new DataGridConsole(new CacheDelegateImpl()).start();

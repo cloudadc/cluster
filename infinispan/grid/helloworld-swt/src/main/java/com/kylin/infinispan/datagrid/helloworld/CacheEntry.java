@@ -1,10 +1,10 @@
 package com.kylin.infinispan.datagrid.helloworld;
 
-public class CacheEntity {
+public class CacheEntry {
 
 	String key, value, lifespan, maxIdle, alias;
 
-	public CacheEntity(String key, String value, String lifespan,
+	public CacheEntry(String key, String value, String lifespan,
 			String maxIdle, String alias) {
 		super();
 		this.key = key;
@@ -55,6 +55,18 @@ public class CacheEntity {
 	}
 
 	public String toString() {
-		return "Cache [key=" + key + ", value=" + value + ", lifespan=" + lifespan + ", maxIdle=" + maxIdle + ", alias=" + alias + "]";
+		StringBuffer sb = new StringBuffer();
+		sb.append("CacheEntry [key=" + key + ", value=" + value );
+		if(lifespan != null || !lifespan.equals("")) {
+			sb.append(", lifespan=" + lifespan);
+		}
+		if(maxIdle != null || !maxIdle.equals("")) {
+			sb.append(", maxIdle=" + maxIdle);
+		}
+		if(alias != null || !alias.equals("")) {
+			sb.append(", alias=" + alias);
+		}
+		sb.append("]");
+		return sb.toString();
 	}
 }
