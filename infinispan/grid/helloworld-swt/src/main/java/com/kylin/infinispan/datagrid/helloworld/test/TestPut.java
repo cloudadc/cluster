@@ -16,7 +16,7 @@ public class TestPut {
 
 	public static void main(String[] args) {
 		
-		CacheDelegate delegate = new CacheDelegateImpl();
+		CacheDelegate delegate = new CacheDelegateImpl("infinispan-distribution.xml");
 		delegate.getGenericCache().put("key", "value");
 		System.out.println("key -> value added");
 	}

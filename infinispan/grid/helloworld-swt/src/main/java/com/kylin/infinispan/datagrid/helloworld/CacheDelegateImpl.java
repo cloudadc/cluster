@@ -12,6 +12,10 @@ public class CacheDelegateImpl implements CacheDelegate {
 		cache = MyCacheManagerProvider.getInstance().getCacheManager().getCache();
 	}
 	
+	public CacheDelegateImpl(String configFile) {
+		cache = MyCacheManagerProvider.getInstance().getCacheManager(configFile).getCache();
+	}
+	
 	public CacheDelegateImpl(Cache<String, String> cache) {
 		this.cache = cache;
 	}

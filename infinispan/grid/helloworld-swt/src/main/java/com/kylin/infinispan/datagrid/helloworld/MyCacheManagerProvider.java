@@ -1,5 +1,7 @@
 package com.kylin.infinispan.datagrid.helloworld;
 
+import java.io.IOException;
+
 import org.apache.log4j.Logger;
 import org.infinispan.configuration.cache.CacheMode;
 import org.infinispan.configuration.cache.Configuration;
@@ -55,5 +57,17 @@ public class MyCacheManagerProvider {
 	      }
 	      return manager;
 	   }
+	 
+	 public DefaultCacheManager getCacheManager(String configFile) {
+		 if (manager == null) {
+			 log.info("DefaultCacheManager does not exist - constructing a new one");
+			 try {
+				manager = new DefaultCacheManager(configFile, true);
+			} catch (IOException e) {
+				throw new IllegalArgumentException(configFile + " can not find");
+			} 
+		 }
+		 return manager;
+	 }
 
 }

@@ -18,7 +18,7 @@ public class TestGet {
 
 
 	public static void main(String[] args) {
-		CacheDelegate delegate = new CacheDelegateImpl();
+		CacheDelegate delegate = new CacheDelegateImpl("infinispan-distribution.xml");
 		Set<String> keySet = delegate.getGenericCache().keySet();
 		System.out.println("List All Exist Entities");
 		for (String key : keySet){
