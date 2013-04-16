@@ -1,7 +1,8 @@
 <?xml version="1.0"?>
-<project name="com.kylin.jbosscluster" default="deploy" basedir="."> 
+<project name="com.kylin.jbosscluster" default="install" basedir="."> 
     <property name="build.home" value="${basedir}/build" />
     <property name="resource.dir" value="${basedir}/resources" />
+	<property name="swt.dir" value="${resource.dir}/swt" />
     <property name="target.dir" value="${basedir}/target" />
     <property name="dependency.dir" value="${basedir}/target/dependency" />
     <property file="${basedir}/build.properties"/>
@@ -20,6 +21,16 @@
     <target name="prepare" depends="clean">
         <mkdir dir="${build.dir}" />
     </target> 
+	
+	<target name="linux.x86" >
+	</target> 
+	
+	<target name="install" depends="deploy">
+		<copy todir="${build.dir}/modules/org/eclipse/swt/main" >
+			<fileset dir="${swt.dir}/linux/x86" includes="module.xml"/>
+		    <fileset dir="${dependency.dir}" includes="org.eclipse.swt.gtk.linux.x86-4.2.1.jar"/>
+		</copy>
+	</target> 
 
     <target name="deploy" depends="prepare">
         
@@ -36,6 +47,9 @@
     		<fileset dir="${resource.dir}/conf" includes="total-replication.xml"/>
     		<fileset dir="${resource.dir}/conf" includes="tankwar-udp.xml"/>
     		<fileset dir="${resource.dir}/conf" includes="config.xml"/>
+    		<fileset dir="${resource.dir}/conf" includes="infinispan_icon_32px.gif"/>
+    		<fileset dir="${resource.dir}/conf" includes="infinispan-distribution.xml"/>
+    		<fileset dir="${resource.dir}/conf" includes="infinispan-replication.xml"/>
     	</copy>
     	
     	<copy todir="${build.dir}/bin" >
@@ -45,6 +59,8 @@
     		<fileset dir="${resource.dir}/conf" includes="jbosscache.bat"/>
     		<fileset dir="${resource.dir}/conf" includes="tankwar.sh"/>
     		<fileset dir="${resource.dir}/conf" includes="tankwar.bat"/>
+    		<fileset dir="${resource.dir}/conf" includes="dataGrid.sh"/>
+    		<fileset dir="${resource.dir}/conf" includes="dataGrid.bat"/>
     		<fileset dir="${resource.dir}/conf" includes="largestate.sh"/>
     		<fileset dir="${resource.dir}/conf" includes="largestate.bat"/>
 		    <fileset dir="${resource.dir}/conf" includes="run.conf"/>
@@ -58,13 +74,25 @@
             <fileset dir="${dependency.dir}" includes="log4j-1.2.16.jar"/>
         </copy>	
     	
+    	<copy todir="${build.dir}/modules/org/infinispan/main" >
+    		<fileset dir="${dependency.dir}" includes="infinispan-core-5.2.0.Final.jar"/>
+    		<fileset dir="${dependency.dir}" includes="infinispan-client-hotrod-5.2.0.Final.jar"/>
+    		<fileset dir="${dependency.dir}" includes="commons-pool-1.6.jar"/>
+    		<fileset dir="${dependency.dir}" includes="jboss-transaction-api_1.1_spec-1.0.0.Final.jar"/>
+    		<fileset dir="${dependency.dir}" includes="jboss-marshalling-river-1.3.15.GA.jar"/>
+    		<fileset dir="${dependency.dir}" includes="jgroups-3.2.6.Final.jar"/>
+    		<fileset dir="${dependency.dir}" includes="staxmapper-1.1.0.Final.jar"/>
+    		<fileset dir="${dependency.dir}" includes="jboss-logging-3.1.1.GA.jar"/>
+    		<fileset dir="${dependency.dir}" includes="jboss-marshalling-1.3.15.GA.jar"/>
+    	</copy>	
+    	
     	<copy todir="${build.dir}/modules/org/jboss/cache/main" >
     		<fileset dir="${dependency.dir}" includes="jgroups-2.6.13.GA.jar"/>
-    		<fileset dir="${dependency.dir}" includes="jboss-logging-spi-2.0.5.GA.jar"/>
-    		<fileset dir="${dependency.dir}" includes="jboss-transaction-api-1.0.1.GA.jar"/>
-    		<fileset dir="${dependency.dir}" includes="jboss-common-core-2.2.14.GA.jar"/>
-    		<fileset dir="${dependency.dir}" includes="commons-logging-1.1.1.jar"/>
-    		<fileset dir="${dependency.dir}" includes="jbosscache-core-3.2.5.GA.jar"/>
+    	    <fileset dir="${dependency.dir}" includes="jboss-logging-spi-2.0.5.GA.jar"/>
+    	    <fileset dir="${dependency.dir}" includes="jboss-transaction-api-1.0.1.GA.jar"/>
+    	    <fileset dir="${dependency.dir}" includes="jboss-common-core-2.2.14.GA.jar"/>
+    	    <fileset dir="${dependency.dir}" includes="commons-logging-1.1.1.jar"/>
+    	    <fileset dir="${dependency.dir}" includes="jbosscache-core-3.2.5.GA.jar"/>
     	</copy>	
     	
     	<copy todir="${build.dir}/modules/bsh/main" >
@@ -73,6 +101,10 @@
     	
     	<copy todir="${build.dir}/modules/com/kylin/jbosscache/main" >
     		<fileset dir="${dependency.dir}" includes="jbosscache-helloworld-1.0.jar"/>
+    	</copy>
+    	
+    	<copy todir="${build.dir}/modules/com/kylin/infinispan/datagrid/main" >
+    		<fileset dir="${dependency.dir}" includes="infinispan-stu-grid-helloworld-swt-1.0.jar"/>
     	</copy>
     	
     	<copy todir="${build.dir}/modules/com/kylin/tankwar/main" >
@@ -95,6 +127,19 @@
     	   <fileset dir="${dependency.dir}" includes="cst-cli-2.0.jar"/>
     	</copy>
     	
+    	<copy todir="${build.dir}/modules/com/customized/tools/common/main" >
+    		<fileset dir="${dependency.dir}" includes="cst-common-2.0.jar"/>
+    	</copy>
+    	
+    	<copy todir="${build.dir}/modules/com/customized/tools/ui/main" >
+    		<fileset dir="${dependency.dir}" includes="cst-ui-2.0.jar"/>
+    	</copy>
+    	
+    	<copy todir="${build.dir}/modules/javax/xml/binding/main" >
+    		<fileset dir="${dependency.dir}" includes="jaxb-api-2.2.6.jar"/>
+    		<fileset dir="${dependency.dir}" includes="jaxb-impl-2.2.6.jar"/>
+    	</copy>
+    	
     	<copy todir="${build.dir}/modules/bootstrap/main" >
     		<fileset dir="${target.dir}" includes="bootstrap.jar"/>
     	</copy>
@@ -113,6 +158,10 @@
     	
     	<copy todir="${build.dir}/modules/bootstrap/jgroups/state/main" >
     		<fileset dir="${target.dir}" includes="bootstrap.jar"/>
+    	</copy>
+    	
+    	<copy todir="${build.dir}/modules/bootstrap/infinispan/main" >
+    	    <fileset dir="${target.dir}" includes="bootstrap.jar"/>
     	</copy>
 
 	<echo>chmod 777 *.sh under ${build.dir}/bin</echo>
