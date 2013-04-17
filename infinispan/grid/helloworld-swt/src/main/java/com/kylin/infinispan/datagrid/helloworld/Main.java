@@ -53,7 +53,9 @@ public class Main {
 			throw new IllegalArgumentException("Infinispan configFile can not be null");
 		}
 		
-		ResourceLoader.registerBaseDir(System.getProperty("demo.conf.dir"));
+		if(null != System.getProperty("demo.conf.dir")) {
+			ResourceLoader.registerBaseDir(System.getProperty("demo.conf.dir"));
+		}
 		
 		if(isConsole) {
 			new DataGridConsole(new CacheDelegateImpl(configFile)).start();
