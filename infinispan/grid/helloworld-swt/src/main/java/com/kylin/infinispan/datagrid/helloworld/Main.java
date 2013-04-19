@@ -49,12 +49,12 @@ public class Main {
 			help();
 		}
 		
-		if(null == configFile) {
-			throw new IllegalArgumentException("Infinispan configFile can not be null");
-		}
-		
 		if(null != System.getProperty("demo.conf.dir")) {
 			ResourceLoader.registerBaseDir(System.getProperty("demo.conf.dir"));
+		}
+		
+		if(null == configFile || !ResourceLoader.newInstance().isExist(configFile)) {
+			throw new IllegalArgumentException("Infinispan configFile can not be null, available configFile:" + ResourceLoader.newInstance().getAllConfFiles());
 		}
 		
 		if(isConsole) {
