@@ -7,5 +7,6 @@
 
     <dependencies>
     	<module name="org.eclipse.swt" services="import"/>
+    	<module name="com.customized.tools.common" services="import"/>
     </dependencies>
 </module>

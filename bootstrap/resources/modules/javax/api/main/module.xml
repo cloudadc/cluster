@@ -112,6 +112,7 @@
                 <path name="org/xml/sax"/>
                 <path name="org/xml/sax/ext"/>
                 <path name="org/xml/sax/helpers"/>
+                <path name="sun/misc"/>
             </paths>
         </system>
     </dependencies>

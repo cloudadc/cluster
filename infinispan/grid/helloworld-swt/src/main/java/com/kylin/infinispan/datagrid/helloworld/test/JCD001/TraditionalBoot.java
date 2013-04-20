@@ -11,7 +11,9 @@ public class TraditionalBoot extends JCD001Base {
 		
 		ResourceLoader.unRegisterDir(new File("").getAbsolutePath());
 
-		args = new String[]{"-c", "infinispan-distribution.xml"};
+		String config = System.getProperty("demo.conf.dir") + File.separator + "infinispan-distribution.xml";
+		
+		args = new String[]{"-c", config};
 		
 		com.kylin.infinispan.datagrid.helloworld.Main.main(args);
 	}

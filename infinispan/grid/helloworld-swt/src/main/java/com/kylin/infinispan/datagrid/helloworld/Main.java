@@ -53,7 +53,7 @@ public class Main {
 			ResourceLoader.registerBaseDir(System.getProperty("demo.conf.dir"));
 		}
 		
-		if(null == configFile || !ResourceLoader.newInstance().isExist(configFile)) {
+		if(null == configFile) {
 			throw new IllegalArgumentException("Infinispan configFile can not be null, available configFile:" + ResourceLoader.newInstance().getAllConfFiles());
 		}
 		

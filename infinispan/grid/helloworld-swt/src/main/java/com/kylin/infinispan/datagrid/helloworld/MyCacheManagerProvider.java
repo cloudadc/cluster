@@ -64,7 +64,7 @@ public class MyCacheManagerProvider {
 			 try {
 				manager = new DefaultCacheManager(configFile, true);
 			} catch (IOException e) {
-				throw new IllegalArgumentException(configFile + " can not find");
+				throw new IllegalArgumentException(configFile + " can not find", e);
 			} 
 		 }
 		 return manager;
