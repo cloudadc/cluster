@@ -1,0 +1,85 @@
+JGroups TankWar Demo
+--------------------
+
+* Build and Generate Demo_Home
+
+link:how-to-build.asciidoc[How to build and generate demo home]
+
+* Architecture
+
+image::docs/img/tankwar-architecture.png[JGroups TankWar Architecture]
+
+* How to run
+
+Navigate to DEMO_HOME/bin execute
+----
+./tankwar.sh -n node1 isGood
+----
+
+On another Terminal execute
+----
+./tankwar.sh -n node2
+----
+
+Actually, we can open more Terminal, start more nodes as below diagram
+
+image::docs/img/tank-1.png[JGroups Runtime Diagram]
+
+Now 2 groups demo can emit missile attack each other, for details:
+
+. Use arrow(up, down, left. right) move Tank, Tank can move to 8 direction
+. Use `space` emit missile
+. Use `F2` for generating a new Tank if current Tank exploded
+
+* See more underlying details
+
+https://community.jboss.org/wiki/JGroupsTankWarDemo
+
+
+JBossCache Replication Demo
+---------------------------
+
+* Build and Generate Demo_Home
+
+link:how-to-build.asciidoc[How to build and generate demo home]
+
+* Architecture
+
+image::docs/img/[JBossCache Replication Demo Architecture]
+
+* How to run
+
+* See more underlying details
+
+// coming soon
+
+Infinispan Data Grid Demo
+-------------------------
+
+* Build and Generate Demo_Home
+
+link:how-to-build.asciidoc[How to build and generate demo home]
+
+* Architecture
+
+image::docs/img/infnispan-detagrid-demo-architecture.png[Infinispan Data Grid Demo Architecture]
+
+* How to run
+
+Open 4 Termial(actually, you can open more), navigate to DEMO_HOME/bin in each Terminal, execute the following commands in a sequence
+----
+./dataGrid.sh -c infinispan-distribution.xml
+----
+
+image::docs/img/infnispan-detagrid-architecture.png[4 nodes data grid]
+
+We also can run Data Grid demo use console mode, similiar, execute the following commands as below:
+----
+./dataGrid.sh -c infinispan-distribution.xml -console
+----
+
+image::docs/img/infnispan-detagrid-architecture-console.png[4 nodes data grid console]
+
+* See more underlying details
+
+// coming soon

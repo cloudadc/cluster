@@ -1,36 +1,39 @@
 How to build JBoss Cluster Framework Demo code?
 -----------------------------------------------
 
-* clone cluster code from github
+* clone `CustomizedTools` code from github, JBoss Cluster Framework demo denpend on this libraries
+----
+git clone git@github.com:kylinsoong/CustomizedTools.git
+----
+
+* build and install `CustomizedTools` libraries to local repository, navigate to CustomizedTools/trunk execute:
+----
+mvn clean install
+----
+
+* clone `cluster` code from github
 ----
 git clone git@github.com:kylinsoong/cluster.git
 ----
 
-* navigate to project `cluster` root folder, execute maven build & copy dependences
+* navigate to project cluster/bootstrap folder, execute maven build & copy dependences
 ----
 mvn clean install dependency:copy-dependencies
 ----
 
-* navigate to 'bootstrap' folder, execute ant to assemble Demo home
+* at the same folder, modify build.xml install target base on your OS, the execute ant to assemble Demo home
 ----
 ant
 ----
 
 * result - `Demo` folder generated, the path is cluster/bootstrap/build/Demo, the structure as below:
 
-.
-├── bin
+|=========================================================
+|*Name*                      |*Description*
+| bin                        | contain all bootstrap scripts
+| conf                       | contain all configuration files
+| modules                    | contain all modules
+| jboss-modules-1.1.2.GA.jar | JBoss Modular Class Loading Framework, used to bootstrap Demo
+| log                        | Demo log output folder, this will generated in runtime
+|=========================================================
 
-├── conf
-
-├── jboss-modules-1.1.2.GA.jar
-
-└── modules
-
-`bin` - contain all bootstrap scripts
-
-`conf` - contain all configuration files
-
-`modules` - contain all modules
-
-`jboss-modules-1.1.2.GA.jar` - is startup jar
