@@ -1,15 +1,19 @@
 JGroups TankWar Demo
 --------------------
 
-* Build and Generate Demo_Home
+* Build and Generate demo home
 
 link:how-to-build.asciidoc[How to build and generate demo home]
 
-* Architecture
+* JGroups TankWar Demo Architecture
 
 image::docs/img/tankwar-architecture.png[JGroups TankWar Architecture]
 
-* How to run
+JGroups is a toolkit for reliable multicast communication. It can be used to create groups of processes whose members can send messages to each other. Group members can be spread across LANs or WANs. More details refer to http://www.jgroups.org/
+
+For Performance consideration, we can Use multiple channels instead of use single one, Sharing a transport between multiple channels in a JVM. More details refer to http://www.jgroups.org/ug.html
+
+* How to run?
 
 Navigate to DEMO_HOME/bin execute
 ----
@@ -31,9 +35,7 @@ Now 2 groups demo can emit missile attack each other, for details:
 . Use `space` emit missile
 . Use `F2` for generating a new Tank if current Tank exploded
 
-* See more underlying details
-
-https://community.jboss.org/wiki/JGroupsTankWarDemo
+*See more underlying details:* https://community.jboss.org/wiki/JGroupsTankWarDemo
 
 
 JBossCache Replication Demo
