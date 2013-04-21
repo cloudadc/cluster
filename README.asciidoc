@@ -23,7 +23,7 @@ On another Terminal execute
 
 Actually, we can open more Terminal, start more nodes as below diagram
 
-image::docs/img/tank-1.png[JGroups Runtime Diagram]
+image::docs/img/tank-demo.png[JGroups Runtime Diagram]
 
 Now 2 groups demo can emit missile attack each other, for details:
 
