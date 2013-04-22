@@ -64,7 +64,7 @@
         </dependency>
         <dependency>
          <groupId>com.kylin.jbosscache</groupId>
-         <artifactId>jbosscache-helloworld</artifactId>
+         <artifactId>jbosscache-replication-demo</artifactId>
          <version>1.0</version>
       </dependency>
       <dependency>

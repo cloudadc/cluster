@@ -41,15 +41,35 @@ Now 2 groups demo can emit missile attack each other, for details:
 JBossCache Replication Demo
 ---------------------------
 
-* Build and Generate Demo_Home
+* Build and Generate demo home
 
 link:how-to-build.asciidoc[How to build and generate demo home]
 
-* Architecture
+* JBossCache Replication Demo Architecture
 
-image::docs/img/[JBossCache Replication Demo Architecture]
+image::docs/img/jbosscache-replication-demo.png[JBossCache Replication Demo Architecture]
 
-* How to run
+From above diagram, it's easy to see JBossCache base on jGroups, We have 3 management port to access JBossCache demo: console - traditional command line; GUI - java swing interface; bsh - bsh console
+
+* How to run?
+
+Navigate to DEMO_HOME/bin, we will see JBossCache bootstrap scripts. Open more Terminal, start scprit as below will start JBossCache Demo in GUI mode:
+----
+./jbosscache.sh -c total-replication.xml
+----  
+
+Start scprit as below will start JBossCache Demo in console mode:
+----
+./jbosscache.sh -c total-replication.xml -console
+----
+
+Start scprit as below will start JBossCache Demo in bsh mode:
+----
+./jbosscache.sh -c total-replication.xml -bsh
+----
+
+image::docs/img/jbosscache-replication-demo-run.png[JBossCache Replication Demo Runtime diagram]
+
 
 * See more underlying details
 

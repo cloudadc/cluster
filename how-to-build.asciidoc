@@ -16,6 +16,12 @@ mvn clean install
 git clone git@github.com:kylinsoong/cluster.git
 ----
 
+* navigate to project root folder `cluster`, execute:
+----
+mvn clean install
+----
+This will build and install all libraries to local repository
+
 * navigate to project cluster/bootstrap folder, execute maven build & copy dependences
 ----
 mvn clean install dependency:copy-dependencies

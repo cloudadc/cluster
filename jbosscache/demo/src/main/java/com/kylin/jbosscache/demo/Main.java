@@ -1,26 +1,28 @@
-package bootstrap.jbosscache;
+package com.kylin.jbosscache.demo;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 
 import org.apache.log4j.Logger;
 
-import bootstrap.Bootstrap;
 
+import com.customized.tools.common.ResourceLoader;
 import com.kylin.jbosscache.demo.JBossCacheView;
 
-public class JBossCacheDemoMain extends Bootstrap {
+public class Main  {
 	
-	private final static Logger logger = Logger.getLogger(JBossCacheDemoMain.class);
+	private final static Logger logger = Logger.getLogger(Main.class);
 
 	public static void main(String[] args) throws Exception {
 		
 		logger.info("JBossCache Demo Bootstrap");
 		
+		if(null != System.getProperty("demo.conf.dir")) {
+			ResourceLoader.registerBaseDir(System.getProperty("demo.conf.dir"));
+		}
+		
 		parseParameters(args);
 		
-		displayDebugInfo(logger);
-
 		try {
 			doStart();
 		} catch (Exception e) {
@@ -41,26 +43,16 @@ public class JBossCacheDemoMain extends Bootstrap {
 		String confPath = System.getProperty("demo.conf.dir");
 		
 		configFile = confPath + File.separator + configFile ;
+				
+		if(useConsole && useBeanShellConsole) {
+			useBeanShellConsole = false;
+		}
 		
-		logger.debug("validate " + configFile);
-		
-		if(!new File(configFile).exists()) {
-			
-			StringBuffer sb = new StringBuffer();
-			sb.append(new File(configFile).getName() + " doesn't exist, available config files: ");
-			
-			for(File file : new File(confPath).listFiles()) {
-				if(file.getName().compareTo(DEMO_LOG_CONF) != 0) {
-					sb.append(file.getName() + ", ");
-				}
-			}
-			
-			throw new FileNotFoundException(sb.toString());
-		}	
-	}
-
-	static void runJGroupsDemo() {
-		
+		if (configFile == null || !new File(configFile).exists()) {
+			System.out.println("-config/-c <path to configuration file to use> is mandatory, available config files:" + ResourceLoader.newInstance().getAllConfFiles("log4j.xml") );
+			help();
+		}
+	
 	}
 
 	static void runJBossCacheDemo() throws Exception {
@@ -89,9 +81,9 @@ public class JBossCacheDemoMain extends Bootstrap {
 		System.out.println("[-config/-c <configuration file>] Points To A JBossCache Configuration File ");
 		System.out.println();
 		System.out.println("Run JBossCache Demo in Linux:");
-		System.out.println("	run.sh [-b <IP>] [-console/-bsh] [-debug] [-config <JBossCache Configuration File>]");
+		System.out.println("	jbosscache.sh [-b <IP>] [-console] [-bsh] [-debug] [-config/-c <JBossCache Configuration File>]");
 		System.out.println("Run JBossCache Demo in Windows:");
-		System.out.println("	run.bat [-b <IP>] [-console/-bsh] [-debug] [-config <JBossCache Configuration File>]");
+		System.out.println("	jbosscache.bat [-b <IP>] [-console] [-bsh] [-debug] [-config/-c <JBossCache Configuration File>]");
 		
 		
 		
@@ -135,16 +127,6 @@ public class JBossCacheDemoMain extends Bootstrap {
 				help();
 			}
 		} catch (Exception e) {
-			help();
-		}
-		
-		if(useConsole && useBeanShellConsole) {
-			System.out.println("Can not set '-bsh' and '-console' simultaneously");
-			help();
-		}
-		
-		if (configFile == null) {
-			System.out.println("-config/-c <path to configuration file to use> is mandatory" );
 			help();
 		}
 	}

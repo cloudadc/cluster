@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module xmlns="urn:jboss:module:1.1" name="bootstrap.jbosscache">
 
-    <main-class name="bootstrap.jbosscache.JBossCacheDemoMain"/>
+    <main-class name="bootstrap.jbosscache.Main"/>
     
     <resources>
         <resource-root path="bootstrap.jar"/>

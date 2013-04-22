@@ -21,6 +21,7 @@
         <module>helloworld</module>
 	<module>rpcmanager</module>
 	<module>jboss</module>
+	<module>demo</module>
     </modules>
 
 </project>

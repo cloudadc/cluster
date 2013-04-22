@@ -100,7 +100,7 @@
     	</copy>
     	
     	<copy todir="${build.dir}/modules/com/kylin/jbosscache/main" >
-    		<fileset dir="${dependency.dir}" includes="jbosscache-helloworld-1.0.jar"/>
+    		<fileset dir="${dependency.dir}" includes="jbosscache-replication-demo-1.0.jar"/>
     	</copy>
     	
     	<copy todir="${build.dir}/modules/com/kylin/infinispan/datagrid/main" >
