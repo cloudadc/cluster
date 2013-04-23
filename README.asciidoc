@@ -1,26 +1,34 @@
 JGroups TankWar Demo
 --------------------
 
-* Build and Generate demo home
+* JGroups is a toolkit for reliable multicast communication. It can be used to create groups of processes whose members can send messages to each other. Group members can be spread across LANs or WANs. More details refer to http://www.jgroups.org/
+
+* JGroups is a mature library used by Java Developer millions of time, JGroups TankWar Demo use basic JGroups API, it can be a quick start for Java Developer who want to build group communication application, the original code(GUI) came from my college homework
+
+Build and Generate demo home
+++++++++++++++++++++++++++++
 
 link:how-to-build.asciidoc[How to build and generate demo home]
 
-* JGroups TankWar Demo Architecture
+JGroups TankWar Demo Architecture
++++++++++++++++++++++++++++++++++
 
 image::docs/img/tankwar-architecture.png[JGroups TankWar Architecture]
 
-JGroups is a toolkit for reliable multicast communication. It can be used to create groups of processes whose members can send messages to each other. Group members can be spread across LANs or WANs. More details refer to http://www.jgroups.org/
+Key feature of JGroups TankWar Demo:
 
-For Performance consideration, we can Use multiple channels instead of use single one, Sharing a transport between multiple channels in a JVM. More details refer to http://www.jgroups.org/ug.html
+* Use multiple channels instead of use single one
+* Sharing a transport between multiple channels in a JVM
 
-* How to run?
+How to run?
++++++++++++
 
-Navigate to DEMO_HOME/bin execute
+* Navigate to DEMO_HOME/bin execute the following bootstrap script, note that, `-n` plus `a unique name` is mandatory, if `isGood` parameter is append, tank play as Alliance tank, or else it will be Enemy tank
 ----
 ./tankwar.sh -n node1 isGood
 ----
 
-On another Terminal execute
+* On another Terminal start tank play as Enemy
 ----
 ./tankwar.sh -n node2
 ----
@@ -41,17 +49,30 @@ Now 2 groups demo can emit missile attack each other, for details:
 JBossCache Replication Demo
 ---------------------------
 
-* Build and Generate demo home
+* JBoss Cache is a tree-structured, clustered, transactional cache. It can be used in a standalone, non-clustered environment, to cache frequently accessed data in memory. JBoss Cache is also a clustered cache, and can be used in a cluster to replicate state providing a high degree of failover. 
+* JBossCache Replication Demo is a demo what show JBossCache's tree-structured, clustered, transactional feature, we can easy track the replication process via demo UI, demo mangement console, bsh mangement console.
+
+Build and Generate demo home
+++++++++++++++++++++++++++++
 
 link:how-to-build.asciidoc[How to build and generate demo home]
 
-* JBossCache Replication Demo Architecture
+BossCache Replication Demo Architecture
++++++++++++++++++++++++++++++++++++++++
 
 image::docs/img/jbosscache-replication-demo.png[JBossCache Replication Demo Architecture]
 
-From above diagram, it's easy to see JBossCache base on jGroups, We have 3 management port to access JBossCache demo: console - traditional command line; GUI - java swing interface; bsh - bsh console
+BossCache Replication Demo key feature:
 
-* How to run?
+* How JBossCache build upon jGroups
+* tree-structured, clustered,transactional
+* 3 ways to manage or access JBossCache demo
+** console - traditional command line
+** GUI - java swing interface
+** bsh - bsh console
+
+How to run?
++++++++++++
 
 Navigate to DEMO_HOME/bin, we will see JBossCache bootstrap scripts. Open more Terminal, start scprit as below will start JBossCache Demo in GUI mode:
 ----
@@ -78,22 +99,26 @@ image::docs/img/jbosscache-replication-demo-run.png[JBossCache Replication Demo 
 Infinispan Data Grid Demo
 -------------------------
 
-* Build and Generate Demo_Home
+* Infinispan is an extremely scalable, highly available key/value NoSQL datastore and distributed data grid platform. 
+* Infinispan Data Grid Demo show Distribute mode
+
+Build and Generate demo Home
+++++++++++++++++++++++++++++
 
 link:how-to-build.asciidoc[How to build and generate demo home]
 
-* Architecture
+Infinispan Data Grid Demo Architecture
++++++++++++++++++++++++++++++++++++++++
 
 image::docs/img/infnispan-detagrid-demo-architecture.png[Infinispan Data Grid Demo Architecture]
 
-* How to run
+How to run
++++++++++++
 
-Open 4 Termial(actually, you can open more), navigate to DEMO_HOME/bin in each Terminal, execute the following commands in a sequence
+DEMO_HOME/bin has bootstrap scripts, Open 4 Termial(actually, you can open more), in each Terminal, execute the following commands in a sequence
 ----
 ./dataGrid.sh -c infinispan-distribution.xml
 ----
-
-image::docs/img/infnispan-detagrid-architecture.png[4 nodes data grid]
 
 We also can run Data Grid demo use console mode, similiar, execute the following commands as below:
 ----
