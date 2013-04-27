@@ -5,10 +5,11 @@ import java.io.InputStreamReader;
 
 import javax.management.MBeanServer;
 
-import org.apache.log4j.Logger;
+import org.jgroups.Address;
 import org.jgroups.JChannel;
 import org.jgroups.Message;
 import org.jgroups.ReceiverAdapter;
+import org.jgroups.View;
 import org.jgroups.jmx.JmxConfigurator;
 import org.jgroups.util.Util;
 
@@ -21,34 +22,39 @@ import org.jgroups.util.Util;
  *   mvn clean install dependency:copy-dependencies
  *   
  * How to Run?
- *   java -cp jgroups-3.2.6.Final.jar:jgroups-stu.jar:log4j-1.2.16.jar -Djava.net.preferIPv4Stack=true com.kylin.jgroups.demo.ChatDemo -n node1 -p udp.xml -discardOwn    
- *   java -cp jgroups-3.2.6.Final.jar:jgroups-stu.jar:log4j-1.2.16.jar -Djava.net.preferIPv4Stack=true com.kylin.jgroups.demo.ChatDemo -n node2 -p udp.xml -discardOwn
- * 
+ *   java -cp target/dependency/*:target/jgroups-stu-1.0.jar -Djava.net.preferIPv4Stack=true com.kylin.jgroups.demo.ChatDemo -n node1    
+ *   java -cp target/dependency/*:target/jgroups-stu-1.0.jar -Djava.net.preferIPv4Stack=true com.kylin.jgroups.demo.ChatDemo -n node2
+ *   
  * @author kylin
  *
  */
 public class ChatDemo extends ReceiverAdapter{
 	
-	private static final Logger logger = Logger.getLogger(ChatDemo.class);
 	
 	private JChannel channel;
 	
+	private void println(Object obj) {
+		System.out.println(obj);
+	}
+	
+	public void receive(Message msg) {
+		Address sender = msg.getSrc();
+		println("[" + sender + "] " + msg.getObject());
+	}
+
+	public void viewAccepted(View view) {
+		println("view: " + view);
+	}
+
 	public void start(String props, String name, String clusterName, boolean isDiscardOwn) throws Exception {
 		
-		logger.info("Chat Demo Start");
 		
-		channel = new JChannel(props);
-		
+		channel = new JChannel();
 		if(null != name) {
 			channel.setName(name);
 		}
-		
 		channel.setReceiver(this);
-		
-		if(isDiscardOwn) {
-			channel.setDiscardOwnMessages(true);
-		}
-		
+		channel.setDiscardOwnMessages(true);
 		channel.connect(clusterName);
 		
 		MBeanServer server = Util.getMBeanServer();
@@ -63,7 +69,7 @@ public class ChatDemo extends ReceiverAdapter{
 
 	private void eventLoop() {
 
-		System.out.println("enter 'quit' or 'exit' exit the ChatDemo");
+		println("enter 'quit' or 'exit' exit the ChatDemo");
 		
 		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
 		while (true) {
@@ -101,11 +107,6 @@ public class ChatDemo extends ReceiverAdapter{
 				continue;
 			}
 			
-			if (args[i].equals("-discardOwn")) {
-				isDiscardOwn = true ;
-				continue;
-			}
-			
 			exit();
 		}
 		 
@@ -122,7 +123,7 @@ public class ChatDemo extends ReceiverAdapter{
 	}
 
 	private static void exit() {
-		System.out.println("Run Application with [-p props] [-n name] [-c clusterName] [-discardOwn]");
+		System.out.println("Run Application with [-n name]");
 		System.exit(1);
 	}
 

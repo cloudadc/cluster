@@ -8,7 +8,7 @@ import bootstrap.Bootstrap;
 
 public class Main extends Bootstrap{
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 		
 		boolean provider = false, provider_fails = false, requester_fails = false;
 		int size = 1024 * 1024;
@@ -54,15 +54,15 @@ public class Main extends Bootstrap{
 		}
 		
 		String jgroupsProps = System.getProperty("demo.conf.dir") + File.separator + props ;
-		if(!new File(jgroupsProps).exists()) {
-			throw new IllegalArgumentException("-props " + props + " doesn't exist in " + System.getProperty("demo.conf.dir"));
+		if(props == null || !new File(jgroupsProps).exists()) {
+			throw new IllegalArgumentException("-props " + props + " doesn't exist in " + System.getProperty("demo.conf.dir") + ", Available configuration file:" + getAllConfFiles());
 		}
 		
 		try {
             new LargeState().start(provider, size, jgroupsProps, provider_fails, requester_fails, delay, name);
         }
         catch(Exception e) {
-            e.printStackTrace();
+            throw e;
         }
 		
 	}

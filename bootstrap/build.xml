@@ -63,6 +63,8 @@
     		<fileset dir="${resource.dir}/conf" includes="dataGrid.bat"/>
     		<fileset dir="${resource.dir}/conf" includes="largestate.sh"/>
     		<fileset dir="${resource.dir}/conf" includes="largestate.bat"/>
+    		<fileset dir="${resource.dir}/conf" includes="chat.sh"/>
+    		<fileset dir="${resource.dir}/conf" includes="chat.bat"/>
 		    <fileset dir="${resource.dir}/conf" includes="run.conf"/>
     	</copy>
 
@@ -157,6 +159,10 @@
     	</copy>
     	
     	<copy todir="${build.dir}/modules/bootstrap/jgroups/state/main" >
+    		<fileset dir="${target.dir}" includes="bootstrap.jar"/>
+    	</copy>
+    	
+    	<copy todir="${build.dir}/modules/bootstrap/jgroups/chat/main" >
     		<fileset dir="${target.dir}" includes="bootstrap.jar"/>
     	</copy>
     	

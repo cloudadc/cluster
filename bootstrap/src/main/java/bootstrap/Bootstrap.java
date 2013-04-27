@@ -26,6 +26,18 @@ public class Bootstrap {
 		DOMConfigurator.configure(System.getProperty("demo.conf.dir") + File.separator + DEMO_LOG_CONF);	
 	}
 	
+	protected static String getAllConfFiles() {
+		
+		StringBuffer sb = new StringBuffer();
+		for(File file : new File(System.getProperty("demo.conf.dir")).listFiles()) {
+			String str = file.getName();
+			if(str.endsWith(".xml") && !str.equals("log4j.xml")){
+				sb.append("  " + str);
+			}
+		}
+		return sb.toString();
+	}
+	
 	protected static void displayDebugInfo(Logger logger) {
 
 		if (!logger.isDebugEnabled())
