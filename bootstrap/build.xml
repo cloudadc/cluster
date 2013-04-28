@@ -26,10 +26,43 @@
 	</target> 
 	
 	<target name="install" depends="deploy">
+		
+		<!-- linux x86 -->
 		<copy todir="${build.dir}/modules/org/eclipse/swt/main" >
 			<fileset dir="${swt.dir}/linux/x86" includes="module.xml"/>
 		    <fileset dir="${dependency.dir}" includes="org.eclipse.swt.gtk.linux.x86-4.2.1.jar"/>
 		</copy>
+		
+		<!-- linux x86_64 
+		<copy todir="${build.dir}/modules/org/eclipse/swt/main" >
+			<fileset dir="${swt.dir}/linux/x86_64" includes="module.xml"/>
+		    <fileset dir="${dependency.dir}" includes="org.eclipse.swt.gtk.linux.x86_64-4.2.1.jar"/>
+		</copy> -->
+		
+		<!-- win x86
+		<copy todir="${build.dir}/modules/org/eclipse/swt/main" >
+			<fileset dir="${swt.dir}/win/x86" includes="module.xml"/>
+		    <fileset dir="${dependency.dir}" includes="org.eclipse.swt.win32.win32.x86-4.2.1.jar"/>
+		</copy> -->
+		
+		<!-- win x86_64 
+		<copy todir="${build.dir}/modules/org/eclipse/swt/main" >
+			<fileset dir="${swt.dir}/win/x86_64" includes="module.xml"/>
+		    <fileset dir="${dependency.dir}" includes="org.eclipse.swt.win32.win32.x86_64-4.2.1.jar"/>
+		</copy> -->
+		
+		<!-- mac x86 
+		<copy todir="${build.dir}/modules/org/eclipse/swt/main" >
+			<fileset dir="${swt.dir}/mac/x86" includes="module.xml"/>
+		    <fileset dir="${dependency.dir}" includes="org.eclipse.swt.cocoa.macosx-4.2.1.jar"/>
+		</copy> -->
+		    	
+		<!-- mac x86_64 
+		<copy todir="${build.dir}/modules/org/eclipse/swt/main" >
+			<fileset dir="${swt.dir}/mac/x86_64" includes="module.xml"/>
+		    <fileset dir="${dependency.dir}" includes="org.eclipse.swt.cocoa.macosx.x86_64-4.2.1.jar"/>
+		</copy> -->
+		
 	</target> 
 
     <target name="deploy" depends="prepare">
@@ -67,6 +100,8 @@
     		<fileset dir="${resource.dir}/conf" includes="chat.bat"/>
     		<fileset dir="${resource.dir}/conf" includes="msgDispatcher.sh"/>
     		<fileset dir="${resource.dir}/conf" includes="msgDispatcher.bat"/>
+    		<fileset dir="${resource.dir}/conf" includes="rpcDispatcher.sh"/>
+    		<fileset dir="${resource.dir}/conf" includes="rpcDispatcher.bat"/>
 		    <fileset dir="${resource.dir}/conf" includes="run.conf"/>
     	</copy>
     	
@@ -169,6 +204,10 @@
     	</copy>
     	
     	<copy todir="${build.dir}/modules/bootstrap/jgroups/msgDispatcher/main" >
+    		<fileset dir="${target.dir}" includes="bootstrap.jar"/>
+    	</copy>
+    	
+    	<copy todir="${build.dir}/modules/bootstrap/jgroups/rpcDispatcher/main" >
     		<fileset dir="${target.dir}" includes="bootstrap.jar"/>
     	</copy>
     	

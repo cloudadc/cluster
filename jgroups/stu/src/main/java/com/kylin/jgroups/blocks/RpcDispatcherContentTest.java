@@ -55,31 +55,22 @@ public class RpcDispatcherContentTest {
 		
 		RequestOptions requestOptions = new RequestOptions(ResponseMode.GET_ALL, 0);
 		
-		for(int i = 0 ; i < 10 ; i ++) {
-			Util.sleep(1000);
-			String viewId = null;
-			if(null != channel.getView()) {
-				viewId = channel.getView().getViewId().toString();
-			}
-			Content content = new Content(i, channel.getName(), viewId);
-			MethodCall call = new MethodCall("updateContent", new Object[]{content}, new Class[]{Content.class});
-			logger.info("Call all group members updatecontent method: " + content);
-			rsp_list = disp.callRemoteMethods(null, call, requestOptions);
-			
-			showRspList(rsp_list);
+		Util.sleep(1000);
+		String viewId = null;
+		if(null != channel.getView()) {
+			viewId = channel.getView().getViewId().toString();
 		}
-
-	}
-	
-	private void showRspList(RspList<Content> rsp_list) {
+		Content content = new Content(1, channel.getName(), viewId);
+		MethodCall call = new MethodCall("updateContent", new Object[]{content}, new Class[]{Content.class});
+		logger.info("Call all group members updatecontent method: " + content);
+		rsp_list = disp.callRemoteMethods(null, call, requestOptions);
 		
-		logger.info(channel.getName() + " Responses:");
-
+		System.out.println("Responses:");
 		List<Content> list = rsp_list.getResults();
 		for(Object obj : list) {
 			System.out.println("  " + obj);
 		}
-		System.out.println();
+
 	}
 
 	public static void main(String[] args) throws Exception {

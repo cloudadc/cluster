@@ -20,4 +20,9 @@ public class RpcMethods {
 		logger.info("Content after update: " + c);
 		return c ;
 	}
+	
+	public String getNodeName(String name) {
+		logger.info(name);
+		return channel.getName();
+	}
 }
