@@ -1,5 +1,6 @@
 package com.kylin.infinispan.datagrid.helloworld;
 
+import java.io.File;
 import java.io.IOException;
 
 import com.customized.tools.common.ResourceLoader;
@@ -53,7 +54,7 @@ public class Main {
 			ResourceLoader.registerBaseDir(System.getProperty("demo.conf.dir"));
 		}
 		
-		if(null == configFile) {
+		if(null == configFile || !new File(configFile).exists()) {
 			throw new IllegalArgumentException("Infinispan configFile can not be null, available configFile:" + ResourceLoader.newInstance().getAllConfFiles());
 		}
 		

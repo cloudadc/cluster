@@ -15,13 +15,13 @@ import org.jgroups.util.Util;
 
 /**
  * What's this?
- *   Tests for JGroups underlying Thread pool, Thread group
- *   Tests for Protocol Stack
+ *   Tests Basic jGroups API
+ *   jGroups Chat Demo
  * 
  * How to Build?
  *   mvn clean install dependency:copy-dependencies
  *   
- * How to Run?
+ * How to Run ChatDemo without bootstrap scripts?
  *   java -cp target/dependency/*:target/jgroups-stu-1.0.jar -Djava.net.preferIPv4Stack=true com.kylin.jgroups.demo.ChatDemo -n node1    
  *   java -cp target/dependency/*:target/jgroups-stu-1.0.jar -Djava.net.preferIPv4Stack=true com.kylin.jgroups.demo.ChatDemo -n node2
  *   

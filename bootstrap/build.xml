@@ -65,9 +65,11 @@
     		<fileset dir="${resource.dir}/conf" includes="largestate.bat"/>
     		<fileset dir="${resource.dir}/conf" includes="chat.sh"/>
     		<fileset dir="${resource.dir}/conf" includes="chat.bat"/>
+    		<fileset dir="${resource.dir}/conf" includes="msgDispatcher.sh"/>
+    		<fileset dir="${resource.dir}/conf" includes="msgDispatcher.bat"/>
 		    <fileset dir="${resource.dir}/conf" includes="run.conf"/>
     	</copy>
-
+    	
 		<copy todir="${build.dir}/modules" >
             <fileset dir="${resource.dir}/modules" includes="**"/>
         </copy>
@@ -163,6 +165,10 @@
     	</copy>
     	
     	<copy todir="${build.dir}/modules/bootstrap/jgroups/chat/main" >
+    		<fileset dir="${target.dir}" includes="bootstrap.jar"/>
+    	</copy>
+    	
+    	<copy todir="${build.dir}/modules/bootstrap/jgroups/msgDispatcher/main" >
     		<fileset dir="${target.dir}" includes="bootstrap.jar"/>
     	</copy>
     	

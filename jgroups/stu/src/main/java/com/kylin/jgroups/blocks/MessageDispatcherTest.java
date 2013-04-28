@@ -55,20 +55,18 @@ public class MessageDispatcherTest {
 		disp = new MessageDispatcher(channel, messageListener, membershipListener, handler);
 		channel.connect("MessageDispatcherTestGroup");
 		
-		for(int i = 0 ; i < 10 ; i ++) {
-			Util.sleep(100);
-			logger.info("Casting message #" + i);
-			Message message = new Message(null, null, new String("Number #" + i));
-			rsp_list = disp.castMessage(null, message, new RequestOptions().setMode(ResponseMode.GET_ALL).setTimeout(0));
-			
-			logger.info(channel.getName() + " Responses:");
-			
-			List list = rsp_list.getResults();
-			for(Object obj : list) {
-				System.out.println("  " + obj);
-			}
-			System.out.println();
+		Util.sleep(100);
+		logger.info("Casting message to all group members");
+		Message message = new Message(null, null, new String("MessageDispatcher Test Message"));
+		rsp_list = disp.castMessage(null, message, new RequestOptions().setMode(ResponseMode.GET_ALL).setTimeout(0));
+		
+		System.out.println("Responses:");
+		
+		List list = rsp_list.getResults();
+		for(Object obj : list) {
+			System.out.println("  " + obj);
 		}
+		
 	}
 
 	public static void main(String[] args) throws Exception {

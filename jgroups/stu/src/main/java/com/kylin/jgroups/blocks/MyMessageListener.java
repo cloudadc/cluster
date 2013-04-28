@@ -12,17 +12,14 @@ public class MyMessageListener implements MessageListener {
 	private static final Logger logger = Logger.getLogger(MyMessageListener.class);
 
 	public void receive(Message msg) {
-
-		logger.info("message received, " + "** Message: " + msg + ", message content: [" + new String(msg.getBuffer()) + "]");
+		logger.info("message received, " + "sender: " + msg.getSrc() + ", content: " + msg.getObject());
 	}
 
 	public void getState(OutputStream output) throws Exception {
-
 		logger.info("getState");
 	}
 
 	public void setState(InputStream input) throws Exception {
-		
 		logger.info("setState");
 	}
 
