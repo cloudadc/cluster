@@ -102,6 +102,8 @@
     		<fileset dir="${resource.dir}/conf" includes="msgDispatcher.bat"/>
     		<fileset dir="${resource.dir}/conf" includes="rpcDispatcher.sh"/>
     		<fileset dir="${resource.dir}/conf" includes="rpcDispatcher.bat"/>
+    		<fileset dir="${resource.dir}/conf" includes="rspFilter.sh"/>
+    		<fileset dir="${resource.dir}/conf" includes="rspFilter.bat"/>
 		    <fileset dir="${resource.dir}/conf" includes="run.conf"/>
     	</copy>
     	
@@ -208,6 +210,10 @@
     	</copy>
     	
     	<copy todir="${build.dir}/modules/bootstrap/jgroups/rpcDispatcher/main" >
+    		<fileset dir="${target.dir}" includes="bootstrap.jar"/>
+    	</copy>
+    	
+    	<copy todir="${build.dir}/modules/bootstrap/jgroups/rspFilter/main" >
     		<fileset dir="${target.dir}" includes="bootstrap.jar"/>
     	</copy>
     	

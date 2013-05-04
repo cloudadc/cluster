@@ -14,9 +14,9 @@ import org.jgroups.blocks.RpcDispatcher;
 import org.jgroups.util.RspList;
 import org.jgroups.util.Util;
 
-public class RpcDispatcherTest {
-
-private static final Logger logger = Logger.getLogger(RpcDispatcherTest.class);
+public class RspFilterTest {
+	
+	private static final Logger logger = Logger.getLogger(RspFilterTest.class);
 	
 	private RpcDispatcher disp;
 	private Channel channel;
@@ -36,13 +36,14 @@ private static final Logger logger = Logger.getLogger(RpcDispatcherTest.class);
 		membershipListener = new MyMembershipListener();
 		rpcMethods = new RpcMethods(channel);
 		disp = new RpcDispatcher(channel, messageListener, membershipListener, rpcMethods);
-		channel.connect("RpcDispatcherContentTestGroup");
+		channel.connect("RspFilterTestGroup");
 		
 		Util.sleep(1000);
 		String param = channel.getName();
 		MethodCall call = new MethodCall("getNodeName", new Object[]{param}, new Class[]{String.class});
 		logger.info("Call all members getNodeName()");
-		RequestOptions requestOptions = new RequestOptions(ResponseMode.GET_ALL, 0);
+		RequestOptions requestOptions = new RequestOptions(ResponseMode.GET_ALL, 0, false, new MyRspFilter());		
+		rsp_list = disp.callRemoteMethods(null, call, requestOptions);
 		
 		System.out.println("Responses:");
 		List<String> list = rsp_list.getResults();
@@ -51,7 +52,7 @@ private static final Logger logger = Logger.getLogger(RpcDispatcherTest.class);
 		}
 
 	}
-	
+
 	public static void main(String[] args) throws Exception {
 		
 		String name = null;
@@ -65,6 +66,7 @@ private static final Logger logger = Logger.getLogger(RpcDispatcherTest.class);
 				
 		 }
 		 
-		 new RpcDispatcherTest().start(name);
+		new RspFilterTest().start(name);
 	}
+
 }
