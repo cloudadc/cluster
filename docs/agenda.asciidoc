@@ -1,16 +1,16 @@
-Agenda
-------
+jGroups TankWar Agenda
+----------------------
 
 |=========================================================
-|*Content*                            |*Status*     |*Description*
-|integrate oroginal project           |Done         | original project is a simple java project, came from my college homework
-|update, adjust origin project        |Done         | use log4j, modify origin code for missile be emitted From Tank center
-|JGroups study                        |Done         | API study test code
-|enable jGroups replicate session     |Done         | use JGroups replicate session
-|reconstruct whole code architecture  |Done         | rewrite previous mainFrame code
-|jgroups advanced concept study       |Pending      | How to use other transport protoco replace default udp
-|jbosscache study                     |Pending      | Helloworld demo, basic concepts
-|Infinispan study                     |Pending      | basic knowledge, API study
-|enable Infinispan replicate session  |Scheduled    | come soon
+|*Content*                             |*Status*     |*Description*
+|integrate oroginal project            |Done         | original project is a simple java project, came from my college homework
+|update, adjust origin project         |Done         | use log4j, modify origin code for missile be emitted From Tank center
+|JGroups study                         |Done         | API study test code
+|enable jGroups replicate session      |Done         | use JGroups replicate session
+|reconstruct whole code architecture   |Done         | rewrite previous mainFrame code
+|jgroups advanced concept study        |Done         | Cusyomized Protocal stack, Share Tansport Protocal
+|Use advanced concept in demo          |Done         | multiple channels instead of use single one, sharing a transport between multiple channels in a JVM
+|reconstruct the whole code            |Done         | Simplify the architecture(Spilit big Session to small pice, send session pice instead big one session), session merge is retire;10 times performance enhance; use advanced JGroups features
+|add jconsole management functionality |Done         | enable jconsole manage jgroups channel
 |=========================================================
 
