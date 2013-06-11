@@ -79,6 +79,7 @@
     		<fileset dir="${resource.dir}/conf" includes="log4j.xml"/>
     		<fileset dir="${resource.dir}/conf" includes="total-replication.xml"/>
     		<fileset dir="${resource.dir}/conf" includes="tankwar-udp.xml"/>
+    		<fileset dir="${resource.dir}/conf" includes="tankwar-tcp.xml"/>
     		<fileset dir="${resource.dir}/conf" includes="config.xml"/>
     		<fileset dir="${resource.dir}/conf" includes="infinispan_icon_32px.gif"/>
     		<fileset dir="${resource.dir}/conf" includes="infinispan-distribution.xml"/>
