@@ -70,6 +70,17 @@ public class CacheAPITest {
 		cache.stop();
 		cache.destroy();
 	}
+	
+	private void getNode() {
+		Cache cache = createCacheUseDefault();
+		Node root = cache.getRoot();
+		root.addChild(Fqn.fromString("/a/b/c"));
+		Node b = root.getChild(Fqn.fromString("/a/b"));
+		
+		b.put("k1", "v1");
+		b.put("k2", "v2");
+		b.put("k3", "v3");
+	}
 
 	private void cachingRetrievingWithFqn() {
 

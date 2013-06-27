@@ -74,6 +74,7 @@
 		<mkdir dir="${build.dir}/modules" />
 		<mkdir dir="${build.dir}/bin" />
     	<mkdir dir="${build.dir}/conf" />
+    	<mkdir dir="${build.dir}/conf/etc" />
     	
     	<copy todir="${build.dir}/conf" >
     		<fileset dir="${resource.dir}/conf" includes="log4j.xml"/>
@@ -84,6 +85,14 @@
     		<fileset dir="${resource.dir}/conf" includes="infinispan_icon_32px.gif"/>
     		<fileset dir="${resource.dir}/conf" includes="infinispan-distribution.xml"/>
     		<fileset dir="${resource.dir}/conf" includes="infinispan-replication.xml"/>
+    	</copy>
+    	
+    	<copy todir="${build.dir}/conf/etc" >
+    		<fileset dir="${resource.dir}/conf" includes="jbosscache-config-all.xml"/>
+    		<fileset dir="${resource.dir}/conf" includes="jbosscache-config-cluster.xml"/>
+    		<fileset dir="${resource.dir}/conf" includes="jbosscache-config-local.xml"/>
+    		<fileset dir="${resource.dir}/conf" includes="jbosscache-config-3.2.xsd"/>
+    		<fileset dir="${resource.dir}/conf" includes="jbosscache-registry-3.2.xsd"/>
     	</copy>
     	
     	<copy todir="${build.dir}/bin" >
