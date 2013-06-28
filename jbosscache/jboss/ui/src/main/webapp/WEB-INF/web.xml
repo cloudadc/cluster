@@ -8,17 +8,17 @@
   <!-- Servlets -->
   <servlet>
     <servlet-name>greetServlet</servlet-name>
-    <servlet-class>com.kylin.gwt.server.GreetingServiceImpl</servlet-class>
+    <servlet-class>com.kylin.jbosscache.custom.gwt.server.GreetingServiceImpl</servlet-class>
   </servlet>
   
   <servlet-mapping>
     <servlet-name>greetServlet</servlet-name>
-    <url-pattern>/helloworld/greet</url-pattern>
+    <url-pattern>/JBossCacheGUI/greet</url-pattern>
   </servlet-mapping>
   
   <!-- Default page to serve -->
   <welcome-file-list>
-    <welcome-file>HelloWorld.html</welcome-file>
+    <welcome-file>JBossCacheGUI.html</welcome-file>
   </welcome-file-list>
 
 </web-app>

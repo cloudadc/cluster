@@ -98,7 +98,7 @@
 	        <!-- Plugin configuration. There are many available options, see gwt-maven-plugin documentation at codehaus.org --> 
 			<configuration>
 	          <!-- URL that should be automatically opened in the GWT shell (gwt:run). -->
-	          <runTarget>HelloWorld.html</runTarget>
+	          <runTarget>JBossCacheGUI.html</runTarget>
 	          <!-- Location of the develop-mode web application structure (gwt:run). -->
 	          <hostedWebapp>target/www</hostedWebapp>
 	          <!-- Ask GWT to create the Story of Your Compile (SOYC) (gwt:compile) -->
