@@ -11,9 +11,14 @@
     <servlet-class>com.kylin.jbosscache.custom.gwt.server.GreetingServiceImpl</servlet-class>
   </servlet>
   
+  <servlet>
+    <servlet-name>jbosscacheServlet</servlet-name>
+    <servlet-class>com.kylin.jbosscache.custom.gwt.server.JBossCacheServiceImpl</servlet-class>
+  </servlet>
+  
   <servlet-mapping>
-    <servlet-name>greetServlet</servlet-name>
-    <url-pattern>/JBossCacheGUI/greet</url-pattern>
+    <servlet-name>jbosscacheServlet</servlet-name>
+    <url-pattern>/JBossCacheGUI/jbosscache</url-pattern>
   </servlet-mapping>
   
   <!-- Default page to serve -->
