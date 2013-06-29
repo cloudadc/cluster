@@ -1,16 +1,20 @@
 package com.kylin.jbosscache.custom.gwt.server;
 
-import java.util.ArrayList;
 import java.util.List;
+
+import javax.ejb.EJB;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.kylin.jbosscache.custom.gwt.client.JBossCacheService;
-import com.kylin.jbosscache.custom.gwt.shared.CacheEntity;
-import com.kylin.jbosscache.custom.gwt.shared.NodeEntity;
+import com.kylin.jbosscache.custom.model.CacheEntity;
+import com.kylin.jbosscache.custom.model.NodeEntity;
 
 public class JBossCacheServiceImpl extends RemoteServiceServlet implements JBossCacheService {
 
 	private static final long serialVersionUID = 8519870476773762277L;
+	
+	@EJB
+	private com.kylin.jbosscache.custom.JBossCacheService jbosscacheService;
 
 	public String ping(String name) throws IllegalArgumentException {
 		return "success, " + name;
@@ -18,42 +22,33 @@ public class JBossCacheServiceImpl extends RemoteServiceServlet implements JBoss
 	
 	public List<CacheEntity> getCacheContent(String fqn) throws IllegalArgumentException {
 
-		//TODO -- lookup ejb
-		
-		List<CacheEntity> result = new ArrayList<CacheEntity>();
-		
-		if(fqn.equals("/a/b/c")) {
-			result.add(new CacheEntity("k1","v1"));
-			result.add(new CacheEntity("k2","v2"));
-			result.add(new CacheEntity("k3","v3"));
+		try {
+			return jbosscacheService.getCacheContent(fqn);
+		} catch (Exception e) {
+			throw new JBossCacheServiceInvokeException("Invoke EJB service error", e);
 		}
 		
-		return result;
 	}
 
 	public NodeEntity initTree(){
 		
-		//TODO -- lookup initial JBossCache return 
-		
-		NodeEntity root = new NodeEntity("/");
-		NodeEntity a = new NodeEntity("a");
-		NodeEntity d = new NodeEntity("d");
-		root.add(a).add(d);
-		NodeEntity b = new NodeEntity("b");
-		a.add(b);
-		NodeEntity c = new NodeEntity("c");
-		b.add(c);
-
-		return root;
+		try {
+			return jbosscacheService.initTree();
+		} catch (Exception e) {
+			throw new JBossCacheServiceInvokeException("Invoke EJB service error", e);
+		}
 	}
 
 	public Integer addCacheContent(String fqn, String key, String value) throws IllegalArgumentException {
 
-		//TODO -- invoke ejb
+		try {
+			jbosscacheService.addCacheContent(fqn, key, value);
+			return 1;
+		} catch (Exception e) {
+			throw new JBossCacheServiceInvokeException("Invoke EJB service error", e);
+		}
 		
-		System.out.println(fqn + ", " + key + ", " + value);
 		
-		return 1;
 	}
 
 }

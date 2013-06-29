@@ -24,8 +24,8 @@ import com.google.gwt.user.client.ui.TreeItem;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.view.client.AsyncDataProvider;
 import com.google.gwt.view.client.HasData;
-import com.kylin.jbosscache.custom.gwt.shared.CacheEntity;
-import com.kylin.jbosscache.custom.gwt.shared.NodeEntity;
+import com.kylin.jbosscache.custom.model.CacheEntity;
+import com.kylin.jbosscache.custom.model.NodeEntity;
 
 public class JBossCacheGUI implements EntryPoint {
 	

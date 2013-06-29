@@ -3,8 +3,8 @@ package com.kylin.jbosscache.custom.gwt.client;
 import java.util.List;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.kylin.jbosscache.custom.gwt.shared.CacheEntity;
-import com.kylin.jbosscache.custom.gwt.shared.NodeEntity;
+import com.kylin.jbosscache.custom.model.CacheEntity;
+import com.kylin.jbosscache.custom.model.NodeEntity;
 
 public interface JBossCacheServiceAsync {
 
