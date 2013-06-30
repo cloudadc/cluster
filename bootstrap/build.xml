@@ -7,6 +7,7 @@
     <property name="dependency.dir" value="${basedir}/target/dependency" />
     <property file="${basedir}/build.properties"/>
     <property name="build.dir" value="${build.home}/${build.profile}" />
+	<property name="jbosscache.jboss.target" value="${basedir}/../jbosscache/jboss/ear/target" />
 
     <target name="validateproperties" >
         <echo>build parameter output</echo>
@@ -74,7 +75,12 @@
 		<mkdir dir="${build.dir}/modules" />
 		<mkdir dir="${build.dir}/bin" />
     	<mkdir dir="${build.dir}/conf" />
+    	<mkdir dir="${build.dir}/dist" />
     	<mkdir dir="${build.dir}/conf/etc" />
+    	
+    	<copy todir="${build.dir}/dist" >
+    		<fileset dir="${jbosscache.jboss.target}" includes="jbosscache-jboss-ear.ear"/>
+    	</copy>
     	
     	<copy todir="${build.dir}/conf" >
     		<fileset dir="${resource.dir}/conf" includes="log4j.xml"/>
