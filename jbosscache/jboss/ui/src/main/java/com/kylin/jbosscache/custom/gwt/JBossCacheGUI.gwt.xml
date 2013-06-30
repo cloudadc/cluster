@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 2.5.1//EN" "http://google-web-toolkit.googlecode.com/svn/tags/2.5.1/distro-source/core/src/gwt-module.dtd">
+<module rename-to='JBossCacheGUI'>
+	<inherits name='com.google.gwt.user.User'/>
+	<inherits name='com.google.gwt.user.theme.clean.Clean'/>
+	<entry-point class='com.kylin.jbosscache.custom.gwt.client.JBossCacheGUI'/>
+	<source path=''/>
+	<!--  <source path='shared'/>-->
+</module>

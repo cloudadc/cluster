@@ -1,6 +1,10 @@
 How to build JBoss Cluster Framework Demo code?
 -----------------------------------------------
 
+* set `jboss.home` in cluster/jbosscache/jboss/service/pom.xml
+
+* select correct OS in cluster/bootstrap/build.xml install target
+
 * clone `CustomizedTools` code from github, JBoss Cluster Framework demo denpend on this libraries
 ----
 git clone git@github.com:kylinsoong/CustomizedTools.git
