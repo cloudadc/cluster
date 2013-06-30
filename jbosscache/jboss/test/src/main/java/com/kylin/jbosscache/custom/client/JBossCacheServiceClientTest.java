@@ -1,6 +1,6 @@
 package com.kylin.jbosscache.custom.client;
 
-import com.kylin.jbosscache.custom.JBossCacheService;
+import com.kylin.jbosscache.custom.service.JBossCacheService;
 
 
 public class JBossCacheServiceClientTest extends ClientBase {

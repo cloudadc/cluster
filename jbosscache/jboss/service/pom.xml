@@ -38,13 +38,6 @@
 
    <dependencies>
    
-   	<dependency>
-			<groupId>com.kylin.jbosscache</groupId>
-			<artifactId>jbosscache-jboss-model</artifactId>
-			<version>${version}</version>
-			<scope>provided</scope>
-	</dependency>
-   
     <dependency>
 		<groupId>org.jboss.ha</groupId>
 	    <artifactId>jboss-ha-server</artifactId>

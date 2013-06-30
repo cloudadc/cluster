@@ -3,7 +3,7 @@ package com.kylin.jbosscache.custom.client;
 import javax.naming.NamingException;
 
 
-import com.kylin.jbosscache.custom.JBossCacheService;
+import com.kylin.jbosscache.custom.service.JBossCacheService;
 
 
 public class JBossCacheServiceClient extends ClientBase {
@@ -15,8 +15,8 @@ public class JBossCacheServiceClient extends ClientBase {
 	}
 
 	public void test() throws Exception {	
-		service.addCacheContent("/a/b/c", "k1", "v1");
-		service.addCacheContent("/a/d", "k1", "v1");
+		System.out.println(service.getFqnStrs());
+		System.out.println(service.getCacheNodeContent("/a/b/c"));
 	}
 	
 	

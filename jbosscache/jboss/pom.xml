@@ -10,7 +10,6 @@
     <name>Parent for remote JBoss Cache EJB and Java client</name>
 
     <modules>
-	<module>model</module>
         <module>service</module>
         <module>test</module>
 	<module>ui</module>

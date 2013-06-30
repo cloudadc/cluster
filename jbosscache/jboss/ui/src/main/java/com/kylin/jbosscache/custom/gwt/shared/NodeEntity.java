@@ -1,4 +1,4 @@
-package com.kylin.jbosscache.custom.model;
+package com.kylin.jbosscache.custom.gwt.shared;
 
 import java.io.Serializable;
 import java.util.HashSet;

@@ -6,10 +6,6 @@
          xmlns="http://java.sun.com/xml/ns/javaee">
 
   <!-- Servlets -->
-  <servlet>
-    <servlet-name>greetServlet</servlet-name>
-    <servlet-class>com.kylin.jbosscache.custom.gwt.server.GreetingServiceImpl</servlet-class>
-  </servlet>
   
   <servlet>
     <servlet-name>jbosscacheServlet</servlet-name>

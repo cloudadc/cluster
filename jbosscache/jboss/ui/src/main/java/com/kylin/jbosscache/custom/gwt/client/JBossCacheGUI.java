@@ -24,8 +24,9 @@ import com.google.gwt.user.client.ui.TreeItem;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.view.client.AsyncDataProvider;
 import com.google.gwt.view.client.HasData;
-import com.kylin.jbosscache.custom.model.CacheEntity;
-import com.kylin.jbosscache.custom.model.NodeEntity;
+import com.kylin.jbosscache.custom.gwt.shared.CacheEntity;
+import com.kylin.jbosscache.custom.gwt.shared.NodeEntity;
+
 
 public class JBossCacheGUI implements EntryPoint {
 	
@@ -79,7 +80,12 @@ public class JBossCacheGUI implements EntryPoint {
 			}
 		});
 		
-		
+		initTreeItem();	
+				
+	}
+	
+	private void initTreeItem() {
+
 		jbossCacheService.initTree(new AsyncCallback<NodeEntity>() {
 
 			public void onFailure(Throwable t) {
@@ -88,10 +94,10 @@ public class JBossCacheGUI implements EntryPoint {
 
 			public void onSuccess(NodeEntity result) {
 				updateRootTree(result);
-			}});
-				
+			}
+		});
 	}
-	
+
 	private void addCacheEntiry() {
 
 		final DialogBox dialogBox = new DialogBox();
@@ -135,6 +141,7 @@ public class JBossCacheGUI implements EntryPoint {
 				dialogBox.hide();
 				sendButton.setEnabled(true);
 				sendButton.setFocus(true);
+				initTreeItem();	
 			}
 		});
 	}
@@ -142,8 +149,7 @@ public class JBossCacheGUI implements EntryPoint {
 	private void updateTable(String path) {
 		
 		final String fqn = path;
-		
-		
+				
 		jbossCacheService.getCacheContent(path, new AsyncCallback<List<CacheEntity>>(){
 
 					public void onFailure(Throwable t) {
@@ -204,6 +210,7 @@ public class JBossCacheGUI implements EntryPoint {
 //	    hc.add(new Label("/"));
 //	    TreeItem root = new TreeItem(hc);
 //	    tree.addItem(root);
+		tree.clear();
 		TreeItem root = tree.addTextItem(result.getName());
 		updateTreeNode(root, result.getChilds());
 	}

@@ -26,11 +26,6 @@
           <artifactId>jbosscache-jboss-service</artifactId>
          <version>1.0</version>
        </dependency>
-       <dependency>
-          <groupId>com.kylin.jbosscache</groupId>
-          <artifactId>jbosscache-jboss-model</artifactId>
-         <version>1.0</version>
-       </dependency>
    </dependencies>
 
    <build>
