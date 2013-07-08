@@ -22,6 +22,7 @@
 	<module>rpcmanager</module>
 	<module>jboss</module>
 	<module>demo</module>
+	<module>ejb</module>
     </modules>
 
 </project>

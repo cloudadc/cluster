@@ -5,5 +5,4 @@
 	<inherits name='com.google.gwt.user.theme.clean.Clean'/>
 	<entry-point class='com.kylin.jbosscache.custom.gwt.client.JBossCacheGUI'/>
 	<source path=''/>
-	<!--  <source path='shared'/>-->
 </module>
