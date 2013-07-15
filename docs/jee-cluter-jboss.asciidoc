@@ -1,0 +1,49 @@
+基于JBoss 5 的 EJB 集群
+
+EJB 集群提供了应用的可伸缩性和高可用性，它体现在以下两点：
+  在一个确定的时间点，当客户端的请求超过服务器的最大负载，我们可以设定集群负责均衡策略，将客户端的请求分配给集群中的多个节点
+  当某一单点发生故障，或连接丢失发生时，我们可以配置集群，这样请求可以在集群中各个节点中路由，即当连接在某一点丢失，请求转移到新的节点
+
+运行示例
+运行本示例需要两台机器
+1. 编译打包生成部署文件
+使用示例-0编译生成DEMO_HOME，部署文件jbosscache-jboss-ejb.jar位于DEMO_HOME/dist目录下。
+2. 启动JBoss
+我们通过启动JBoss AS 5来启动JBoss微容器，为了简化我们在同一台物理集群上绑定两个网卡来模拟两台物理机器。安装完JBoss AS 5后，到JBOSS_HOME/server目录下将all示例拷贝两份，模拟两个JBoss示例，如下：
+---
+cp -r all/ node1
+cp -r all/ node2
+---
+为了以集群方式运行JBoss中防止冲突，我们需要做如下操作：
+编辑node1/deploy/messaging/messaging-service.xml，修改ServerPeerID属性值为1：
+---
+<attribute name="ServerPeerID">${jboss.messaging.ServerPeerID:1}</attribute>
+---
+编辑node2/deploy/messaging/messaging-service.xml，修改ServerPeerID属性值为2：
+---
+<attribute name="ServerPeerID">${jboss.messaging.ServerPeerID:2}</attribute>
+---
+编辑node1/deploy/jbossweb.sar/server.xml文件Engine元素，添加jvmRoute="node1"：
+---
+<Engine name="jboss.web" defaultHost="localhost" jvmRoute="node1">
+---
+编辑node2/deploy/jbossweb.sar/server.xml文件Engine元素，添加jvmRoute="node2"：
+---
+<Engine name="jboss.web" defaultHost="localhost" jvmRoute="node2">
+---
+使用如下命令分别启动node1和node2：
+---
+./run.sh -c node1 -b <ip 1> -g test -u 239.255.100.100
+./run.sh -c node2 -b <ip 2> -g test -u 239.255.100.100
+---
+-c 指定启动JBoss实例名称
+-b 绑定一个本地ip地址
+-g 指定一个分区名称
+-u 绑定一个多播地址
+注意关于详细JBoss启动参照JBoss 5文档：http://www.jboss.org/jbossas/docs/5-x。
+启动完成分别部署jbosscache-jboss-ejb.jar到两个节点。
+3. 运行EJB客户端测试
+
+
+
+基于JBoss 5 的 JMS 集群

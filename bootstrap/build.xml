@@ -8,6 +8,7 @@
     <property file="${basedir}/build.properties"/>
     <property name="build.dir" value="${build.home}/${build.profile}" />
 	<property name="jbosscache.jboss.target" value="${basedir}/../jbosscache/jboss/ear/target" />
+	<property name="jbosscache.ejb.target" value="${basedir}/../jbosscache/ejb/target" />
 
     <target name="validateproperties" >
         <echo>build parameter output</echo>
@@ -80,6 +81,7 @@
     	
     	<copy todir="${build.dir}/dist" >
     		<fileset dir="${jbosscache.jboss.target}" includes="jbosscache-jboss-ear.ear"/>
+    		<fileset dir="${jbosscache.ejb.target}" includes="jbosscache-jboss-ejb.jar"/>
     	</copy>
     	
     	<copy todir="${build.dir}/conf" >
