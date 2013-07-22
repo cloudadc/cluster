@@ -1,0 +1,4 @@
+1. 安装Java
+安装Infinispan的先决条件只有一个就是Java虚拟机，Java 1.6或以后版本的Java需要安装在您的操作系统上。一个Java虚拟机（JVM）能够创建一个Java二进制码可以运行的虚拟环境，JVM创建这个标准的虚拟环境对底层的硬件和操作系统等是不考虑的，它运行程序员只编写Java代码一次而可以运行于其他任何操作系统。详细关于安装Java步骤参照本书第二章Java安装部分。
+2. 安装Infinispan
+访问Infinispan网站http://infinispan.org/，点击下载Downloads，选择相关版本，比如Infinispan 6.0，下载二进制和示例，AS 7.x 模块，Infnispan服务器。下载完成解压zip包即完成安装。

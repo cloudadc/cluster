@@ -1,0 +1,143 @@
+Table of Contents
+-----------------
+
+* Chapter 1: Installing Infinispan
+* Chapter 2: Using Infinispan Core API
+* Chapter 3: Introducing Infinispan Configuration
+* Chapter 4: Developing Advanced Configurations
+* Chapter 5: Monitoring Infinispan
+* Chapter 6: Infinispan and CDI
+* Chapter 7: Advanced Topics
+
+Chapter 1: Installing Infinispan
+--------------------------------
+* What is a data grid?
+* Introducing Infinispan as a cache
+* Going beyond JSR-107
+* Installing the required software
+* Installing Java SE
+* Testing the installation
+* Installing Maven
+* Testing the installation
+* Installing Infinispan
+* Extending Infinispan with its additional modules
+* Testing the installation with the GUI demo
+
+Chapter 2: Using Infinispan Core API
+------------------------------------
+* Infinispan operational modes
+* Running Infinispan in embedded mode
+* Running Infinispan in client-server mode
+* The memcached protocol
+* The Hot Rod protocol
+* WebSocket protocol
+* Infinispan REST interface
+* Using the Hot Rod Java client
+* Learning the Infinispan API
+* Creating your first project
+* Controlling the size of your data store
+* Data eviction
+* Data expiration
+* Using listeners
+* Listeners and synchronicity
+* Infinispan and transactions
+* Running the sample application with Maven
+* Summary
+
+Chapter 3: Introducing Infinispan Configuration
+-----------------------------------------------
+* Learning the declarative configuration
+* Global configuration settings
+* Cache configuration settings
+* Configuring cache loaders
+* Common cache loader attributes
+* Specific cache loader attributes
+* Choosing the correct cache store for your application
+* JDBC-based cache stores
+* Chaining cache loaders
+* Configuring eviction and expiration
+* Testing our ticket system with eviction and passivation
+* Infinispan programmatic configuration
+* Creating a configuration from scratch
+* Creating the Global configuration programmatically
+* Summary
+
+Chapter 4: Developing Advanced Configurations
+---------------------------------------------
+* Introducing clustering
+* Configuring the network transport
+* Creating the Infinispan cluster
+* Configuring our application to use clustering
+* Choosing between replication and distribution
+* Advanced data distribution
+* Improving the distribution of data with virtual nodes
+* Using the L1 cache to prevent unnecessary remote calls
+* Infinispan locking strategies
+* Configuring isolation levels
+* Data locking and transactions
+* Explicit and implicit data locking
+* Showing a node locking example
+* Configuring lock timeouts
+* Using lock pools to guard your cache keys
+* Detecting deadlocks
+* Summary
+
+Chapter 5: Monitoring Infinispan
+--------------------------------
+* Enabling statistics collection
+* Using JConsole to gather Infinispan data
+* Managing Infinispan with RHQ
+* Installing RHQ
+* Configuring the RHQ agent
+* Letting the agent discover Infinispan
+* Installing the Infinispan plugin
+* RHQ: your gateway to Infinispan
+* A quick Summary view of our cache
+* Getting alert conditions from your cache
+* Monitoring your system in real time
+* Summary
+
+Chapter 6: Infinispan and CDI
+-----------------------------
+* A 30,000 foot overview of CDI
+* Getting set up to use Infinispan and CDI
+* Configuring and injecting Infinispan components into your I beans
+* Injecting a cache using CDI
+* Configuring which cache gets injected
+* Configuring cache managers
+* Specifying the default configuration
+* Overriding the way an EmbeddedCacheManager is created
+* Configuring a RemoteCacheManager
+* Handling multiple configurations
+* Controlling storage and retrieval using CDI annotations
+* Enabling cache annotations in your CDI application
+* Caching the result of a method invocation
+* Specifying which cache to use
+* Cache keys for cached results
+* Custom key generation
+* Removing an entry from the cache
+* Clearing the cache
+* Updating a cache entry
+* Using Infinispan CDI with JBoss AS 7.x
+* Summary
+
+Chapter 7: Advanced Topics
+--------------------------
+* The asynchronous API
+* NotifyingFuture
+* The query API
+* Setting up your project to use Infinispan's querying capabilities
+* Configuring your cache
+* Annotating your objects
+* Writing a query
+* Storing indexes
+* Infinispan directory
+* Index storage and cache modes
+* Customizing Infinispan
+* BaseCustomInterceptor
+* Commands and InvocationContext
+* Creating a custom interceptor
+* Configuring custom interceptors
+* Interceptor positioning
+* Summary
+
