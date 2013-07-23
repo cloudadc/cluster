@@ -1,4 +1,101 @@
 1. 安装Java
 安装Infinispan的先决条件只有一个就是Java虚拟机，Java 1.6或以后版本的Java需要安装在您的操作系统上。一个Java虚拟机（JVM）能够创建一个Java二进制码可以运行的虚拟环境，JVM创建这个标准的虚拟环境对底层的硬件和操作系统等是不考虑的，它运行程序员只编写Java代码一次而可以运行于其他任何操作系统。详细关于安装Java步骤参照本书第二章Java安装部分。
+
 2. 安装Infinispan
-访问Infinispan网站http://infinispan.org/，点击下载Downloads，选择相关版本，比如Infinispan 6.0，下载二进制和示例，AS 7.x 模块，Infnispan服务器。下载完成解压zip包即完成安装。
+访问Infinispan网站http://infinispan.org/，点击下载Downloads，选择相关版本，比如Infinispan 6.0，下载二进制和示例，AS 7.x 模块，Infinispan服务器。下载完成解压zip包即完成安装。
+下载二进制包和示例完成后会有infinispan-6.0.0.Final-all.zip生成，解压此zip文件产生infinispan-6.0.0.Final-all目录，该目录下包括Infinispan二进制文件infinispan-core.jar，lib目录中有所有用到的二进制包，etc目录中包含相关配置文件，bin目录中包括所有示例的启动脚本；
+下载AS 7.x 模块完成后会有infinispan-as-modules-6.0.0.Final.zip生成，解压此zip文件产生Infinispan模块，如果需要将infinispan与JBoss AS 7整合，我们需要将解压产生的模块拷贝到JBOSS_HOME/modules中；
+下载Infinispan服务器完成后会有infinispan-server-6.0.0.Alpha1-bin.zip生成，解压此zip文件产生infinispan-server-6.0.0.Final目录，Infinispan服务器基于第三代JBoss内核MSC（模块化服务容器），infinispan-server-6.0.0.Final目录类是JBoss AS 7目录结构，modules中包含所有模块，bin中包括所以启动脚本，standalone中包括启动的实例。
+
+3. 以远程客户端-服务器模式运行Infinispan
+以远程客户端-服务器模式运行Infinispan我们只需要运行Infinispan服务器目录中bin下面的启动脚本即可。为了方便描述，我们将Infinispan服务器目录称为JDG_HOME。我们可以独立的运行Infinispan，也可以以集群的形式运行Infinispan，运行启动脚本时我们也可以添加相关参数，来完成自定义运行Infinispan。
+* 以独立模式运行Infinispan
+独立模式只涉及到一个Infinispan实例，它可以看作是Infinispan的本地模式，在这种模式下Infinispan可以看作是单一节点的缓存服务器。运行如下脚本我们可以以独立的模式运行Infinispan：
+$JDG_HOME/bin/standalone.sh
+如上命令运行Infinispan使用了Infinispan的默认配置，该默认配置文件为$JDG_HOME/standalone/configuration/standalone.xml。
+* 以集群的模式运行Infinispan
+集群模式涉及到多个Infinispan实例，这就是我们说的数据网格模式，该模式下各个实例可以看作数据网格中的一个节点，各个实例之间数据透明，我们可以动态扩展网格而不影响网格中数据，我们随后章节会详细介绍这些。运行如下启动脚本我们可以集群的模式运行Infinispan：
+$JDG_HOME/bin/clustered.sh
+如上命令运行Infinispan使用了Infinispan的默认集群配置，该默认配置文件为$JDG_HOME/standalone/configuration/clustered.xml
+* 使用自定义的配置文件运行Infinispan
+在$JDG_HOME/standalone/configuration目录下面有许多自定义的配置文件，比如standalone-hotrod-multiple.xml，clustered-topology.xml等，我们也可以编辑自己定义自己的配置文件。使用如下命令以独立的模式运行Infinispan指定自定义的配置文件：
+$JDG_HOME/bin/standalone.sh -c ${FILENAME}
+使用如下命令以集群模式运行Infinispan指定自定义的配置文件：
+$JDG_HOME/bin/clustered.sh -c ${FILENAME}
+注意，-c不能够指定绝对路径，所以-c指定的自定义配置文件必须存在于$JDG_HOME/standalone/configuration目录下面。如果不使用-c参数则默认的配置文件被使用。
+* 启动Infinispan时绑定一个IP
+如果启动Infinispan不绑定IP地址，127.0.0.1/localhost为默认的IP，但在生产环境中运行Infinispan必须绑定一个IP地址，我们使用-b参数来为Infinispan指定一个IP，具体独立模式下使用如下命令绑定IP：
+$JDG_HOME/bin/standalone.sh -b ${IP_ADDRESS}
+而集群模式下使用如下命令绑定IP：
+$JDG_HOME/bin/clustered.sh -b ${IP_ADDRESS}
+
+4. 以本地库模式运行Infinispan
+* 创建一个Infinispan工程
+我们推荐使用Maven创建Infinispan工程，关于Maven安装配置请参照本书第二章。另外我们需要将Infinispan依赖包添加到pom.xml，具体如下面所示：
+      <dependency>
+         <groupId>org.infinispan</groupId>
+         <artifactId>infinispan-core</artifactId>
+         <version>${infinispan.version}</version>
+      </dependency>
+      <dependency>
+         <groupId>org.infinispan</groupId>
+         <artifactId>infinispan-client-hotrod</artifactId>
+         <version>${infinispan.version}</version>
+      </dependency>
+注意，infinispan.version作为变量定义在pom.xml的properties属性中，您可选择相应版本，我们这里选择6.0.0.Final。如果不使用Maven创建Infinispan工程，除了添加infinispan-core.jar外，相关依赖包（infinispan-6.0.0.Final-all/lib）也需要添加。
+* 创建使用默认缓存
+使用DefaultCacheManager创建默认缓存：
+cache = new DefaultCacheManager().getCache();
+Infinispan提供了接口供应用程序添加和移除缓存中的数据，如下我们向缓存中添加数据key/value：
+cache.put("key", "value");
+确认key/value添加到了缓存：
+assertEquals(1, cache.size());
+assertTrue(cache.containsKey("key"));
+移除缓存中的数据key/value：
+Object v = cache.remove("key");
+确认数据key/value不在缓存中：
+assertEquals("value", v);
+assertTrue(cache.isEmpty());
+Infinispan提供了线程安全的数据结构，我们可以在添加数据时检查数据是否存在，如果不存在就添加数据，如果存在则不改变原有的数据：
+cache.putIfAbsent("key", "newValue");
+assertTrue(cache.get("key").equals("newValue"));
+Infinispan中数据默认生命周期是永久性的，但是我们可以设定缓存数据的存在周期，如下在往缓存中添加数据数据时指定生命周期：
+cache.put("key", "value", 5, TimeUnit.SECONDS);
+确认缓存中存在已添加的数据：
+assertTrue(cache.containsKey("key"));
+在等待指定的缓存中数据的生命周期后，确认添加的数据不存在：
+Thread.sleep(10000);
+assertFalse(cache.containsKey("key"));
+注意，如果向缓存中添加数据时不指定它的生命周期或最大闲置时间，那么缓存中的数据将永远不会过期。另外如上代码位于infinispan/quickstart/src/main/java/org/infinispan/quickstart/Quickstart.java中。
+* 创建使用远程缓存
+创建使用远程缓存首先要确保Infinispan远程服务器运行，如下运行$JDG_HOME/bin下启动脚本启动Infinispan服务器：
+./standalone.sh
+使用RemoteCacheManager
+创建远程缓存：
+Configuration configuration = new ConfigurationBuilder().addServers("127.0.0.1:11222").build();
+RemoteCacheManager manager = new RemoteCacheManager(configuration);
+cache = manager.getCache();
+如下代码端我们向缓存中添加，移除数据，以及给添加的数据设定生命周期，如下：
+cache.put("key", "value");
+assertEquals(1, cache.size());
+assertTrue(cache.containsKey("key"));
+cache.remove("key");
+assertTrue(cache.isEmpty());
+cache.putIfAbsent("key", "newValue");
+assertTrue(cache.get("key").equals("newValue"));
+cache.put("key", "value", 5, TimeUnit.SECONDS);
+assertTrue(cache.containsKey("key"));
+Thread.sleep(10000);
+assertFalse(cache.containsKey("key"));
+注意，详细关于Hot Rod使用我们将在随后做详细说明，如上代码位于infinispan/quickstart/src/main/java/org/infinispan/quickstart/RemoteCacheTest.java中。
+
+
+
+
+
+
+
+
+
+
+
