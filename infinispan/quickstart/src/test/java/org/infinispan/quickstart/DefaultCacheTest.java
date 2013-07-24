@@ -45,7 +45,7 @@ public class DefaultCacheTest {
 
 		assertTrue(cache.containsKey("key"));
 
-		Thread.sleep(10000);
+		Thread.sleep(6000);
 		assertFalse(cache.containsKey("key"));
 
 	}

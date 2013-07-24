@@ -4,25 +4,22 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
-import org.infinispan.client.hotrod.RemoteCache;
-import org.infinispan.client.hotrod.RemoteCacheManager;
-import org.infinispan.client.hotrod.configuration.Configuration;
-import org.infinispan.client.hotrod.configuration.ConfigurationBuilder;
+import org.infinispan.Cache;
+import org.infinispan.manager.DefaultCacheManager;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class RemoteCacheTest {
+public class NamedCacheXMLTest {
 	
-	RemoteCache<Object, Object> cache;
+	Cache<Object, Object> cache;
 
 	@Before
-	public void setup() {
-		Configuration configuration = new ConfigurationBuilder().addServers("127.0.0.1:11222").build();
-		RemoteCacheManager manager = new RemoteCacheManager(configuration);
-		cache = manager.getCache();
+	public void setup() throws IOException {
+		cache = new DefaultCacheManager("namedCache.xml").getCache("custom-cache");
 	}
 
 	@After
@@ -32,8 +29,7 @@ public class RemoteCacheTest {
 	}
 
 	@Test
-	public void remoteCacheTest() throws InterruptedException {
-		
+	public void namedCacheXMLTest() throws InterruptedException {
 		cache.put("key", "value");
 		assertEquals(1, cache.size());
 		assertTrue(cache.containsKey("key"));

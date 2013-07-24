@@ -29,7 +29,7 @@ $JDG_HOME/bin/standalone.sh -b ${IP_ADDRESS}
 而集群模式下使用如下命令绑定IP：
 $JDG_HOME/bin/clustered.sh -b ${IP_ADDRESS}
 
-4. 以本地库模式运行Infinispan
+4. 以本地库模式独立运行Infinispan
 * 创建一个Infinispan工程
 我们推荐使用Maven创建Infinispan工程，关于Maven安装配置请参照本书第二章。另外我们需要将Infinispan依赖包添加到pom.xml，具体如下面所示：
       <dependency>
@@ -88,6 +88,34 @@ assertTrue(cache.containsKey("key"));
 Thread.sleep(10000);
 assertFalse(cache.containsKey("key"));
 注意，详细关于Hot Rod使用我们将在随后做详细说明，如上代码位于infinispan/quickstart/src/main/java/org/infinispan/quickstart/RemoteCacheTest.java中。
+* 使用命名的缓存
+实际应用中我们需要使用命名的缓存，比如在JBoss集群中，保存Web会话需要使用命名的缓存，这样当需要更新Web会话时，我们可以通过缓存名来获取缓存，然后进行相应的更新。Infinispan中命名的缓存可以不需要申明在配置文件中，如果配置文件中没有配置命名的缓存我们可以等效的使用API接口进行申明，如下代码段所示：
+EmbeddedCacheManager manager = new DefaultCacheManager();
+manager.defineConfiguration("custom-cache", new ConfigurationBuilder()
+		.eviction().strategy(EvictionStrategy.LIRS).maxEntries(10)
+			.build());
+cache = manager.getCache("custom-cache");
+如上，我们通过API定义了命名的缓存custom-cache，我们通过Cache Manager获取缓存，对其进行操作。如上代码位于infinispan/quickstart/src/main/java/org/infinispan/quickstart/NamedCacheTest.java中。
+通常我们更喜欢将命名的缓存配置在配置文件中，如下面XML配置：
+<?xml version="1.0" encoding="UTF-8"?>
+<infinispan
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="urn:infinispan:config:6.0 http://www.infinispan.org/schemas/infinispan-config-6.0.xsd"
+      xmlns="urn:infinispan:config:6.0">
+   
+   <namedCache name="custom-cache">
+      <eviction strategy="LIRS" maxEntries="10" />
+   </namedCache>
+</infinispan>
+在infinispan/quickstart/src/main/java/org/infinispan/quickstart/NamedCacheXMLTest.java中我们使用XML文件中定义的缓存custom-cache：
+cache = new DefaultCacheManager("namedCache.xml").getCache("custom-cache");
+注意上面通过XML定义命名缓存和使用API申明命名缓存是等效的。
+
+5. 以本地库模式运行Infinispan数据网格
+使用Infinispan我们可以很容易构建数据网格，与本章图10-1所示Infinispan数据网格的分布式模式，下图为Infinispan数据网格的复制模式，
+infinispan_replication.png
+分布式模式和复制模式的区别是复制模式各个节点上的数据相同，而分布式模式缓存数据被保存在部分节点，我们接下来简单演示这两种模式。使用示例-0的方法编译生成DEMO_HOME，DEMO_HOME/bin目录下有启动脚本infinispan_rep.sh和infinispan_dis.sh。
+
 
 
 
