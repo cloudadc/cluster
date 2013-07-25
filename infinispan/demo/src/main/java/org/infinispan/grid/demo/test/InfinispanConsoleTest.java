@@ -1,8 +1,9 @@
-package com.kylin.infinispan.demo.test;
+package org.infinispan.grid.demo.test;
 
 import java.io.IOException;
 
-import com.kylin.infinispan.demo.InfinispanConsole;
+import org.infinispan.grid.demo.InfinispanConsole;
+
 
 public class InfinispanConsoleTest {
 

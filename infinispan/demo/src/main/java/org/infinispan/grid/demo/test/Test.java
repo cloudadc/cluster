@@ -1,4 +1,4 @@
-package com.kylin.infinispan.demo.test;
+package org.infinispan.grid.demo.test;
 
 import java.util.HashSet;
 import java.util.Set;

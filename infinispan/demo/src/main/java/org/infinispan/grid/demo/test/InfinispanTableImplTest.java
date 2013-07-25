@@ -1,7 +1,7 @@
-package com.kylin.infinispan.demo.test;
+package org.infinispan.grid.demo.test;
 
-import com.kylin.infinispan.demo.InfinispanConsole;
-import com.kylin.infinispan.demo.InfinispanTableImpl;
+import org.infinispan.grid.demo.InfinispanConsole;
+import org.infinispan.grid.demo.InfinispanTableImpl;
 
 public class InfinispanTableImplTest {
 

@@ -1,5 +1,6 @@
-package com.kylin.infinispan.demo;
+package org.infinispan.grid.demo;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -7,7 +8,6 @@ import java.util.concurrent.TimeUnit;
 
 import org.infinispan.Cache;
 import org.infinispan.manager.DefaultCacheManager;
-import org.infinispan.util.Util;
 
 import com.customized.tools.cli.TreeInputConsole;
 import com.customized.tools.cli.TreeNode;
@@ -58,7 +58,11 @@ public class InfinispanConsole extends TreeInputConsole {
 		} catch (Exception e) {
 			throw new IllegalStateException("Initialize CacheDelegate Error", e);
 		} finally {
-			Util.close(in);
+			try {
+				in.close();
+			} catch (IOException e) {
+				
+			}
 		}
 	}
 

@@ -1,4 +1,4 @@
-package com.kylin.infinispan.demo.test;
+package org.infinispan.grid.demo.test;
 
 /**
  * 
@@ -19,7 +19,7 @@ public class Main {
 
 		String[] array = new String[]{"-c", "infinispan-config.xml", "-visible"};
 		
-		com.kylin.infinispan.demo.Main.main(array);
+		org.infinispan.grid.demo.Main.main(array);
 	}
 
 }

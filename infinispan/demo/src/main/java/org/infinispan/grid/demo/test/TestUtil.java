@@ -1,4 +1,4 @@
-package com.kylin.infinispan.demo.test;
+package org.infinispan.grid.demo.test;
 
 
 import org.infinispan.Cache;
@@ -10,12 +10,12 @@ import org.infinispan.configuration.cache.HashConfigurationBuilder;
 import org.infinispan.configuration.global.GlobalConfiguration;
 import org.infinispan.configuration.global.GlobalConfigurationBuilder;
 import org.infinispan.configuration.global.TransportConfigurationBuilder;
+import org.infinispan.grid.demo.CacheDelegate;
+import org.infinispan.grid.demo.CacheDelegateImpl;
+import org.infinispan.grid.demo.CacheListener;
 import org.infinispan.manager.DefaultCacheManager;
 import org.infinispan.manager.EmbeddedCacheManager;
 
-import com.kylin.infinispan.demo.CacheDelegate;
-import com.kylin.infinispan.demo.CacheDelegateImpl;
-import com.kylin.infinispan.demo.CacheListener;
 
 public class TestUtil {
 	

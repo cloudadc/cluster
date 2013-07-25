@@ -1,4 +1,4 @@
-package com.kylin.infinispan.demo;
+package org.infinispan.grid.demo;
 
 public class CacheEntry {
 

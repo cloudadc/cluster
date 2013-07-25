@@ -1,4 +1,4 @@
-package com.kylin.infinispan.demo.test;
+package org.infinispan.grid.demo.test;
 
 import java.io.InputStream;
 import java.net.URL;
