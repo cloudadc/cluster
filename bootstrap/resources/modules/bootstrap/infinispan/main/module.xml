@@ -9,8 +9,10 @@
 
     <dependencies>
     	<module name="javax.api" export="true"/>
-    	<module name="com.kylin.infinispan.datagrid" services="import"/>
     	<module name="org.apache.log4j" services="import"/>
+    	<!--  -->
     	<module name="org.infinispan" services="import" />
+    	
+    	<module name="org.infinispan.grid.demo" services="import"/>
     </dependencies>
 </module>
