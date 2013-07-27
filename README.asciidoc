@@ -5,6 +5,8 @@ JGroups TankWar Demo
 
 * JGroups is a mature library used by Java Developer millions of time, JGroups TankWar Demo use basic JGroups API, it can be a quick start for Java Developer who want to build group communication application, the original code(GUI) came from my college homework
 
+* Groups TankWar Demo Source Code `->` ./jgroups/tankwar
+
 Build and Generate demo home
 ++++++++++++++++++++++++++++
 
@@ -51,6 +53,7 @@ JBossCache Replication Demo
 
 * JBoss Cache is a tree-structured, clustered, transactional cache. It can be used in a standalone, non-clustered environment, to cache frequently accessed data in memory. JBoss Cache is also a clustered cache, and can be used in a cluster to replicate state providing a high degree of failover. 
 * JBossCache Replication Demo is a demo what show JBossCache's tree-structured, clustered, transactional feature, we can easy track the replication process via demo UI, demo mangement console, bsh mangement console.
+* JBossCache Replication Demo Source code `->` ./jbosscache/demo
 
 Build and Generate demo home
 ++++++++++++++++++++++++++++
@@ -100,7 +103,8 @@ Infinispan Data Grid Demo
 -------------------------
 
 * Infinispan is an extremely scalable, highly available key/value NoSQL datastore and distributed data grid platform. 
-* Infinispan Data Grid Demo show Distribute mode
+* Infinispan Data Grid Demo show Infinispan Distribute mode & Replication mode
+* Infinispan Data Grid Demo Source Code `->` ./infinispan/grid/demo
 
 Build and Generate demo Home
 ++++++++++++++++++++++++++++
