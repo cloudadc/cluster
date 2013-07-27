@@ -1,6 +1,5 @@
 package org.infinispan.grid.demo;
 
-import java.io.File;
 import java.io.IOException;
 
 import com.customized.tools.common.ResourceLoader;
@@ -10,7 +9,7 @@ import com.customized.tools.common.ResourceLoader;
  *   mvn clean install dependency:copy-dependencies
  * 
  * How to Run?
- *   java -cp target/dependency/*:target/grid-helloworld.jar -Djava.net.preferIPv4Stack=true com.kylin.infinispan.datagrid.helloworld.Main -c infinispan-distribution.xml -console
+ *   java -cp target/dependency/*:target/infinispan-grid-demo.jar -Djava.net.preferIPv4Stack=true org.infinispan.grid.demo.Main -c infinispan-distribution.xml -console
  * 
  * @author kylin
  *

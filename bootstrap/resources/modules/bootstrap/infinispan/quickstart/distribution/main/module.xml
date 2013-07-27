@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module xmlns="urn:jboss:module:1.1" name="bootstrap.infinispan.quickstart.distribution">
+
+    <main-class name="org.infinispan.quickstart.cluster.DistNode"/>
+    
+    <!--  
+    <resources>
+        <resource-root path="bootstrap.jar"/>
+    </resources>
+-->
+    <dependencies>
+    	<module name="javax.api" export="true"/>
+    	<module name="org.apache.log4j" services="import"/>
+    	<module name="org.infinispan" services="import" />
+    	<module name="org.infinispan.quickstart" services="import"/>
+    </dependencies>
+</module>

@@ -123,6 +123,10 @@
     		<fileset dir="${resource.dir}/conf" includes="rspFilter.sh"/>
     		<fileset dir="${resource.dir}/conf" includes="rspFilter.bat"/>
 		    <fileset dir="${resource.dir}/conf" includes="run.conf"/>
+		    <fileset dir="${resource.dir}/conf" includes="infinispan_repl.bat"/>
+			<fileset dir="${resource.dir}/conf" includes="infinispan_repl.sh"/>
+		    <fileset dir="${resource.dir}/conf" includes="infinispan_dist.bat"/>
+		    <fileset dir="${resource.dir}/conf" includes="infinispan_dist.sh"/>
     	</copy>
     	
 		<copy todir="${build.dir}/modules" >
@@ -166,6 +170,10 @@
     	
     	<copy todir="${build.dir}/modules/org/infinispan/grid/demo/main" >
     		<fileset dir="${dependency.dir}" includes="infinispan-grid-demo-1.0.jar"/>
+    	</copy>
+    	
+    	<copy todir="${build.dir}/modules/org/infinispan/quickstart/main" >
+    		<fileset dir="${dependency.dir}" includes="infinispan-quickstart-1.0.jar"/>
     	</copy>
     	
     	<copy todir="${build.dir}/modules/com/kylin/tankwar/main" >
@@ -240,7 +248,15 @@
     	<copy todir="${build.dir}/modules/bootstrap/infinispan/main" >
     	    <fileset dir="${target.dir}" includes="bootstrap.jar"/>
     	</copy>
+    	<!--
+    	<copy todir="${build.dir}/modules/bootstrap/infinispan/quickstart/distribution/main" >
+    	    <fileset dir="${target.dir}" includes="bootstrap.jar"/>
+    	</copy>
 
+    	<copy todir="${build.dir}/modules/bootstrap/infinispan/quickstart/replication/main" >
+    	    <fileset dir="${target.dir}" includes="bootstrap.jar"/>
+    	</copy>
+-->
 	<echo>chmod 777 *.sh under ${build.dir}/bin</echo>
 	<chmod dir="${build.dir}/bin" perm="ugo+rx" includes="*.sh"/>
     </target>
