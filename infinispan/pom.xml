@@ -23,7 +23,6 @@
 	<module>helloworld</module>
 	<module>hotrod</module>
 	<module>grid</module>
-	<module>demo</module>
         <module>jboss</module>
 	<module>quickstart</module>
     </modules>

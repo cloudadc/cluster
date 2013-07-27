@@ -3,8 +3,8 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.kylin.infinispan</groupId>
-    <artifactId>infinispan-stu-dg-parent</artifactId>
+    <groupId>org.infinispan.grid</groupId>
+    <artifactId>org-infinispan-grid-parent</artifactId>
     <version>1.0</version>
     <packaging>pom</packaging>
     <name>Parent for Run infinispan as Data Grid project</name>
@@ -19,7 +19,7 @@
     
     <modules>
         <module>helloworld</module>
-	<module>helloworld-swt</module>
+	<module>demo</module>
     </modules>
 
 </project>
