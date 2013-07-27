@@ -1,7 +1,6 @@
 package bootstrap.infinispan;
 
 import java.io.File;
-import java.io.IOException;
 
 import org.apache.log4j.Logger;
 
@@ -11,7 +10,7 @@ public class Main extends Bootstrap{
 	
 	private final static Logger logger = Logger.getLogger(Main.class);
 
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws Exception {
 		
 		logger.info("Infnispan Data Grid Demo Bootstrap");
 		
@@ -23,7 +22,7 @@ public class Main extends Bootstrap{
 			}
 		}
 
-		com.kylin.infinispan.datagrid.helloworld.Main.main(args);
+		org.infinispan.grid.demo.Main.main(args);
 	}
 
 }

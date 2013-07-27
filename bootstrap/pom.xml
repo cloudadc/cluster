@@ -78,8 +78,8 @@
          <version>1.0</version>
       </dependency>
       <dependency>
-         <groupId>com.kylin.infinispan</groupId>
-         <artifactId>infinispan-stu-grid-helloworld-swt</artifactId>
+         <groupId>org.infinispan</groupId>
+         <artifactId>infinispan-grid-demo</artifactId>
          <version>1.0</version>
       </dependency>
       <dependency>

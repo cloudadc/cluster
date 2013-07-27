@@ -134,13 +134,15 @@
         </copy>	
     	
     	<copy todir="${build.dir}/modules/org/infinispan/main" >
-    		<fileset dir="${dependency.dir}" includes="infinispan-core-5.2.0.Final.jar"/>
-    		<fileset dir="${dependency.dir}" includes="infinispan-client-hotrod-5.2.0.Final.jar"/>
+    		<fileset dir="${dependency.dir}" includes="infinispan-core-6.0.0.Alpha1.jar"/>
+    		<fileset dir="${dependency.dir}" includes="infinispan-client-hotrod-6.0.0.Alpha1.jar"/>
     		<fileset dir="${dependency.dir}" includes="commons-pool-1.6.jar"/>
     		<fileset dir="${dependency.dir}" includes="jboss-transaction-api_1.1_spec-1.0.0.Final.jar"/>
     		<fileset dir="${dependency.dir}" includes="jboss-marshalling-river-1.3.15.GA.jar"/>
-    		<fileset dir="${dependency.dir}" includes="jgroups-3.2.6.Final.jar"/>
+    		<fileset dir="${dependency.dir}" includes="jgroups-3.3.1.Final.jar"/>
+    		<!--
     		<fileset dir="${dependency.dir}" includes="staxmapper-1.1.0.Final.jar"/>
+    		-->
     		<fileset dir="${dependency.dir}" includes="jboss-logging-3.1.1.GA.jar"/>
     		<fileset dir="${dependency.dir}" includes="jboss-marshalling-1.3.15.GA.jar"/>
     	</copy>	
@@ -162,8 +164,8 @@
     		<fileset dir="${dependency.dir}" includes="jbosscache-replication-demo-1.0.jar"/>
     	</copy>
     	
-    	<copy todir="${build.dir}/modules/com/kylin/infinispan/datagrid/main" >
-    		<fileset dir="${dependency.dir}" includes="infinispan-stu-grid-helloworld-swt-1.0.jar"/>
+    	<copy todir="${build.dir}/modules/org/infinispan/grid/demo/main" >
+    		<fileset dir="${dependency.dir}" includes="infinispan-grid-demo-1.0.jar"/>
     	</copy>
     	
     	<copy todir="${build.dir}/modules/com/kylin/tankwar/main" >
