@@ -131,6 +131,15 @@ We also can run Data Grid demo use console mode, similiar, execute the following
 
 image::docs/img/infnispan-detagrid-architecture-console.png[4 nodes data grid console]
 
+Alternatively, use the following commands start Infinispan Data Grid as Replication Mode:
+----
+./dataGrid.sh -c infinispan-replication.xml
+----
+
+----
+./dataGrid.sh -c infinispan-replication.xml -console
+----
+
 * See more underlying details
 
 // coming soon
