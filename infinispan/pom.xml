@@ -21,7 +21,7 @@
         <module>common</module>
 	<module>api</module>
 	<module>helloworld</module>
-	<module>hotrod</module>
+	<module>loader</module>
 	<module>grid</module>
         <module>jboss</module>
 	<module>quickstart</module>

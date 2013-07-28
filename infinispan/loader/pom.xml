@@ -1,0 +1,53 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+   <modelVersion>4.0.0</modelVersion>
+   <groupId>org.infinispan</groupId>
+   <artifactId>infinispan-loaders</artifactId>
+   <version>1.0</version>
+
+   <name>Infinispan Loaders</name>
+   <description>Infinispan Loaders</description>
+
+   <url>https://github.com/kylinsoong</url>
+
+   <properties>
+      <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+      <infinispan.version>6.0.0.Alpha1</infinispan.version>
+   </properties>
+
+   <dependencies>
+      <dependency>
+         <groupId>org.infinispan</groupId>
+         <artifactId>infinispan-core</artifactId>
+         <version>${infinispan.version}</version>
+      </dependency>
+   
+      <dependency>
+         <groupId>org.infinispan</groupId>
+         <artifactId>infinispan-client-hotrod</artifactId>
+         <version>${infinispan.version}</version>
+      </dependency>
+      
+      <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+			<version>4.8.1</version>
+            <scope>test</scope>
+        </dependency>
+   </dependencies>
+
+   <build>
+      <plugins>
+         <plugin>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <version>2.3.2</version>
+            <configuration>
+               <source>1.6</source>
+               <target>1.6</target>
+            </configuration>
+         </plugin>
+      </plugins>
+   </build>
+
+</project>

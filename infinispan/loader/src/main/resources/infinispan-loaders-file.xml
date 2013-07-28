@@ -1,0 +1,16 @@
+<infinispan>
+   
+	<namedCache name="custom-cache-loader">
+	
+		<eviction strategy="FIFO" maxEntries="10" />
+      
+		<loaders passivation="true">
+			<loader class="org.infinispan.loaders.file.FileCacheStore">
+	           <properties>
+	              <property name="location" value="/home/kylin/work/infinispan/data"/>
+	           </properties>
+			</loader>
+		</loaders>
+      
+   </namedCache>
+</infinispan>
