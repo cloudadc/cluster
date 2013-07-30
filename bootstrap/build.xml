@@ -185,7 +185,7 @@
     	</copy>
     	
     	<copy todir="${build.dir}/modules/org/jgroups/main" >
-    		<fileset dir="${dependency.dir}" includes="jgroups-3.2.7.Final.jar"/>
+    		<fileset dir="${dependency.dir}" includes="jgroups-3.3.1.Final.jar"/>
     	</copy>
     	
     	<copy todir="${build.dir}/modules/org/hamcrest/main" >

@@ -1,0 +1,27 @@
+<infinispan>
+      
+      
+	<namedCache name="custom-cache-loader">
+		<eviction strategy="FIFO" maxEntries="10" />
+		<loaders passivation="false" shared="false" preload="true">
+			<loader class="org.infinispan.loaders.jdbc.binary.JdbcBinaryCacheStore" fetchPersistentState="false" ignoreModifications="false" purgeOnStartup="false">
+				<properties>
+					<property name="bucketTableNamePrefix" value="ISPN_BUCKET_TABLE"/>
+	                <property name="idColumnName" value="ID_COLUMN"/>
+	                <property name="dataColumnName" value="DATA_COLUMN"/>
+	                <property name="timestampColumnName" value="TIMESTAMP_COLUMN"/>
+	                <property name="timestampColumnType" value="BIGINT"/>
+	                <property name="connectionFactoryClass" value="org.infinispan.loaders.jdbc.connectionfactory.SimpleConnectionFactory"/>
+	                <property name="connectionUrl" value="jdbc:mysql://127.0.0.1:3306/test"/>
+	                <property name="userName" value="test_user"/>
+	                <property name="password" value="test_pass"/>
+	                <property name="driverClass" value="com.mysql.jdbc.Driver"/>
+	                <property name="idColumnType" value="VARCHAR(255)"/>
+	                <property name="dataColumnType" value="BINARY"/>
+	                <property name="dropTableOnExit" value="true"/>
+	                <property name="createTableOnStart" value="true"/>
+				</properties>
+			</loader>
+		</loaders>
+	 </namedCache>
+</infinispan>

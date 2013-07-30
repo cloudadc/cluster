@@ -1,18 +1,18 @@
 package org.infinispan.loaders;
 
 import java.io.IOException;
-import java.util.Map.Entry;
 import java.util.UUID;
+import java.util.Map.Entry;
 
 import org.infinispan.Cache;
 import org.infinispan.manager.DefaultCacheManager;
 import org.infinispan.manager.EmbeddedCacheManager;
 
-public class FileCacheLoaderTest {
+public class JDBCCacheLoaderTest {
 
 	public static void main(String[] args) throws IOException {
-		
-		EmbeddedCacheManager cacheManager = new DefaultCacheManager("infinispan-loaders-file.xml");
+
+		EmbeddedCacheManager cacheManager = new DefaultCacheManager("infinispan-loaders-mysql.xml");
 		
 		Cache<Object, Object> cache = cacheManager.getCache("custom-cache-loader");
 		
