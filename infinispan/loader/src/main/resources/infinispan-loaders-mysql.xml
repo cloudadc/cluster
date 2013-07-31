@@ -12,11 +12,11 @@
 	                <property name="timestampColumnName" value="TIMESTAMP_COLUMN"/>
 	                <property name="timestampColumnType" value="BIGINT"/>
 	                <property name="connectionFactoryClass" value="org.infinispan.loaders.jdbc.connectionfactory.SimpleConnectionFactory"/>
-	                <property name="connectionUrl" value="jdbc:mysql://127.0.0.1:3306/test"/>
-	                <property name="userName" value="test_user"/>
-	                <property name="password" value="test_pass"/>
+	                <property name="connectionUrl" value="jdbc:mysql://127.0.0.1:3306/infinispan_loader"/>
+	                <property name="userName" value="infinispan_user"/>
+	                <property name="password" value="infinispan_pass"/>
 	                <property name="driverClass" value="com.mysql.jdbc.Driver"/>
-	                <property name="idColumnType" value="VARCHAR(255)"/>
+	                <property name="idColumnType" value="VARCHAR(500)"/>
 	                <property name="dataColumnType" value="BINARY"/>
 	                <property name="dropTableOnExit" value="true"/>
 	                <property name="createTableOnStart" value="true"/>

@@ -16,26 +16,37 @@
       <infinispan.version>6.0.0.Alpha1</infinispan.version>
    </properties>
 
-   <dependencies>
-      <dependency>
-         <groupId>org.infinispan</groupId>
-         <artifactId>infinispan-core</artifactId>
-         <version>${infinispan.version}</version>
-      </dependency>
+	<dependencies>
+		<dependency>
+			<groupId>org.infinispan</groupId>
+			<artifactId>infinispan-core</artifactId>
+			<version>${infinispan.version}</version>
+		</dependency>
    
-      <dependency>
-         <groupId>org.infinispan</groupId>
-         <artifactId>infinispan-client-hotrod</artifactId>
-         <version>${infinispan.version}</version>
-      </dependency>
+		<dependency>
+			<groupId>org.infinispan</groupId>
+			<artifactId>infinispan-client-hotrod</artifactId>
+			<version>${infinispan.version}</version>
+		</dependency>
       
-      <dependency>
-            <groupId>junit</groupId>
+		<dependency>
+			<groupId>org.infinispan</groupId>
+			<artifactId>infinispan-cachestore-jdbc</artifactId>
+			<version>${infinispan.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>5.1.10</version>
+		</dependency>
+      
+		<dependency>
+			<groupId>junit</groupId>
             <artifactId>junit</artifactId>
 			<version>4.8.1</version>
             <scope>test</scope>
-        </dependency>
-   </dependencies>
+		</dependency>
+	</dependencies>
 
    <build>
       <plugins>

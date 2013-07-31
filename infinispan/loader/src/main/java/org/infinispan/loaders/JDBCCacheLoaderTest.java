@@ -1,6 +1,5 @@
 package org.infinispan.loaders;
 
-import java.io.IOException;
 import java.util.UUID;
 import java.util.Map.Entry;
 
@@ -10,11 +9,13 @@ import org.infinispan.manager.EmbeddedCacheManager;
 
 public class JDBCCacheLoaderTest {
 
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws Exception {
 
 		EmbeddedCacheManager cacheManager = new DefaultCacheManager("infinispan-loaders-mysql.xml");
 		
 		Cache<Object, Object> cache = cacheManager.getCache("custom-cache-loader");
+		
+		Thread.currentThread().sleep(Long.MAX_VALUE);
 		
 		for(int i = 1 ; i <= 15 ; i ++){
 			cache.put(i, UUID.randomUUID().toString());
@@ -23,10 +24,10 @@ public class JDBCCacheLoaderTest {
 		log("Total entities in cache: " + cache.size());
 		
 		printCacheEntities(cache);
-		
-		cache.stop();
-		
-		cacheManager.stop();
+//		
+//		cache.stop();
+//		
+//		cacheManager.stop();
 	}
 	
 	private static void printCacheEntities(Cache<Object, Object> cache) {
