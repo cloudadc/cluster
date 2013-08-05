@@ -1,4 +1,17 @@
 <infinispan>
+	<namedCache name="custom-cache-loader-sting-based">
+		<eviction strategy="FIFO" maxEntries="10" />
+		<loaders passivation="true" shared="false" preload="true">
+			<stringKeyedJdbcStore fetchPersistentState="false" ignoreModifications="false" purgeOnStartup="false">
+            <connectionPool connectionUrl="jdbc:mysql://127.0.0.1:3306/infinispan_loader" username="infinispan_user" password="infinispan_pass" driverClass="com.mysql.jdbc.Driver"/>
+            <stringKeyedTable dropOnExit="true" createOnStart="true" prefix="ISPN_STRING_TABLE">
+               <idColumn name="ID_COLUMN" type="VARCHAR(255)" />
+               <dataColumn name="DATA_COLUMN" type="BINARY" />
+               <timestampColumn name="TIMESTAMP_COLUMN" type="BIGINT" />
+            </stringKeyedTable>
+         </stringKeyedJdbcStore>
+		</loaders>
+	 </namedCache>
       
       
 	<namedCache name="custom-cache-loader">
