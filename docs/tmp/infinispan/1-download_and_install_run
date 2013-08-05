@@ -113,9 +113,51 @@ cache = new DefaultCacheManager("namedCache.xml").getCache("custom-cache");
 
 5. 以本地库模式运行Infinispan数据网格
 使用Infinispan我们可以很容易构建数据网格，与本章图10-1所示Infinispan数据网格的分布式模式，下图为Infinispan数据网格的复制模式，
-infinispan_replication.png
-分布式模式和复制模式的区别是复制模式各个节点上的数据相同，而分布式模式缓存数据被保存在部分节点，我们接下来简单演示这两种模式。使用示例-0的方法编译生成DEMO_HOME，DEMO_HOME/bin目录下有启动脚本infinispan_rep.sh和infinispan_dis.sh。
-
+infinispan_replication.png[10-3Infinispan数据网格的复制模式]
+分布式模式和复制模式的区别是复制模式各个节点上的数据相同，而分布式模式缓存数据被保存在部分节点，我们接下来简单演示这两种模式。使用示例-0的方法编译生成DEMO_HOME，DEMO_HOME/bin目录下有启动脚本infinispan_repl.sh和infinispan_dist.sh。
+* 运行Infinispan数据网格的复制模式
+Infinispan数据网格的复制模式需要至少两个节点组成一个集群，任何一个节点上添加的数据都会复制到所有节点上。这里我们在两个不同的命令行终端运行两个不同的节点，具体步骤如下：
+- 使用DEMO_HOME/bin目录下的启动脚本运行第一个节点
+./infinispan_repl.sh 1
+- 使用DEMO_HOME/bin目录下的启动脚本运行第二个节点
+./infinispan_repl.sh 2
+- 在第二个节点的命令行终端按回车键，向网格中添加数据[key-2 -> Infinispan Replication Mode]，结果我们可以看到添加的数据在第一个节点的命令行终端也有显示。另外，此处Infinispan数据网格的复制模式的代码路径：infinispan/quickstart/src/main/java/org/infinispan/quickstart/cluster/ReplNode.java
+* 运行Infinispan数据网格的分布式模式
+Infinispan数据网格的分布式模式需要至少三个节点组成一个集群，任何一个节点上添加的数据在集群中只有固定数目的备份，这里我们假设数据备份数目为2，我们通过三个不同的命令行终端运行三个不同的节点，具体步骤如下：
+- 使用DEMO_HOME/bin目录下的启动脚本运行第一个节点
+./infinispan_dist.sh 1
+- 使用DEMO_HOME/bin目录下的启动脚本运行第二个节点
+./infinispan_dist.sh 2
+-使用DEMO_HOME/bin目录下的启动脚本运行第三个节点
+./infinispan_dist.sh 3
+- 在第三个节点的命令行终端按回车键，向网格中添加数据[key-3 -> Infinispan Distibution Mode]，结果我们看到节点3上添加的数据只在节点1和节点2中的一个上出现。另外，此处Infinispan数据网格的分布式模式的代码路径：infinispan/quickstart/src/main/java/org/infinispan/quickstart/cluster/DistNode.java
+* Infinispan数据网格复制模式和分布式模式的配置
+我们可以通过配置文件或编程的模式配置，以分布式模式为例，在ReplNode类中，createCacheManager()方法是以配置文件的形式配置，initCacheManager()是以编程的方式配置。createCacheManager()方法如下：
+protected EmbeddedCacheManager createCacheManager() throws IOException {
+	 return new DefaultCacheManager("infinispan-distribution.xml");
+}
+其中infinispan-distribution.xml的内容如下：
+<infinispan>
+   <global>
+      <transport>
+         <properties>
+            <property name="configurationFile" value="jgroups.xml" />
+         </properties>
+      </transport>
+   </global>
+   <default>
+      <clustering mode="distribution">
+         <l1 enabled="false" />
+         <hash numOwners="2"/>
+         <sync/>
+      </clustering>
+   </default>
+</infinispan>
+initCacheManager()方法如下：
+protected EmbeddedCacheManager initCacheManager() throws IOException {
+	return new DefaultCacheManager( GlobalConfigurationBuilder.defaultClusteredBuilder().transport().addProperty("configurationFile", "jgroups.xml").build(), new ConfigurationBuilder().clustering().cacheMode(CacheMode.DIST_SYNC).hash().numOwners(2).build());
+}
+关于Infinispan数据网格复制模式和分布式模式，我们将会在下一章详细讨论。
 
 
 
