@@ -9,7 +9,8 @@
     <property name="build.dir" value="${build.home}/${build.profile}" />
 	<property name="jbosscache.jboss.target" value="${basedir}/../jbosscache/jboss/ear/target" />
 	<property name="jbosscache.ejb.target" value="${basedir}/../jbosscache/ejb/target" />
-
+	<property name="infinispan.carmart.target" value="${basedir}/../infinispan/carmart/carmart/target" />
+	
     <target name="validateproperties" >
         <echo>build parameter output</echo>
         <echo>build.home: ${build.home}</echo>
@@ -82,6 +83,7 @@
     	<copy todir="${build.dir}/dist" >
     		<fileset dir="${jbosscache.jboss.target}" includes="jbosscache-jboss-ear.ear"/>
     		<fileset dir="${jbosscache.ejb.target}" includes="jbosscache-jboss-ejb.jar"/>
+    		<fileset dir="${infinispan.carmart.target}" includes="infinispan-carmart.war"/>
     	</copy>
     	
     	<copy todir="${build.dir}/conf" >

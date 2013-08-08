@@ -1,0 +1,24 @@
+Infinispan可以作为内存数据库使用，Infinispan CarMart示例是一个简单的Web应用程序，使用Infinispan代替传统的关系数据库，CarMart提供了以下功能：
+  - 列出所有车
+  - 添加新的车
+  - 删除某一特定的车
+  - 查看Infinispan的统计信息
+CarMart示例中每个车的信息保存在Infinispan中，我们通过三种方式运行CarMart示例：远程客户端-服务器端模式，本地模式，Hibernate OGM模式。其中远程客户端-服务器端模式我们使用Infinispan HotRod协议存取数据，本地模式是事务性的通过Infinispan接口存取数据，Hibernate OGM模式下我们通过JPA接口存取数据。
+CarMart示例源代码位于cluster/infinispan/carmart目录之下。
+*以远程客户端-服务器端模式运行Infinispan CarMart示例：
+使用示例-0步骤编译生成DEMO_HOME, 本出所需的infinispan-carmart.war位于DEMO_HOME/dist下，我们需要将infinispan-carmart.war部署到JBoss AS 7。我们使用如下步骤运行CarMart示例。
+1. 配置启动Infinispan服务器
+同样，为了方便描述，我们将Infinispan服务器目录称为JDG_HOME，编辑$JDG_HOME/standalone/configuration/standalone.xml，添加carcache如下所示：
+<local-cache name="carcache" start="EAGER" batching="false">
+	<locking isolation="REPEATABLE_READ" striping="false" acquire-timeout="20000" concurrency-level="500"/>
+	<eviction strategy="LIRS" max-entries="100"/>
+</local-cache>
+注意，如上配置需要添加到cache-container中。$JDG_HOME/bin目录下有Infinispan服务器的启动脚本启动Infinispan如下：
+./standalone.sh
+2. 启动JBoss AS 7，并将infinispan-carmart.war部署到JBoss AS 7
+$JBOSS_HOME/bin目录下有JBoss AS 7启动脚本，我们通过如下命令JBoss AS 7：
+./standalone.sh -b <IP> -bmanagement=<IP>
+启动JBoss AS 7启动完成后，我们将infinispan-carmart.war拷贝至$JBOSS_HOME/standalone/deployments 机完成部署。
+3. 测试分析
+我们可以通过http://<IP>:8080/infinispan-carmart访问CarMart示例，在打开的页面我们可以执行添加，删除，查看汽车等操作。
+

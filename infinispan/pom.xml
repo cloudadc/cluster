@@ -25,6 +25,7 @@
 	<module>grid</module>
         <module>jboss</module>
 	<module>quickstart</module>
+	<module>carmart</module>
     </modules>
 
 </project>
