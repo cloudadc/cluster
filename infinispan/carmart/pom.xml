@@ -12,6 +12,8 @@
 
     <modules>
         <module>carmart</module>
+	<module>carmart-tx</module>
+	<module>carmart-ogm</module>
     </modules>
 
 </project>
