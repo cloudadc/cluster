@@ -12,9 +12,6 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <com.ocpsoft.prettyfaces.version>3.3.2</com.ocpsoft.prettyfaces.version>
-        <version.jboss.weld>1.1.8.Final</version.jboss.weld>
-        <version.com.sun.faces.jsf.impl>2.0.2</version.com.sun.faces.jsf.impl>
 
         <version.jboss.bom>1.0.7.CR8</version.jboss.bom>
 
@@ -53,30 +50,12 @@
         </dependencies>
     </dependencyManagement>
 
-    <dependencies>
-
-        <dependency>
-            <groupId>org.jboss.spec.javax.faces</groupId>
-            <artifactId>jboss-jsf-api_2.1_spec</artifactId>
+	<dependencies>
+		<dependency>
+            <groupId>org.jboss.spec.javax.servlet</groupId>
+            <artifactId>jboss-servlet-api_3.0_spec</artifactId>
             <scope>provided</scope>
         </dependency>
-
-        <!-- Import the CDI API, we use provided scope as the API is included 
-            in JBoss AS 7 -->
-        <dependency>
-            <groupId>javax.enterprise</groupId>
-            <artifactId>cdi-api</artifactId>
-            <scope>provided</scope>
-        </dependency>
-
-        <!-- Import the infinispan core -->
-        <dependency>
-            <groupId>org.infinispan</groupId>
-            <artifactId>infinispan-core</artifactId>
-            <version>${infinispan.version}</version>
-            <scope>compile</scope>
-        </dependency>
-        
         <dependency>
             <groupId>org.hibernate.javax.persistence</groupId>
             <artifactId>hibernate-jpa-2.0-api</artifactId>
@@ -87,34 +66,38 @@
 			<artifactId>hibernate-ogm-core</artifactId>
 			<version>4.0.0.Beta1</version>
 		</dependency>
-		<dependency>
+    	<dependency>
 			<groupId>org.hibernate.ogm</groupId>
 			<artifactId>hibernate-ogm-infinispan</artifactId>
 			<version>4.0.0.Beta1</version>
 		</dependency>
 		<dependency>
-			<groupId>org.antlr</groupId>
-			<artifactId>antlr</artifactId>
-			<version>3.3</version>
+	        <groupId>org.antlr</groupId>
+	        <artifactId>antlr</artifactId>
+	        <version>3.3</version>
 		</dependency>
 		<dependency>
 			<groupId>org.jboss.jbossts</groupId>
 			<artifactId>jbossjta</artifactId>
 			<version>4.16.4.Final</version>
 		</dependency>
+    
 
-        <!-- Import Prettyfaces dependency. This is a UNSUPPORTED component -->
         <dependency>
-            <groupId>com.ocpsoft</groupId>
-            <artifactId>prettyfaces-jsf2</artifactId>
-            <version>${com.ocpsoft.prettyfaces.version}</version>
-            <scope>compile</scope>
+            <groupId>org.jboss.spec.javax.faces</groupId>
+            <artifactId>jboss-jsf-api_2.1_spec</artifactId>
+            <scope>provided</scope>
         </dependency>
+
+        <dependency>
+            <groupId>javax.enterprise</groupId>
+            <artifactId>cdi-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
     </dependencies>
 
     <build>
-        <!-- Maven will append the version to the finalName (which is the 
-            name given to the generated war, and hence the context root) -->
         <finalName>${artifactId}</finalName>
         <plugins>
             <plugin>
@@ -130,8 +113,7 @@
                 <artifactId>maven-war-plugin</artifactId>
                 <version>${version.war.plugin}</version>
                 <configuration>
-                    <!-- Java EE 6 doesn't require web.xml, Maven needs to 
-                        catch up! -->
+                    <!-- Java EE 6 doesn't require web.xml, Maven needs to catch up! -->
                     <failOnMissingWebXml>false</failOnMissingWebXml>
                 </configuration>
             </plugin>

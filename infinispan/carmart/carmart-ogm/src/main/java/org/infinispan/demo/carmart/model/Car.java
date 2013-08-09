@@ -3,6 +3,7 @@ package org.infinispan.demo.carmart.model;
 import java.io.Serializable;
 
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.Table;
 
 /**
@@ -60,6 +61,7 @@ public class Car implements Serializable {
         this.type = type;
     }
 
+    @Id
     public String getNumberPlate() {
         return numberPlate;
     }

@@ -1,16 +1,16 @@
 package org.infinispan.demo.carmart.session;
 
-import org.infinispan.Cache;
 import org.infinispan.demo.carmart.model.Car;
-import org.infinispan.demo.carmart.session.CacheContainerProvider;
+import org.infinispan.demo.carmart.session.EntityManagerFactoryProvider;
 
 import javax.enterprise.inject.Model;
-import javax.inject.Inject;
-import javax.transaction.UserTransaction;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceUnit;
+import javax.persistence.Query;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -28,17 +28,8 @@ public class CarManager {
 
     public static final String CAR_NUMBERS_KEY = "carnumbers";
 
-    @Inject
-    private CacheContainerProvider provider;
-
-    /*
-     * Injects the javax.transaction.UserTransaction - The TransactionManager lookup is configured on
-     * JBossASCacheContainerProvider/TomcatCacheContainerProvider impl classes for CacheContainerProvider
-     */
-    @Inject
-    private UserTransaction utx;
-
-    private Cache<String, Object> carCache;
+    @PersistenceUnit(unitName = "org.infinispan.demo.carmart")
+    private EntityManagerFactoryProvider provider;
 
     private String carId;
     private Car car = new Car();
@@ -47,79 +38,31 @@ public class CarManager {
     }
 
     public String addNewCar() {
-        carCache = provider.getCacheContainer().getCache(CACHE_NAME);
         try {
-            utx.begin();
-            List<String> carNumbers = getNumberPlateList(carCache);
-            carNumbers.add(car.getNumberPlate());
-            carCache.put(CAR_NUMBERS_KEY, carNumbers);
-            carCache.put(CarManager.encode(car.getNumberPlate()), car);
-            utx.commit();
+        	EntityManager em = provider.getEntityManagerFactory().createEntityManager();
+        	em.persist(car);
+        	em.close();
+            log.info("add a new car");
         } catch (Exception e) {
-            if (utx != null) {
-                try {
-                    utx.rollback();
-                } catch (Exception e1) {
-                }
-            }
+        	log.warning("An exception occured while adding a new car");
+        	e.printStackTrace();
         }
         return "home";
     }
 
     public String addNewCarWithRollback() {
-        boolean throwInducedException = true;
-        carCache = provider.getCacheContainer().getCache(CACHE_NAME);
-        try {
-            utx.begin();
-            List<String> carNumbers = getNumberPlateList(carCache);
-            carNumbers.add(car.getNumberPlate());
-            // store the new list of car numbers and then throw an exception -> roll-back
-            // the car number list should not be stored in the cache
-            carCache.put(CAR_NUMBERS_KEY, carNumbers);
-            if (throwInducedException)
-                throw new RuntimeException("Induced exception");
-            carCache.put(CarManager.encode(car.getNumberPlate()), car);
-            utx.commit();
-        } catch (Exception e) {
-            if (utx != null) {
-                try {
-                    utx.rollback();
-                    log.info("Rolled back due to: " + e.getMessage());
-                } catch (Exception e1) {
-                }
-            }
-        }
         return "home";
     }
 
-    /**
-     * Operate on a clone of car number list so that we can demonstrate transaction roll-back.
-     */
-    @SuppressWarnings("unchecked")
-    private List<String> getNumberPlateList(Cache<String, Object> carCacheLoc) {
-        List<String> result = null;
-        List<String> carNumberList = (List<String>) carCacheLoc.get(CAR_NUMBERS_KEY);
-        if (carNumberList == null) {
-            result = new LinkedList<String>();
-        } else {
-            result = new LinkedList<String>(carNumberList);
-        }
-        return result;
-    }
-
     public String showCarDetails(String numberPlate) {
-        carCache = provider.getCacheContainer().getCache(CACHE_NAME);
         try {
-            utx.begin();
-            this.car = (Car) carCache.get(encode(numberPlate));
-            utx.commit();
+        	EntityManager em = provider.getEntityManagerFactory().createEntityManager();
+        	this.car = em.find(Car.class, numberPlate);
+        	em.close();
+        	log.info("show car " + numberPlate + " details");
         } catch (Exception e) {
-            if (utx != null) {
-                try {
-                    utx.rollback();
-                } catch (Exception e1) {
-                }
-            }
+        	log.warning("An exception occured while extracting " + numberPlate + " from infinispan");
+        	e.printStackTrace();
         }
         return "showdetails";
     }
@@ -127,39 +70,28 @@ public class CarManager {
     public List<String> getCarList() {
         List<String> result = null;
         try {
-            utx.begin();
-            // retrieve a cache
-            carCache = provider.getCacheContainer().getCache(CACHE_NAME);
-            // retrieve a list of number plates from the cache
-            result = getNumberPlateList(carCache);
-            utx.commit();
+        	EntityManager em = provider.getEntityManagerFactory().createEntityManager();
+            Query query = em.createQuery("SELECT * FROM Car");  
+            result = query.getResultList();
+            em.close();
+            log.info("extract cae list");
         } catch (Exception e) {
-            if (utx != null) {
-                try {
-                    utx.rollback();
-                } catch (Exception e1) {
-                }
-            }
+            log.warning("An exception occured while get car list");
+            e.printStackTrace();
         }
         return result;
     }
 
     public String removeCar(String numberPlate) {
-        carCache = provider.getCacheContainer().getCache(CACHE_NAME);
         try {
-            utx.begin();
-            carCache.remove(encode(numberPlate));
-            List<String> carNumbers = getNumberPlateList(carCache);
-            carNumbers.remove(numberPlate);
-            carCache.put(CAR_NUMBERS_KEY, carNumbers);
-            utx.commit();
+        	EntityManager em = provider.getEntityManagerFactory().createEntityManager();
+        	Car car = em.find(Car.class, numberPlate);
+        	em.remove(car);
+        	em.close();
+            log.info("remote car " + numberPlate);
         } catch (Exception e) {
-            if (utx != null) {
-                try {
-                    utx.rollback();
-                } catch (Exception e1) {
-                }
-            }
+        	log.warning("error whiling remote car " + numberPlate);
+        	e.printStackTrace();
         }
         return null;
     }
