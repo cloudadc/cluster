@@ -1,0 +1,55 @@
+如前面Infinispan安装部分所介绍，安装完Infinispan服务器会产生infinispan-server-6.0.0.Final目录，为了方便描述我们将此目录简称为JDG_HOME，这里我们简单介绍一下Infinispan服务器。
+
+* 创建用户
+JDG_HOME/bin下存在创建用户的启动脚本，Infinispan服务器提供了REST接口、Memcached接口以及Hot Rod接口，第三方应用通过这些接口使用Infinispan服务器提供的服务，通常访问Infinispan服务器需要安全认证，我们通过如下步骤创建一个应用用户。
+- 执行add-user.sh 或 add-user.bat脚本
+到JDG_HOME/bin目录下，执行合适的脚本，Linux系统执行
+./add-user.sh
+Windows系统下执行
+add-user.bat
+- 选择Application User
+选择b添加一个应用用户，这个用户被添加到ApplicationRealm下，直接回车即可，如下：
+---
+[kylin@localhost bin]$ ./add-user.sh 
+
+What type of user do you wish to add? 
+ a) Management User (mgmt-users.properties) 
+ b) Application User (application-users.properties)
+(a): b
+
+Enter the details of the new user to add.
+Realm (ApplicationRealm) :
+---
+- 设定相关的用户名和密码
+根据默认提示设定用户名和密码
+- 将创建的用户添加到某以角色中
+用户名设定完成后，会有确定用户角色的提示，我们可以指定添加用户的角色，如下我们将添加的用户分配guest角色：
+What roles do you want this user to belong to? (Please enter a comma separated list, or leave blank for none)[  ]: guest
+回车键即可完成角色设定
+
+* 命令行管理接口
+Infinispan服务器提供了命令行管理接口，我们通过终端连接后使用命令可以对Infinispan服务器进行管理和监控，以及对缓存实例进行操作。Infinispan服务器运行时，我们可以通过JDG_HOME/bin下的ispn-cli.sh或ispn-cli.bat连接到命令行管理接口，具体，Linux操作系统使用
+./ispn-cli.sh
+Windows系统下则需要执行
+ispn-cli.bat
+使用quit命令或Ctrl c可以退出命令行管理接口
+[remoting://localhost:9999/local/]> quit
+[kylin@localhost bin]$
+使用connect命令连接到命令行管理接口
+[disconnected//]> connect
+[remoting://localhost:9999/local/]>
+使用help命令可以获得命令行管理接口帮助信息
+[remoting://localhost:9999/local/]> help
+
+* 日志管理
+Infinispan服务器运行过程中我们可以通过配置日志级别来监控Infinispan运行状态。默认的日志输出目录为JDG_HOME/standalone/log，日志配置文件位于JDG_HOME/standalone/configuration下，比如在该目录下standalone.xml文件中
+<subsystem xmlns="urn:jboss:domain:logging:1.2">
+部分，我们可以配置日志的级别，日志handler等。Infinispan服务器支持的日志级别有：
+TRACE
+DEBUG
+INFO
+WARN
+ERROR
+FATAL
+日志级别定义了日志handler输出日志信息的多少，比如Infinispan服务器默认的WARN级别，handler会输出WARN、ERROR及FATAL级别的日志，如果将日志级别设为TRACE，则会输出所有级别的日志。
+
