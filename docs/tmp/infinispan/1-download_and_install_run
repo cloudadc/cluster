@@ -5,7 +5,7 @@
 访问Infinispan网站http://infinispan.org/，点击下载Downloads，选择相关版本，比如Infinispan 6.0，下载二进制和示例，AS 7.x 模块，Infinispan服务器。下载完成解压zip包即完成安装。
 下载二进制包和示例完成后会有infinispan-6.0.0.Final-all.zip生成，解压此zip文件产生infinispan-6.0.0.Final-all目录，该目录下包括Infinispan二进制文件infinispan-core.jar，lib目录中有所有用到的二进制包，etc目录中包含相关配置文件，bin目录中包括所有示例的启动脚本；
 下载AS 7.x 模块完成后会有infinispan-as-modules-6.0.0.Final.zip生成，解压此zip文件产生Infinispan模块，如果需要将infinispan与JBoss AS 7整合，我们需要将解压产生的模块拷贝到JBOSS_HOME/modules中；
-下载Infinispan服务器完成后会有infinispan-server-6.0.0.Alpha1-bin.zip生成，解压此zip文件产生infinispan-server-6.0.0.Final目录，Infinispan服务器基于第三代JBoss内核MSC（模块化服务容器），infinispan-server-6.0.0.Final目录类是JBoss AS 7目录结构，modules中包含所有模块，bin中包括所以启动脚本，standalone中包括启动的实例。
+下载Infinispan服务器完成后会有infinispan-server-6.0.0.Final-bin.zip生成，解压此zip文件产生infinispan-server-6.0.0.Final目录，Infinispan服务器基于第三代JBoss内核MSC（模块化服务容器），infinispan-server-6.0.0.Final目录类是JBoss AS 7目录结构，modules中包含所有模块，bin中包括所以启动脚本，standalone中包括启动的实例。
 
 3. 以远程客户端-服务器模式运行Infinispan
 以远程客户端-服务器模式运行Infinispan我们只需要运行Infinispan服务器目录中bin下面的启动脚本即可。为了方便描述，我们将Infinispan服务器目录称为JDG_HOME。我们可以独立的运行Infinispan，也可以以集群的形式运行Infinispan，运行启动脚本时我们也可以添加相关参数，来完成自定义运行Infinispan。
