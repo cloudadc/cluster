@@ -1,0 +1,39 @@
+1. 状态交换
+Infinispan数据网格中当有节点离开或新节点加入时，状态交换自动发生。我们知道Infinispan数据网格有两种模式，分布式模式和复制模式，不管是哪一种模式，新加入的节点都是从已经存在的节点上获取状态。在分布式模式下，当有节点离开后，缓存状态要重新分布，在这个过程中也需要进行状态交换。另外不管缓存状态是在内存中或在持久化缓存存储中状态交换都会发生：
+在复制模式中，当新节点加入网格集群会收到当前其他节点上的缓存状态，这个发生在当前某一节点将缓存状态添加到集群。
+在分布式模式中，每一个节点只包含网格集群中一部分数据，这个是通过Infinispan数据网格连续哈希算法决定的，当新节点加入时，该节点通过状态交换获取到其他节点上的部分数据，状态交换的结果是某些节点上的数据被移除，新节点上获取到了数据，这个实质是哈希算法重新对数据进行分配。
+Infinispan数据网格中有可选择的非阻塞状态交换，非阻塞状态交换的目的是防止状态交换时导致的阻塞，如果要交换缓存状态较大，GB数量级，这样状态交换会有阻塞延时的现象，非阻塞状态交换就是解决此类问题。
+Infinispan数据网格非阻塞状态交换运行状态交换不影响集群性能，当然在状态交换过程性能被影响，有明显的下降，状态交换不会终止仍然会继续进行；非阻塞状态交换没有添加解决数据冲突的机制，但它能够保证缓存数据的可用性。
+
+2. 高可用性
+Infinispan数据网格通过节点示意图来确保节点高可用，节点示意图是连续性哈希算法能够识别的拓扑图，确保备份的数据没有存储在同一台物理机器上或数据中心。节点示意图不用于复制模式中，因为复制模式中所有物理机器，数据中心保存的数据都相同。在Infinispan配置文件transport属性中设定machineId, rackId, 和siteId会触发TopologyAwareConsistentHashFactory，这个和默认的DefaultConsistentHashFactory是等效的。节点示意图是非常关键的它确保了分布式模式中缓存数据的高可用性。
+实际中，当我们建立数据网格集群环境时，节点示意图在配置JGroups时配置，Infinispan有多个JGroups配置方式，这些配置方式用于不同集群模式，这些配置方式中有节点示意图的配置。如下为Infinispan客户端-服务器模式中配置节点示意图：
+<subsystem xmlns="urn:jboss:domain:jgroups:1.1"
+default-stack="${jboss.default.jgroups.stack:udp}" >
+<stack name="udp">
+<transport type="UDP"
+socket-binding="jgroups-udp"
+site="${jboss.jgroups.transport.site:s1}"
+rack="${jboss.jgroups.transport.rack:r1}"
+machine="${jboss.jgroups.transport.machine:m1}">
+...
+</transport>
+</stack>
+</subsystem>
+如下为在本地库模式中配置节点示意图的示例
+<transport clusterName = "MyCluster"
+machineId = "LinuxServer01"
+rackId = "Rack01"
+siteId = "US-WestCoast" />
+从上面配置示例可以看出，如下属性被用于配置节点示意图：
+- clusterName 指定集群的名字
+- machineId 指定JVM示例ID，该属性特别在同一台物理机器上有多台JVM
+- rackId 指定数据支架的ID，这样数据可以备份与不同的数据支架上
+- siteId 指定不同数据中心ID，这样数据可以备份在不同的数据中心
+这些属性在Infinispan的配置中是可选的。如果Infinispan配置文件中包括machineId, rackId, 或 siteId触发TopologyAwareConsistentHashFactory会被自动选用，并且使用节点示意图功能。当然如果节点示意图没有被配置，Infinispan分布式算法允许数据被备份在同一台物理集群，数据支架或数据中心。
+ 
+
+
+
+
+
