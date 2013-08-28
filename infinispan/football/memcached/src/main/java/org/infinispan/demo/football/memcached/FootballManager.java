@@ -1,19 +1,19 @@
-package org.infinispan.demo.football.hotrod;
+package org.infinispan.demo.football.memcached;
 
 import java.io.Console;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-import org.infinispan.client.hotrod.RemoteCache;
-import org.infinispan.client.hotrod.RemoteCacheManager;
-import org.infinispan.client.hotrod.configuration.Configuration;
-import org.infinispan.client.hotrod.configuration.ConfigurationBuilder;
 
 public class FootballManager {
 
     private static final String JDG_HOST = "jdg.host";
-    private static final String HOTROD_PORT = "jdg.hotrod.port";
+    // Memcached specific properties
+    public static final String MEMCACHED_PORT = "jdg.memcached.port";
+
     private static final String PROPERTIES_FILE = "jdg.properties";
     private static final String msgTeamMissing = "The specified team \"%s\" does not exist, choose next operation\n";
     private static final String msgEnterTeamName = "Enter team name: ";
@@ -23,35 +23,33 @@ public class FootballManager {
     private static final String teamsKey = "teams";
 
     private Console con;
-    private RemoteCacheManager cacheManager;
-    private RemoteCache<String, Object> cache;
+    private MemcachedCache cache;
 
     public FootballManager(Console con) {
         this.con = con;
-        Configuration configuration = new ConfigurationBuilder().addServers(jdgProperty(JDG_HOST) + ":" + jdgProperty(HOTROD_PORT)).build();
-        cacheManager = new RemoteCacheManager(configuration);
-        cache = cacheManager.getCache("teams");
-        if(!cache.containsKey(teamsKey)) {
-            List<String> teams = new ArrayList<String>();
+        cache = new MemcachedCache(jdgProperty(JDG_HOST), Integer.parseInt(jdgProperty(MEMCACHED_PORT)));
+        List<String> teams = (List<String>) cache.get(teamsKey);
+        if (teams == null) {
+            teams = new ArrayList<String>();
             Team t = new Team("Lakers");
             t.addPlayer("Kobe Bryant");
             t.addPlayer("Pau Gasol");
             t.addPlayer("Steve Nash");
             cache.put(t.getName(), t);
             teams.add(t.getName());
-            cache.put(teamsKey, teams);
         }
+        cache.put(teamsKey, teams);
     }
 
     public void addTeam() {
         String teamName = con.readLine(msgEnterTeamName);
         @SuppressWarnings("unchecked")
-        List<String> teams = (List<String>) cache.get(teamsKey);
+        List<String> teams = (List<String>) cache.get(encode(teamsKey));
         if (teams == null) {
             teams = new ArrayList<String>();
         }
         Team t = new Team(teamName);
-        cache.put(teamName, t);
+        cache.put(encode(teamName), t);
         teams.add(teamName);
         // maintain a list of teams under common key
         cache.put(teamsKey, teams);
@@ -60,12 +58,12 @@ public class FootballManager {
     public void addPlayers() {
         String teamName = con.readLine(msgEnterTeamName);
         String playerName = null;
-        Team t = (Team) cache.get(teamName);
+        Team t = (Team) cache.get(encode(teamName));
         if (t != null) {
             while (!(playerName = con.readLine("Enter player's name (to stop adding, type \"q\"): ")).equals("q")) {
                 t.addPlayer(playerName);
             }
-            cache.put(teamName, t);
+            cache.put(encode(teamName), t);
         } else {
             con.printf(msgTeamMissing, teamName);
         }
@@ -74,10 +72,10 @@ public class FootballManager {
     public void removePlayer() {
         String playerName = con.readLine("Enter player's name: ");
         String teamName = con.readLine("Enter player's team: ");
-        Team t = (Team) cache.get(teamName);
+        Team t = (Team) cache.get(encode(teamName));
         if (t != null) {
             t.removePlayer(playerName);
-            cache.put(teamName, t);
+            cache.put(encode(teamName), t);
         } else {
             con.printf(msgTeamMissing, teamName);
         }
@@ -85,9 +83,9 @@ public class FootballManager {
 
     public void removeTeam() {
         String teamName = con.readLine(msgEnterTeamName);
-        Team t = (Team) cache.get(teamName);
+        Team t = (Team) cache.get(encode(teamName));
         if (t != null) {
-            cache.remove(teamName);
+            cache.remove(encode(teamName));
             @SuppressWarnings("unchecked")
             List<String> teams = (List<String>) cache.get(teamsKey);
             if (teams != null) {
@@ -104,13 +102,9 @@ public class FootballManager {
         List<String> teams = (List<String>) cache.get(teamsKey);
         if (teams != null) {
             for (String teamName : teams) {
-                con.printf(cache.get(teamName).toString());
+                con.printf(cache.get(encode(teamName)).toString());
             }
         }
-    }
-
-    public void stop() {
-        cacheManager.stop();
     }
 
     public static void main(String[] args) {
@@ -131,8 +125,7 @@ public class FootballManager {
             } else if ("p".equals(action)) {
                 manager.printTeams();
             } else if ("q".equals(action)) {
-                manager.stop();
-                break;
+                System.exit(0);
             }
         }
     }
@@ -145,5 +138,13 @@ public class FootballManager {
             throw new RuntimeException(ioe);
         }
         return props.getProperty(name);
+    }
+
+    public static String encode(String key) {
+        try {
+            return URLEncoder.encode(key, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

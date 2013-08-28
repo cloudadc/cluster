@@ -11,6 +11,9 @@
 	<property name="jbosscache.ejb.target" value="${basedir}/../jbosscache/ejb/target" />
 	<property name="infinispan.carmart.target" value="${basedir}/../infinispan/carmart/carmart/target" />
 	<property name="infinispan.carmart-tx.target" value="${basedir}/../infinispan/carmart/carmart-tx/target" />
+	<property name="infinispan.football.rest.target" value="${basedir}/../infinispan/football/rest/target" />
+	<property name="infinispan.football.hotrod.target" value="${basedir}/../infinispan/football/hotrod/target" />
+	<property name="infinispan.football.memcached.target" value="${basedir}/../infinispan/football/memcached/target" />
 	
     <target name="validateproperties" >
         <echo>build parameter output</echo>
@@ -131,6 +134,12 @@
 			<fileset dir="${resource.dir}/conf" includes="infinispan_repl.sh"/>
 		    <fileset dir="${resource.dir}/conf" includes="infinispan_dist.bat"/>
 		    <fileset dir="${resource.dir}/conf" includes="infinispan_dist.sh"/>
+    		<fileset dir="${resource.dir}/conf" includes="football_hotrod.bat"/>
+		    <fileset dir="${resource.dir}/conf" includes="football_hotrod.sh"/>
+		    <fileset dir="${resource.dir}/conf" includes="football_memcached.bat"/>
+			<fileset dir="${resource.dir}/conf" includes="football_memcached.sh"/>
+		    <fileset dir="${resource.dir}/conf" includes="football_rest.bat"/>
+		    <fileset dir="${resource.dir}/conf" includes="football_rest.sh"/>
     	</copy>
     	
 		<copy todir="${build.dir}/modules" >
@@ -174,6 +183,16 @@
     	
     	<copy todir="${build.dir}/modules/org/infinispan/grid/demo/main" >
     		<fileset dir="${dependency.dir}" includes="infinispan-grid-demo-1.0.jar"/>
+    	</copy>
+    	
+    	<copy todir="${build.dir}/modules/org/infinispan/demo/rest/main" >
+    		<fileset dir="${infinispan.football.rest.target}" includes="infinispan-football-rest.jar"/>
+    	</copy>
+    	<copy todir="${build.dir}/modules/org/infinispan/demo/hotrod/main" >
+    		<fileset dir="${infinispan.football.hotrod.target}" includes="infinispan-football-hotrod.jar"/>
+    	</copy>
+    	<copy todir="${build.dir}/modules/org/infinispan/demo/memcached/main" >
+    		<fileset dir="${infinispan.football.memcached.target}" includes="infinispan-football-memcached.jar"/>
     	</copy>
     	
     	<copy todir="${build.dir}/modules/org/infinispan/quickstart/main" >
