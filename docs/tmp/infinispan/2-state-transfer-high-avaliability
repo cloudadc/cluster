@@ -32,6 +32,12 @@ siteId = "US-WestCoast" />
 - siteId 指定不同数据中心ID，这样数据可以备份在不同的数据中心
 这些属性在Infinispan的配置中是可选的。如果Infinispan配置文件中包括machineId, rackId, 或 siteId触发TopologyAwareConsistentHashFactory会被自动选用，并且使用节点示意图功能。当然如果节点示意图没有被配置，Infinispan分布式算法允许数据被备份在同一台物理集群，数据支架或数据中心。
  
+ConsistentHashFactory
+TopologyAwareConsistentHashFactory 和 TopologyAwareSyncConsistentHashFactory
+TopologyAwareConsistentHashFactory使用节点示意图功能，它根据配置文件中传输的配置信息将缓存实例分布到网格各个点上。TopologyAwareSyncConsistentHashFactory同样可根据配置文件中传输的配置的一个或多个属性，将缓存实例分布到网格节点上。
+<hash consistentHashFactory="org.infinispan.distribution.ch.TopologyAwareSyncConsistentHashFactory"/>
+
+
 
 
 

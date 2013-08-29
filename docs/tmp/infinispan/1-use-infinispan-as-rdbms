@@ -40,9 +40,27 @@ $JBOSS_HOME/bin目录下有JBoss AS 7启动脚本，我们通过如下命令JBos
 
 
 Infinispan Football示例
-Infinispan提供三种协议的支持，包括：Hot Rod，REST和Memcached。我们可以通过这些协议连接到Infinispan，将Infinispan与自己的应用整合。Infinispan Football示例演示使用这些协议连接到Infinispan，对Infinispan上的数据进行增删改查。Infinispan Football示例提供了如下功能：
+infinispan-protocol.png[10-6 Infinispan 的三种协议]
+如图10-6所示，Infinispan提供三种协议的支持，包括：Hot Rod，REST和Memcached。我们可以通过这些协议连接到Infinispan，将Infinispan与自己的应用整合。Infinispan Football示例演示使用这些协议连接到Infinispan，对Infinispan上的数据进行增删改查。Infinispan Football示例提供了如下功能：
 -添加一个球队
 -添加一个队员
 -删除所有球队和队员
 -列出所有的球队和队员
 Football示例源代码位于cluster/infinispan/football目录之下。
+使用示例-0所示的方法编译生成DEMO_HOME，如下脚本会位于DEMO_HOME/bin目录下
+- football_memcached.sh 使用Memcached与Infinispan服务器进行交互
+- football_rest.sh 使用REST协议获取Infinispan服务器中缓存实例中的数据
+- football_hotrod.sh 使用Hot Rod获取Infinispan服务器数据，该协议是基于java应用，供java应用连接到Infinispan。
+详细关于Infinispan这三种协议的详细介绍我们在随后的章节进行。运行Infinispan Football示例首先需要运行Infinispan服务器，到JDG_HOME/bin下执行：
+./standalone.sh
+到DEMO_HOME/bin目录下执行任意如上任意脚本都会有如下输出：
+Choose action:
+============= 
+at  -  add a team
+ap  -  add a player to a team
+rt  -  remove a team
+rp  -  remove a player from a team
+p   -  print all teams and players
+q   -  quit
+>
+我们可以输入相关的命令进行相关的操作。球队和球员的信息都保存在Infinispan服务器的缓存中，任何添加球队，添加队员，删除球队和队员，查询球队和队员的操作都是通过Infinispan提供的协议对Infinispan服务器中的缓存进行运程操作。
