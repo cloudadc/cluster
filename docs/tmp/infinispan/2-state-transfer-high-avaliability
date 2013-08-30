@@ -36,6 +36,20 @@ ConsistentHashFactory
 TopologyAwareConsistentHashFactory 和 TopologyAwareSyncConsistentHashFactory
 TopologyAwareConsistentHashFactory使用节点示意图功能，它根据配置文件中传输的配置信息将缓存实例分布到网格各个点上。TopologyAwareSyncConsistentHashFactory同样可根据配置文件中传输的配置的一个或多个属性，将缓存实例分布到网格节点上。
 <hash consistentHashFactory="org.infinispan.distribution.ch.TopologyAwareSyncConsistentHashFactory"/>
+如上配置保证Infinispan节点成员中的缓存有相同的连续哈希算法。如果machineId，rackId，siteId属性在传输配置中指定，则缓存实例分发到不同的数据中心，数据支架上。
+另外Infinispan有4个实现的ConsistentHashFactory。
+DefaultConsistentHashFactory 保证缓存实体在各个节点上的平等的，但是每个节点上缓存Key不确保相同，这个根据缓存变化确定
+SyncConsistentHashFactory 保证每个节点上缓存Key是相同的，提供的当前成员也是相同的。这样的缺点是高网络负载，任何节点成员的加入或退出都会产生状态转化。
+TopologyAwareConsistentHashFactory 与DefaultConsistentHashFactory类似，但是默认开启节点示意图功能
+TopologyAwareSyncConsistentHashFactory 与SyncConsistentHashFactory类似，但是默认开启节点示意图功能
+当然我们也可以自定义实现自己的ConsistentHashFactory，自定义时必须实现如下的方法：
+---
+create(Hash hashFunction, int numOwners, int numSegments, List<Address> members)
+List<Address> newMembers)
+rebalance(ConsistentHash baseCH)
+union(ConsistentHash ch1, ConsistentHash ch2)
+--- 
+
 
 
 
