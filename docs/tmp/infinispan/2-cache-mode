@@ -41,10 +41,12 @@ cache-container包括如下属性
 
 1.4 集群模式
 根据状态复制策略的不同，集群模式又细分为：分布式模式，复制模式和无效模式，随后我们依次介绍。集群模式下我们可以进一步配置状态传输模式为同步或异步。
-如果同步模式被使用
-
-
-
+如果同步模式被使用，发送者阻塞等待接收者响应，直到发送者接收到响应线程才继续运行。而异步模式传输数据但不阻塞，不需要等待响应，这确保了集群的连续性。比如在Web应用集群中，负载均衡采用粘性会话的方式（sticky-session），请求都是到同一节点，这种情况我们使用异步模式复制HTTP会话状态。我们可以通过mode属性配置异步还是同步，如下示例配置为同步复制模式。
+<replicated-cache name="default" start="EAGER" mode="SYNC" batching="false" >
+...
+</replicated-cache>
+另为我们可以通过Infinispan提供的接口获取集群网格的物理地址：
+AdvancedCache.getRpcManager().getT ransport().getPhysicalAddresses()
 
 
 2. 分布式模式
