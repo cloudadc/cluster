@@ -11,6 +11,8 @@ public class Quickstart {
 		
 		Cache<Object, Object> c = new DefaultCacheManager("infinispan-distribution.xml").getCache();
 		System.out.println(c.getVersion());
+		c.stop();
+		
 
 	}
 
