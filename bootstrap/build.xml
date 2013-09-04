@@ -14,6 +14,7 @@
 	<property name="infinispan.football.rest.target" value="${basedir}/../infinispan/football/rest/target" />
 	<property name="infinispan.football.hotrod.target" value="${basedir}/../infinispan/football/hotrod/target" />
 	<property name="infinispan.football.memcached.target" value="${basedir}/../infinispan/football/memcached/target" />
+	<property name="tools.h2.target" value="${basedir}/../tools/h2/target" />
 	
     <target name="validateproperties" >
         <echo>build parameter output</echo>
@@ -140,6 +141,8 @@
 			<fileset dir="${resource.dir}/conf" includes="football_memcached.sh"/>
 		    <fileset dir="${resource.dir}/conf" includes="football_rest.bat"/>
 		    <fileset dir="${resource.dir}/conf" includes="football_rest.sh"/>
+		    <fileset dir="${resource.dir}/conf" includes="startH2.bat"/>
+		    <fileset dir="${resource.dir}/conf" includes="startH2.sh"/>
     	</copy>
     	
 		<copy todir="${build.dir}/modules" >
@@ -179,6 +182,10 @@
     	
     	<copy todir="${build.dir}/modules/com/kylin/jbosscache/main" >
     		<fileset dir="${dependency.dir}" includes="jbosscache-replication-demo-1.0.jar"/>
+    	</copy>
+    	
+    	<copy todir="${build.dir}/modules/com/kylin/tools/h2/main" >
+    		<fileset dir="${tools.h2.target}" includes="tools-h2.jar"/>
     	</copy>
     	
     	<copy todir="${build.dir}/modules/org/infinispan/grid/demo/main" >

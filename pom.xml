@@ -23,6 +23,7 @@
         <module>infinispan</module>
 	<module>ehcache</module>
 	<module>bootstrap</module>
+	<module>tools</module>
     </modules>
 
 </project>
