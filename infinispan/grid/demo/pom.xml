@@ -22,6 +22,8 @@
 
       <infinispan.version>6.0.0.Alpha1</infinispan.version>
       <cst.version>2.0</cst.version>
+      <shade.plugin.version>1.5</shade.plugin.version>
+      <main.class>org.infinispan.grid.demo.Main</main.class>
    </properties>
 
    <dependencies>
@@ -98,6 +100,27 @@
                <target>1.6</target>
             </configuration>
          </plugin>
+         <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>${shade.plugin.version}</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <transformers>
+                        <transformer
+                            implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                            <mainClass>${main.class}</mainClass>
+                        </transformer>
+                    </transformers>
+                </configuration>
+            </plugin>
       </plugins>
    </build>
 

@@ -15,6 +15,7 @@
 	<property name="infinispan.football.hotrod.target" value="${basedir}/../infinispan/football/hotrod/target" />
 	<property name="infinispan.football.memcached.target" value="${basedir}/../infinispan/football/memcached/target" />
 	<property name="tools.h2.target" value="${basedir}/../tools/h2/target" />
+	<property name="infinispan.grid.demo" value="${basedir}/../infinispan/grid/demo/target" />
 	
     <target name="validateproperties" >
         <echo>build parameter output</echo>
@@ -188,10 +189,16 @@
     		<fileset dir="${tools.h2.target}" includes="tools-h2.jar"/>
     	</copy>
     	
+    	
     	<copy todir="${build.dir}/modules/org/infinispan/grid/demo/main" >
     		<fileset dir="${dependency.dir}" includes="infinispan-grid-demo-1.0.jar"/>
     	</copy>
     	
+    	<!--
+    	<copy todir="${build.dir}/modules/org/infinispan/grid/demo/main" >
+    		<fileset dir="${infinispan.grid.demo}" includes="infinispan-grid-demo.jar"/>
+    	</copy>
+    	-->
     	<copy todir="${build.dir}/modules/org/infinispan/demo/rest/main" >
     		<fileset dir="${infinispan.football.rest.target}" includes="infinispan-football-rest.jar"/>
     	</copy>
