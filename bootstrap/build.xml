@@ -213,7 +213,7 @@
     		<fileset dir="${dependency.dir}" includes="infinispan-quickstart-1.0.jar"/>
     	</copy>
     	
-    	<copy todir="${build.dir}/modules/com/kylin/tankwar/main" >
+    	<copy todir="${build.dir}/modules/org/jgroups/demo/tankwar/main" >
     		<fileset dir="${dependency.dir}" includes="jgroups-tankwar-1.0.jar"/>
     	</copy>
     	

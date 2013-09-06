@@ -9,7 +9,7 @@
 
     <dependencies>
     	<module name="javax.api" export="true"/>
-    	<module name="com.kylin.tankwar" export="true"/>
+    	<module name="org.jgroups.demo.tankwar" export="true"/>
     	<module name="org.jgroups" services="import"/>
     	<module name="org.apache.log4j" services="import"/>
     </dependencies>

@@ -2,7 +2,8 @@ package bootstrap.tankwar;
 
 import java.io.File;
 
-import com.kylin.tankwar.TankWar;
+import org.jgroups.demo.tankwar.TankWar;
+
 
 import bootstrap.Bootstrap;
 
