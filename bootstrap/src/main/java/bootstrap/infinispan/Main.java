@@ -14,7 +14,12 @@ public class Main extends Bootstrap{
 		
 		displayDebugInfo(logger);
 
-		org.infinispan.grid.demo.Main.main(args);
+		try {
+			org.infinispan.grid.demo.Main.main(args);
+		} catch (Exception e) {
+			logger.error("", e);
+			e.printStackTrace();
+		}
 	}
 
 }

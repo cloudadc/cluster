@@ -14,7 +14,7 @@
    
    <default>
       <!-- Configure a synchronous replication cache -->
-      <clustering mode="replication">
+      <clustering mode="repl"> <!-- replication -->
          <sync/>
       </clustering>
    </default>

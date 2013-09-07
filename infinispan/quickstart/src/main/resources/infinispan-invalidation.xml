@@ -14,9 +14,8 @@
    </global>
 
    <default>
-      <clustering mode="dist">
+      <clustering mode="inv"> <!-- invalidation -->
          <l1 enabled="false" lifespan="60000" />
-         <hash numOwners="2"/>
          <sync/>
       </clustering>
    </default>

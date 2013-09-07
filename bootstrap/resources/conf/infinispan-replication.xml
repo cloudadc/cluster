@@ -14,7 +14,7 @@
    </global>
 
    <default>
-      <clustering mode="replication">
+      <clustering mode="repl">
          <l1 enabled="false" lifespan="60000" />
          <sync/>
       </clustering>

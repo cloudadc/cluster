@@ -13,7 +13,7 @@
    </global>
 
    <default>
-      <clustering mode="distribution">
+      <clustering mode="dist"> <!-- distribution -->
          <l1 enabled="false" />
          <hash numOwners="2"/>
          <sync/>

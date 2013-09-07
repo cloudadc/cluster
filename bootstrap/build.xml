@@ -102,6 +102,7 @@
     		<fileset dir="${resource.dir}/conf" includes="infinispan_icon_32px.gif"/>
     		<fileset dir="${resource.dir}/conf" includes="infinispan-distribution.xml"/>
     		<fileset dir="${resource.dir}/conf" includes="infinispan-replication.xml"/>
+    		<fileset dir="${resource.dir}/conf" includes="infinispan-invalidation.xml"/>
     	</copy>
     	
     	<copy todir="${build.dir}/conf/etc" >

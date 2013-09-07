@@ -10,6 +10,8 @@ import org.infinispan.configuration.global.GlobalConfiguration;
 import org.infinispan.configuration.global.GlobalConfigurationBuilder;
 import org.infinispan.manager.DefaultCacheManager;
 
+import com.customized.tools.common.ResourceLoader;
+
 public class MyCacheManagerProvider {
 	
 	private static final Logger log = Logger.getLogger(MyCacheManagerProvider.class);
@@ -60,9 +62,9 @@ public class MyCacheManagerProvider {
 	 
 	 public DefaultCacheManager getCacheManager(String configFile) {
 		 if (manager == null) {
-			 log.info("DefaultCacheManager does not exist - constructing a new one");
+			 log.info("DefaultCacheManager does not exist - constructing a new via " + configFile);
 			 try {
-				manager = new DefaultCacheManager(configFile, true);
+				manager = new DefaultCacheManager(ResourceLoader.getInstance().getResourceAsStream(configFile), true);
 			} catch (IOException e) {
 				throw new IllegalArgumentException(configFile + " can not find", e);
 			} 
