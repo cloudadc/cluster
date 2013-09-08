@@ -103,6 +103,7 @@
     		<fileset dir="${resource.dir}/conf" includes="infinispan-distribution.xml"/>
     		<fileset dir="${resource.dir}/conf" includes="infinispan-replication.xml"/>
     		<fileset dir="${resource.dir}/conf" includes="infinispan-invalidation.xml"/>
+    		<fileset dir="${resource.dir}/conf" includes="infinispan-local.xml"/>
     	</copy>
     	
     	<copy todir="${build.dir}/conf/etc" >

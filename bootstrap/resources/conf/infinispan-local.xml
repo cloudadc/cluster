@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<infinispan
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="urn:infinispan:config:6.0 http://www.infinispan.org/schemas/infinispan-config-6.0.xsd"
+      xmlns="urn:infinispan:config:6.0">
+
+   <global>
+      <transport>
+         <properties>
+            <property name="configurationFile" value="jgroups.xml" />
+         </properties>
+      </transport>
+      <globalJmxStatistics enabled="true"/>
+   </global>
+
+   <default>
+      <clustering mode="local">
+         <l1 enabled="false" lifespan="60000" />
+      </clustering>
+   </default>
+
+</infinispan>
