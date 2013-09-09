@@ -1,9 +1,11 @@
+Infinispan缓存模式示例
+
 如前面我们讨论了Infinispan的本地缓存和集群缓存，其中图11-1，11-2，11-3分别描述了Infinispan集群缓存的分布式模式，复制模式，失效模式，本示例展示或说明这些模式，具体类似图中所示，本示例演示的三种集群模式都是四个节点构成一个网格，数据在四个节点间进行复制。同样我们也使用单一节点演示非集群的本地模式。本示例可通过图形化和命令行的方式来操作各个节点，我们可以清晰的看到数据复制的结果。
 
 1. Infinispan缓存模式示例架构
-如下图所示
+如下图所示，我们假设示例中有4个Infinispan缓存实例构成4个节点的数据网格，
 docs/img/infnispan-detagrid-demo-architecture.png
-Infinispan缓存模式示例主要包括两部分，核心部分和展示部分。核心部分包括Infinispan和jGroups，我们知道jGroups是群组通信工具包，Infinispan基于jGroups构建一个分布式内存数据网格平台，这部分包括Infinispan启动，配置等主要逻辑。展示部分指的是显示界面，我们有二种界面展示Infinispan缓存模式，二种界面包括：
+我们将Infinispan缓存模式示例分为两部分，核心部分和展示部分。核心部分包括Infinispan和jGroups，我们知道jGroups是群组通信工具包，Infinispan基于jGroups构建一个分布式数据网格平台，这部分包括Infinispan启动，配置等主要逻辑。展示部分指的是显示界面，我们通过显示界面可以操作数据网格，改变网格中的数据，展示Infinispan缓存模式，我们有二种界面：
 GUI - Java SWT构建的图形化界面
 console- 传统的命令行界面
 2. 运行Infinispan缓存模式示例
@@ -45,11 +47,96 @@ infinispan-demo-11-1.png
 └── k3  -  CacheEntry [key=k3, value=value, lifespan=-1, maxIdle=-1, alias=localhost-63861]
 ---
 2.2 运行Infinispan分布式模式
-
-
+如图11-1 Infinispan分布式模式所示，我们演示4个节点构成的分布式数据网格。我们需要四台物理机器，分别为Server1，Server2，Server3，Server4，根据示例-0所示的步骤生成DEMO_HOME，分别在四台机器上，打开命令行终端，进入DEMO_HOME/bin目录，执行：
+./dataGrid.sh -b <IP>  -c infinispan-distribution.xml
+-b <IP> 指定Infinispan分布式模式绑定的IP地址，如果不指定默认使用127.0.0.1
+-c infinispan-distribution.xml 指定Infinispan分布式模式配置文件，该属性必须指定，否则程序运行会抛出错误，infinispan-distribution.xml文件位于DEMO_HOME/conf目录下
+依次启动完成后，四台物理机器上会出现GUI管理界面，基于这些界面我们可以测试Infinispan分布式模式。注意，实际中在运行本示例时，我们可以在同一台机器上运行，因为Infinispan底层使用消息传递的是jGroups，jGroups是多播通信工具，所以不需要一定要绑定不同IP。Infinispan分布式模式缓存条目保存在网格节点的一个子集上，这样体现的Infinispan可扩展性，和大树据性，这里我们配置的子集数（numOwners）为2，即任何数据在网格中存在两份。接下来我们做如下操作：
+- 在Server1上点击Add按钮，添加缓存条目k1/Value
+- 在Server2上点击Add按钮，添加缓存条目k2/Value
+- 在Server3上点击Add按钮，添加缓存条目k3/Value
+- 在Server4上点击Add按钮，添加缓存条目k4/Value
+分别点击各个GUI界面上Refresh 刷新，我们可以看到缓存条目分布如下图所示
+infinispan-demo-11-2.png
+从图中我们可以发现，任何缓存条目都存在2份，k1/Value位于Server1和Server3，k2/Value位于Server1和Server4，k3/Value位于Server2和Server3，k4/Value位于Server1和Server3。
+我们也可以以命令行启动测试Infinispan分布式模式，
+./dataGrid.sh -b <IP> -console -c infinispan-distribution.xml
+与启动GUI界面相比，启动命令行模式只需要添加-console参数，启动完成后我们可以通过命令行管理命令操作缓存。
 2.3 运行Infinispan复制模式
-
-
+如图11-2 Infinispan复制模式所示，我们同样演示4个节点构成的复制模式数据网格。我们同样需要四台物理机器，分别为Server1，Server2，Server3，Server4，根据示例-0所示的步骤生成DEMO_HOME，分别在四台机器上，打开命令行终端，进入DEMO_HOME/bin目录，执行：
+./dataGrid.sh -b <IP>  -c infinispan-replication.xml
+-b <IP> 指定Infinispan失效模式绑定的IP地址，如果不指定默认使用127.0.0.1
+-c infinispan-replication.xml 指定Infinispan复制模式配置文件，该属性必须指定，否则程序运行会抛出错误，infinispan-replication.xml文件位于DEMO_HOME/conf目录下
+依次启动完成后，四台物理机器上会出现GUI管理界面，基于这些界面我们可以测试Infinispan复制模式。Infinispan复制模式所有节点上的缓存条目保持同步，接下来我们做如下操作：
+- 在Server1上点击Add按钮，添加缓存条目k1/Value
+- 在Server2上点击Add按钮，添加缓存条目k2/Value
+- 在Server3上点击Add按钮，添加缓存条目k3/Value
+- 在Server4上点击Add按钮，添加缓存条目k4/Value
+分别点击各个GUI界面上Refresh 刷新，我们可以看到缓存条目分布如下图所示
+infinispan-demo-11-3.png
+从图中我们可以发现，四个节点上的数据相同，都包括k1/Value，k2/Value，k3/Value和k4/Value。
+我们也可以以命令行启动测试Infinispan复制模式，
+./dataGrid.sh -b <IP> -console -c infinispan-replication.xml
+与启动GUI界面相比，启动命令行模式只需要添加-console参数，启动完成后我们可以通过命令行管理命令操作缓存。
 2.4 运行Infinispan失效模式
+如图11-3 Infinispan失效模式所示，我们同样演示4个节点构成的数据网格。我们需要四台物理机器，分别为Server1，Server2，Server3，Server4，根据示例-0所示的步骤生成DEMO_HOME，分别在四台机器上，打开命令行终端，进入DEMO_HOME/bin目录，执行：
+./dataGrid.sh -b <IP>  -c infinispan-invalidation.xml
+-b <IP> 指定Infinispan失效模式绑定的IP地址，如果不指定默认使用127.0.0.1
+-c infinispan-invalidation.xml 指定Infinispan失效配置文件，该属性必须指定，否则程序运行会抛出错误，infinispan-invalidation.xml文件位于DEMO_HOME/conf目录下
+依次启动完成后，四台物理机器上会出现GUI管理界面，基于这些界面我们可以测试Infinispan复制模式。Infinispan失效模式是指当某一节点上数据发生改变后，其它节点收到失效消息，将它上面的数据移除缓存。接下来我们做如下操作：
+- 在Server1上点击Add按钮，添加缓存条目key/V_old
+- 在Server2，Server3和Server4任意一节点上点击Add按钮，添加缓存条目key/V_new
+分别点击各个GUI界面上Refresh 刷新，我们可以看到缓存条目分布如下图所示
+infinispan-demo-11-4.png
+从图中我们可以发现，Server1上的key/V_old被移除，而key/V_new存在于网格中。
+我们也可以以命令行启动测试Infinispan失效模式，
+./dataGrid.sh -b <IP> -console -c infinispan-invalidation.xml
+与启动GUI界面相比，启动命令行模式只需要添加-console参数，启动完成后我们可以通过命令行管理命令操作缓存。
+3. Infinispan缓存模式示例的日志说明
+我们可以通过DEMO_HOME/conf/log4j.xml文件配置日志级别，DEMO_HOME/log/demo.log中为日志输出，该日志中包括本示例的日志，以及Infinispan，JGroups输出的日志，另外在命令行终端也有日志输出。
+4. Infinispan缓存模式示例的配置说明
+本示例涉及到的配置文件包括infinispan-local.xml，infinispan-distribution.xml，infinispan-replication.xml和infinispan-invalidation.xml，它分别代表Infinispan非集群本地模式，集群分布式模式，集群复制模式以及集群无效模式，这些配置文件都位于DEMO_HOME/conf，我们可以去分别查看。例如infinispan-local.xml如下配置
+<clustering mode="local">
+如果clustering元素的mode属性值定义为local，则缓存为非集群本地模式，在这种情况下，即使定义<transport/> ，Infinispan加载也将其忽略。
+又如infinispan-distribution.xml中如下配置
+<clustering mode="dist">
+         <l1 enabled="false" lifespan="60000" />
+         <hash numOwners="2"/>
+         <sync/>
+      </clustering>
+我们配置clustering元素的mode属性值为dist，表示集群分布式模式，numOwners=2表示集群子集为2，数据保存数为2份，同样集群模式需要定义<transport/>，它的定义如下
+<transport>
+         <properties>
+            <property name="configurationFile" value="jgroups.xml" />
+         </properties>
+      </transport>
+configurationFile属性值为jgroups.xm，即分布式模式使用JGroups交换数据，Infinispan启动到class path下寻找加载jgroups.xml，实例化JGroups通道。
+5. Infinispan缓存模式示例的代码说明
+Infinispan缓存模式示例的代码位于cluster/infinispan/grid/demo/下。
+CacheDelegate.java定义了操作缓存的方法，如下
+---
+public interface CacheDelegate {
+        public abstract Cache<String, String> getGenericCache();
+        public abstract void removeAll(Set<String> keys);
+        public abstract void remove(String key);
+        public abstract void destory();
+}
+---
+它的实现类为CacheDelegateImpl.java，CacheDelegateImpl构造方法中实例化Infinispan缓存实例，如下
+---
+ public CacheDelegateImpl(String configFile) {
+                cache = MyCacheManagerProvider.getInstance().getCacheManager(configFile).getCache();
+        }
+---
+configFile就是DEMO_HOME/conf目录下的配置文件，MyCacheManagerProvider类创建缓存管理器的代码如下
+---
+ try {
+          manager = new DefaultCacheManager(ResourceLoader.getInstance().getResourceAsStream(configFile), true);
+      } catch (IOException e) {
+          throw new IllegalArgumentException(configFile + " can not find", e);
+      }
+---
+
+
 
 
