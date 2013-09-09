@@ -1,0 +1,55 @@
+如前面我们讨论了Infinispan的本地缓存和集群缓存，其中图11-1，11-2，11-3分别描述了Infinispan集群缓存的分布式模式，复制模式，失效模式，本示例展示或说明这些模式，具体类似图中所示，本示例演示的三种集群模式都是四个节点构成一个网格，数据在四个节点间进行复制。同样我们也使用单一节点演示非集群的本地模式。本示例可通过图形化和命令行的方式来操作各个节点，我们可以清晰的看到数据复制的结果。
+
+1. Infinispan缓存模式示例架构
+如下图所示
+docs/img/infnispan-detagrid-demo-architecture.png
+Infinispan缓存模式示例主要包括两部分，核心部分和展示部分。核心部分包括Infinispan和jGroups，我们知道jGroups是群组通信工具包，Infinispan基于jGroups构建一个分布式内存数据网格平台，这部分包括Infinispan启动，配置等主要逻辑。展示部分指的是显示界面，我们有二种界面展示Infinispan缓存模式，二种界面包括：
+GUI - Java SWT构建的图形化界面
+console- 传统的命令行界面
+2. 运行Infinispan缓存模式示例
+根据示例-0所示的步骤生成DEMO_HOME，示例运行启动脚本位于DEMO_HOME/bin目录下，本示例相关的Infinispan配置文件位于DEMO_HOME/conf目录下。如果以命令行方式运行本示例，我们需要了解本示例所支持的命令，Infinispan缓存模式示例支持的命令如下表：
+ls             显示当前节点下所有缓存条目
+rm             移除当前节点下某特定key对应的缓存条目
+add            添加新缓存条目到当前节点
+tree           显示当前节点下所有缓存条目
+tree -l        显示当前节点下所有缓存条目的详细内容
+tree -list     与tree -l命令功能完全相同
+search         根据某特定key查询对应的缓存条目
+exit           退出当前命令行窗口
+quit           与exit命令功能完全相同
+接下来我们依次演示Infinispan的本地模式，分布式模式，复制模式，失效模式。
+2.1 运行Infinispan本地模式
+我们打开一个命令行终端，进入DEMO_HOME/bin目录，执行：
+./dataGrid.sh -b <IP>  -c infinispan-local.xml
+-b <IP> 指定Infinispan本地模式绑定的IP地址，如果不指定默认使用127.0.0.1
+-c infinispan-local.xml 指定Infinispan本地模式配置文件，该属性必须指定，infinispan-local.xml文件位于DEMO_HOME/conf目录下
+启动完成后GUI界面如下图所示，GUI界面代表当前缓存情况，图中所示缓存中包括4条数据，即k1/Value，k2/Value，k3/Value，k1/Value。
+infinispan-demo-11-1.png
+在GUI界面的底部，有所有操作的控制按钮，单击相应的按钮可以做相关的操作，操作按钮包括：
+- Add 添加新的缓存条目
+- Search 根据某特定key查询对应的缓存条目
+- Delete 根据某特定key删除对应的缓存条目
+- Clear 删除当前节点上所有缓存条目
+- Refresh 刷新GUI界面，本示例没有自动刷新界面的功能，特别是在集群网格中，我们需要通过点击此按钮确认节点上的数据
+- Help 点击获取相关帮助链接
+- Exit 退出GUI界面
+我们可以通过如上功能按钮测试Infinispan本地模式，当然我们也可以以命令行启动测试Infinispan本地模式，同样打开一个命令行终端，进入DEMO_HOME/bin目录，执行：
+./dataGrid.sh -b <IP>  -console -c infinispan-local.xml
+与启动GUI界面相比，启动命令行模式只需要添加-console参数，如下为我们使用tree -l命令显示当前节点下所有缓存条目的详细内容，其显示内容与GUI界面显示内容相同。
+---
+[Infinispan-DataGrid /]tree -l
+/  -  
+├── k2  -  CacheEntry [key=k2, value=value, lifespan=-1, maxIdle=-1, alias=localhost-63861]
+├── k1  -  CacheEntry [key=k1, value=value, lifespan=-1, maxIdle=-1, alias=localhost-63861]
+├── k4  -  CacheEntry [key=k4, value=value, lifespan=-1, maxIdle=-1, alias=localhost-63861]
+└── k3  -  CacheEntry [key=k3, value=value, lifespan=-1, maxIdle=-1, alias=localhost-63861]
+---
+2.2 运行Infinispan分布式模式
+
+
+2.3 运行Infinispan复制模式
+
+
+2.4 运行Infinispan失效模式
+
+
