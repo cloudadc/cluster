@@ -140,6 +140,24 @@ Alternatively, use the following commands start Infinispan Data Grid as Replicat
 ./dataGrid.sh -c infinispan-replication.xml -console
 ----
 
+Start Infinispan Data Grid as Invalidation Mode:
+----
+./dataGrid.sh -c infinispan-invalidation.xml
+----
+
+----
+./dataGrid.sh -c infinispan-invalidation.xml -console
+----
+
+Start Infinispan Data Grid as Local Cache Mode:
+----
+./dataGrid.sh -c infinispan-local.xml
+----
+
+----
+./dataGrid.sh -c infinispan-local.xml -console
+----
+
 * See more underlying details
 
 // coming soon
