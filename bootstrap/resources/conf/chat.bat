@@ -59,10 +59,10 @@ echo.
 :RESTART
 "%JAVA%" %JAVA_OPTS% ^
  "-Ddemo.home.dir=%DEMO_HOME%" ^
-    -jar "%DEMO_HOME%\jboss-modules.jar" ^
+    -jar "%DEMO_HOME%\jboss-modules-1.1.2.GA.jar" ^
     -mp "%DEMO_HOME%\modules" ^
-     org.jboss.as.standalone ^
-     %SERVER_OPTS%
+     bootstrap.jgroups.chat ^
+     %*
 
 if ERRORLEVEL 10 goto RESTART
 

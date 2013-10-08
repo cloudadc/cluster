@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <project name="com.kylin.jbosscluster" default="install" basedir="."> 
     <property name="build.home" value="${basedir}/build" />
+    <property name="dist.home" value="${basedir}/../dist" />
     <property name="resource.dir" value="${basedir}/resources" />
 	<property name="swt.dir" value="${resource.dir}/swt" />
     <property name="target.dir" value="${basedir}/target" />
@@ -46,19 +47,20 @@
 		<copy todir="${build.dir}/modules/org/eclipse/swt/main" >
 			<fileset dir="${swt.dir}/linux/x86_64" includes="module.xml"/>
 		    <fileset dir="${dependency.dir}" includes="org.eclipse.swt.gtk.linux.x86_64-4.2.1.jar"/>
-		</copy> -->
-		
-		<!-- win x86
+		</copy> 
+		-->
+		<!-- win x86 
 		<copy todir="${build.dir}/modules/org/eclipse/swt/main" >
 			<fileset dir="${swt.dir}/win/x86" includes="module.xml"/>
 		    <fileset dir="${dependency.dir}" includes="org.eclipse.swt.win32.win32.x86-4.2.1.jar"/>
-		</copy> -->
-		
+		</copy> 
+		-->
 		<!-- win x86_64 
 		<copy todir="${build.dir}/modules/org/eclipse/swt/main" >
 			<fileset dir="${swt.dir}/win/x86_64" includes="module.xml"/>
 		    <fileset dir="${dependency.dir}" includes="org.eclipse.swt.win32.win32.x86_64-4.2.1.jar"/>
-		</copy> -->
+		</copy> 
+		-->
 		
 		<!-- mac x86 
 		<copy todir="${build.dir}/modules/org/eclipse/swt/main" >
@@ -71,7 +73,8 @@
 			<fileset dir="${swt.dir}/mac/x86_64" includes="module.xml"/>
 		    <fileset dir="${dependency.dir}" includes="org.eclipse.swt.cocoa.macosx.x86_64-4.2.1.jar"/>
 		</copy> -->
-		
+	    <mkdir dir="${dist.home}" />
+            <zip destfile="${dist.home}/jboss_cluster_framework.zip" basedir="${build.dir}/../" update="true"/>	
 	</target> 
 
     <target name="deploy" depends="prepare">
@@ -134,6 +137,7 @@
     		<fileset dir="${resource.dir}/conf" includes="rspFilter.sh"/>
     		<fileset dir="${resource.dir}/conf" includes="rspFilter.bat"/>
 		    <fileset dir="${resource.dir}/conf" includes="run.conf"/>
+		    <fileset dir="${resource.dir}/conf" includes="run.conf.bat"/>
 		    <fileset dir="${resource.dir}/conf" includes="infinispan_repl.bat"/>
 			<fileset dir="${resource.dir}/conf" includes="infinispan_repl.sh"/>
 		    <fileset dir="${resource.dir}/conf" includes="infinispan_dist.bat"/>
