@@ -1,0 +1,19 @@
+1. install httpd
+    unzip jboss-eap-native-webserver-connectors-6.1.1-win6.x86_64.zip
+    unzip jboss-ews-httpd-2.0.1-RHEL6-x86_64.zip -d /opt/
+    cp jboss-eap-6.1/modules/system/layers/base/native/lib64/httpd/modules/* /opt/jboss-ews-2.0/httpd/modules/
+    
+    unzip jboss-eap-native-webserver-connectors-6.1.1-win6.x86_64.zip
+    unzip jboss-ews-httpd-2.0.1-RHEL6-x86_64.zip -d /opt/
+    cp jboss-eap-6.1/modules/system/layers/base/native/lib64/httpd/modules/* /opt/jboss-ews-2.0/httpd/modules/
+
+2. install JBoss
+    unzip jboss-eap-6.1.1.zip -d /opt/
+    mv /opt/jboss-eap-6.1 /opt/jboss-eap-6.1_active
+    unzip jboss-eap-6.1.1.zip -d /opt/
+    mv /opt/jboss-eap-6.1 /opt/jboss-eap-6.1_passive
+  
+    /opt/jboss-eap-6.1_active/bin/add-user.sh admin password1!
+    /opt/jboss-eap-6.1_passive/bin/add-user.sh admin password1!
+
+
