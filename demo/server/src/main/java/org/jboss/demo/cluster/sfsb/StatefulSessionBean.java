@@ -3,9 +3,11 @@ package org.jboss.demo.cluster.sfsb;
 import javax.ejb.Remote;
 import javax.ejb.Stateful;
 
+import org.jboss.ejb3.annotation.Clustered;
+
 @Stateful
 @Remote(StatefulSession.class)
-//@Clustered
+@Clustered
 public class StatefulSessionBean implements StatefulSession {
 	
 	private String name;

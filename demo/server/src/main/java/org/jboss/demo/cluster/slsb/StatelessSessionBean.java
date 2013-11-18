@@ -9,7 +9,6 @@ import javax.ejb.Remote;
 import javax.ejb.Stateless;
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
-import javax.jms.JMSException;
 import javax.jms.MessageProducer;
 import javax.jms.ObjectMessage;
 import javax.jms.Queue;
@@ -20,10 +19,11 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 
 import org.jboss.demo.cluster.entity.Person;
+import org.jboss.ejb3.annotation.Clustered;
 
 @Stateless
 @Remote(StatelessSession.class)
-//@Clustered
+@Clustered
 public class StatelessSessionBean implements StatelessSession {
 	
 	@PersistenceContext
@@ -68,7 +68,7 @@ public class StatelessSessionBean implements StatelessSession {
 		}
 	}
 
-	public void sendMessage(String message, Integer messageCount, Long processingDelay) throws JMSException {
+	public void sendMessage(String message, Integer messageCount, Long processingDelay) throws Exception {
 		
 		HashMap<String, Serializable> map = new HashMap<String, Serializable>();
 		map.put( "delay", processingDelay );

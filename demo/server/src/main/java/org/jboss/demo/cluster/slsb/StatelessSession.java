@@ -2,8 +2,6 @@ package org.jboss.demo.cluster.slsb;
 
 import java.util.List;
 
-import javax.jms.JMSException;
-
 import org.jboss.demo.cluster.entity.Person;
 
 public interface StatelessSession {
@@ -18,5 +16,5 @@ public interface StatelessSession {
 	
 	public void replacePerson(Long pk, String name);
 	
-	public void sendMessage(String message, Integer messageCount, Long processingDelay) throws JMSException;
+	public void sendMessage(String message, Integer messageCount, Long processingDelay) throws Exception;
 }
