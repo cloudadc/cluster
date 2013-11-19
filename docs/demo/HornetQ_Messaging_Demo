@@ -1,0 +1,499 @@
+概述
+本实验演示说明JBoss 7/WildFly 集群中HornetQ Messaging的高可用性。本实验运行简单示意图如下所示：
+hornetq_ha_jboss_demo.png
+如图所示本实验中：
+两个JBoss节点（node1和node2）构成一个集群，两个节点上分别有live消息服务器和backup消息服务器，且node1上的live消息服务器和node2上的backup消息服务器位于group-1，而node2上的live消息服务器和node1上的backup消息服务器位于group-2；
+消息队列DistributedQueue部署在两个节点上的live服务器，消息驱动Bean（MessageDrivenBean）作为消息队列的消费者监听于DistributedQueue之上；
+JMS客户端（JMSClient）通过node1发送连续的10条消息到集群；
+JBoss node1部署于物理机器10.66.218.47上，JBoss node2部署于物理机器10.66.218.48上.
+
+JBoss 端配置
+我们需要配置live消息服务器和backup消息服务器，我们分别给出node1和node2的配置。
+node1配置：
+在<subsystem xmlns="urn:jboss:domain:messaging:中配置hornetq-server：
+		<subsystem xmlns="urn:jboss:domain:messaging:1.3">
+			<hornetq-server>
+				<persistence-enabled>true</persistence-enabled>
+				<cluster-password>clusterPassword1!</cluster-password>
+				<backup>false</backup>
+				<allow-failback>true</allow-failback>
+				<failover-on-shutdown>false</failover-on-shutdown>
+				<shared-store>false</shared-store>
+				<journal-type>NIO</journal-type>
+				<journal-min-files>2</journal-min-files>
+				<check-for-live-server>true</check-for-live-server>
+				<backup-group-name>group-1</backup-group-name>
+				<connectors>
+					<netty-connector name="netty" socket-binding="messaging" />
+					<netty-connector name="netty-throughput"
+						socket-binding="messaging-throughput">
+						<param key="batch-delay" value="50" />
+					</netty-connector>
+					<in-vm-connector name="in-vm" server-id="1" />
+				</connectors>
+				<acceptors>
+					<netty-acceptor name="netty" socket-binding="messaging" />
+					<netty-acceptor name="netty-throughput"
+						socket-binding="messaging-throughput">
+						<param key="batch-delay" value="50" />
+						<param key="direct-deliver" value="false" />
+					</netty-acceptor>
+					<in-vm-acceptor name="in-vm" server-id="1" />
+				</acceptors>
+				<broadcast-groups>
+					<broadcast-group name="bg-group1">
+						<socket-binding>messaging-group</socket-binding>
+						<broadcast-period>5000</broadcast-period>
+						<connector-ref>netty</connector-ref>
+					</broadcast-group>
+				</broadcast-groups>
+
+				<discovery-groups>
+					<discovery-group name="dg-group1">
+						<socket-binding>messaging-group</socket-binding>
+						<refresh-timeout>10000</refresh-timeout>
+					</discovery-group>
+				</discovery-groups>
+				<cluster-connections>
+					<cluster-connection name="my-cluster">
+						<address>jms</address>
+						<connector-ref>netty</connector-ref>
+						<discovery-group-ref discovery-group-name="dg-group1" />
+					</cluster-connection>
+				</cluster-connections>
+				<security-settings>
+					<security-setting match="#">
+						<permission type="send" roles="guest" />
+						<permission type="consume" roles="guest" />
+						<permission type="createNonDurableQueue" roles="guest" />
+						<permission type="deleteNonDurableQueue" roles="guest" />
+					</security-setting>
+				</security-settings>
+				<address-settings>
+					<!--default for catch all -->
+					<address-setting match="#">
+						<dead-letter-address>jms.queue.DLQ</dead-letter-address>
+						<expiry-address>jms.queue.ExpiryQueue</expiry-address>
+						<redelivery-delay>0</redelivery-delay>
+						<redistribution-delay>1000</redistribution-delay>
+						<max-size-bytes>10485760</max-size-bytes>
+						<address-full-policy>BLOCK</address-full-policy>
+						<message-counter-history-day-limit>10
+						</message-counter-history-day-limit>
+					</address-setting>
+				</address-settings>
+				<jms-connection-factories>
+					<connection-factory name="InVmConnectionFactory">
+						<connectors>
+							<connector-ref connector-name="in-vm" />
+						</connectors>
+						<entries>
+							<entry name="java:/ConnectionFactory" />
+						</entries>
+					</connection-factory>
+					<connection-factory name="RemoteConnectionFactory">
+						<connectors>
+							<connector-ref connector-name="netty" />
+						</connectors>
+						<entries>
+							<entry name="java:jboss/exported/jms/RemoteConnectionFactory" />
+						</entries>
+						<ha>true</ha>
+						<block-on-acknowledge>true</block-on-acknowledge>
+						<retry-interval>1000</retry-interval>
+						<retry-interval-multiplier>1.0</retry-interval-multiplier>
+						<reconnect-attempts>-1</reconnect-attempts>
+					</connection-factory>
+					<pooled-connection-factory name="hornetq-ra">
+						<ha>true</ha>
+						<block-on-acknowledge>true</block-on-acknowledge>
+						<retry-interval>1000</retry-interval>
+						<retry-interval-multiplier>1</retry-interval-multiplier>
+						<reconnect-attempts>-1</reconnect-attempts>
+						<transaction mode="xa" />
+						<connectors>
+							<connector-ref connector-name="in-vm" />
+						</connectors>
+						<entries>
+							<entry name="java:/JmsXA" />
+						</entries>
+					</pooled-connection-factory>
+				</jms-connection-factories>
+			</hornetq-server>
+			<hornetq-server name="backup-server">
+				<persistence-enabled>true</persistence-enabled>
+				<cluster-password>clusterPassword1!</cluster-password>
+				<backup>true</backup>
+				<allow-failback>true</allow-failback>
+				<failover-on-shutdown>false</failover-on-shutdown>
+				<shared-store>false</shared-store>
+				<journal-type>NIO</journal-type>
+				<journal-min-files>2</journal-min-files>
+				<check-for-live-server>true</check-for-live-server>
+				<backup-group-name>group-2</backup-group-name>
+				<paging-directory path="messagingpagingbackupa" />
+				<bindings-directory path="messagingbindingsbackupa" />
+				<journal-directory path="messagingjournalbackupa" />
+				<large-messages-directory path="messaginglargemessagesbackupa" />
+				<connectors>
+					<netty-connector name="netty" socket-binding="messaging-backup" />
+					<in-vm-connector name="in-vm" server-id="2" />
+				</connectors>
+				<acceptors>
+					<netty-acceptor name="netty" socket-binding="messaging-backup" />
+					<in-vm-acceptor name="in-vm" server-id="2" />
+				</acceptors>
+				<broadcast-groups>
+					<broadcast-group name="bg-group1">
+						<socket-binding>messaging-group</socket-binding>
+						<broadcast-period>5000</broadcast-period>
+						<connector-ref>netty</connector-ref>
+					</broadcast-group>
+				</broadcast-groups>
+
+				<discovery-groups>
+					<discovery-group name="dg-group1">
+						<socket-binding>messaging-group</socket-binding>
+						<refresh-timeout>10000</refresh-timeout>
+					</discovery-group>
+				</discovery-groups>
+				<cluster-connections>
+					<cluster-connection name="my-cluster">
+						<address>jms</address>
+						<connector-ref>netty</connector-ref>
+						<discovery-group-ref discovery-group-name="dg-group1" />
+					</cluster-connection>
+				</cluster-connections>
+				<security-settings>
+					<security-setting match="#">
+						<permission type="send" roles="guest" />
+						<permission type="consume" roles="guest" />
+						<permission type="createNonDurableQueue" roles="guest" />
+						<permission type="deleteNonDurableQueue" roles="guest" />
+					</security-setting>
+				</security-settings>
+				<address-settings>
+					<!--default for catch all -->
+					<address-setting match="#">
+						<dead-letter-address>jms.queue.DLQ</dead-letter-address>
+						<expiry-address>jms.queue.ExpiryQueue</expiry-address>
+						<redelivery-delay>0</redelivery-delay>
+						<redistribution-delay>1000</redistribution-delay>
+						<max-size-bytes>10485760</max-size-bytes>
+						<address-full-policy>BLOCK</address-full-policy>
+						<message-counter-history-day-limit>10
+						</message-counter-history-day-limit>
+					</address-setting>
+				</address-settings>
+				<jms-connection-factories>
+					<connection-factory name="InVmConnectionFactory">
+						<connectors>
+							<connector-ref connector-name="in-vm" />
+						</connectors>
+						<entries>
+							<entry name="java:/ConnectionFactory" />
+						</entries>
+					</connection-factory>
+					<connection-factory name="RemoteConnectionFactory">
+						<connectors>
+							<connector-ref connector-name="netty" />
+						</connectors>
+						<entries>
+							<entry name="java:jboss/exported/jms/RemoteConnectionFactory" />
+						</entries>
+						<ha>true</ha>
+						<block-on-acknowledge>true</block-on-acknowledge>
+						<retry-interval>1000</retry-interval>
+						<retry-interval-multiplier>1.0</retry-interval-multiplier>
+						<reconnect-attempts>-1</reconnect-attempts>
+					</connection-factory>
+					<pooled-connection-factory name="hornetq-ra">
+						<ha>true</ha>
+						<block-on-acknowledge>true</block-on-acknowledge>
+						<retry-interval>1000</retry-interval>
+						<retry-interval-multiplier>1</retry-interval-multiplier>
+						<reconnect-attempts>-1</reconnect-attempts>
+						<transaction mode="xa" />
+						<connectors>
+							<connector-ref connector-name="in-vm" />
+						</connectors>
+						<entries>
+							<entry name="java:/JmsXA" />
+						</entries>
+					</pooled-connection-factory>
+				</jms-connection-factories>
+			</hornetq-server>
+		</subsystem>
+在<socket-binding-group name="standard-sockets"添加messaging-backup socket-binding如下：
+<socket-binding name="messaging-backup" port="5446" />
+node2配置
+在<subsystem xmlns="urn:jboss:domain:messaging:中配置hornetq-server
+		<subsystem xmlns="urn:jboss:domain:messaging:1.3">
+			<hornetq-server>
+				<persistence-enabled>true</persistence-enabled>
+				<cluster-password>clusterPassword1!</cluster-password>
+				<backup>false</backup>
+				<allow-failback>true</allow-failback>
+				<failover-on-shutdown>false</failover-on-shutdown>
+				<shared-store>false</shared-store>
+				<journal-type>NIO</journal-type>
+				<journal-min-files>2</journal-min-files>
+				<check-for-live-server>true</check-for-live-server>
+				<backup-group-name>group-2</backup-group-name>
+				<connectors>
+					<netty-connector name="netty" socket-binding="messaging" />
+					<netty-connector name="netty-throughput"
+						socket-binding="messaging-throughput">
+						<param key="batch-delay" value="50" />
+					</netty-connector>
+					<in-vm-connector name="in-vm" server-id="1" />
+				</connectors>
+				<acceptors>
+					<netty-acceptor name="netty" socket-binding="messaging" />
+					<netty-acceptor name="netty-throughput"
+						socket-binding="messaging-throughput">
+						<param key="batch-delay" value="50" />
+						<param key="direct-deliver" value="false" />
+					</netty-acceptor>
+					<in-vm-acceptor name="in-vm" server-id="1" />
+				</acceptors>
+				<broadcast-groups>
+					<broadcast-group name="bg-group1">
+						<socket-binding>messaging-group</socket-binding>
+						<broadcast-period>5000</broadcast-period>
+						<connector-ref>netty</connector-ref>
+					</broadcast-group>
+				</broadcast-groups>
+
+				<discovery-groups>
+					<discovery-group name="dg-group1">
+						<socket-binding>messaging-group</socket-binding>
+						<refresh-timeout>10000</refresh-timeout>
+					</discovery-group>
+				</discovery-groups>
+				<cluster-connections>
+					<cluster-connection name="my-cluster">
+						<address>jms</address>
+						<connector-ref>netty</connector-ref>
+						<discovery-group-ref discovery-group-name="dg-group1" />
+					</cluster-connection>
+				</cluster-connections>
+				<security-settings>
+					<security-setting match="#">
+						<permission type="send" roles="guest" />
+						<permission type="consume" roles="guest" />
+						<permission type="createNonDurableQueue" roles="guest" />
+						<permission type="deleteNonDurableQueue" roles="guest" />
+					</security-setting>
+				</security-settings>
+				<address-settings>
+					<!--default for catch all -->
+					<address-setting match="#">
+						<dead-letter-address>jms.queue.DLQ</dead-letter-address>
+						<expiry-address>jms.queue.ExpiryQueue</expiry-address>
+						<redelivery-delay>0</redelivery-delay>
+						<redistribution-delay>1000</redistribution-delay>
+						<max-size-bytes>10485760</max-size-bytes>
+						<address-full-policy>BLOCK</address-full-policy>
+						<message-counter-history-day-limit>10
+						</message-counter-history-day-limit>
+					</address-setting>
+				</address-settings>
+
+				<jms-connection-factories>
+					<connection-factory name="InVmConnectionFactory">
+						<connectors>
+							<connector-ref connector-name="in-vm" />
+						</connectors>
+						<entries>
+							<entry name="java:/ConnectionFactory" />
+						</entries>
+					</connection-factory>
+					<connection-factory name="RemoteConnectionFactory">
+						<connectors>
+							<connector-ref connector-name="netty" />
+						</connectors>
+						<entries>
+							<entry name="java:jboss/exported/jms/RemoteConnectionFactory" />
+						</entries>
+						<ha>true</ha>
+						<block-on-acknowledge>true</block-on-acknowledge>
+						<retry-interval>1000</retry-interval>
+						<retry-interval-multiplier>1.0</retry-interval-multiplier>
+						<reconnect-attempts>-1</reconnect-attempts>
+					</connection-factory>
+					<pooled-connection-factory name="hornetq-ra">
+						<ha>true</ha>
+						<block-on-acknowledge>true</block-on-acknowledge>
+						<retry-interval>1000</retry-interval>
+						<retry-interval-multiplier>1</retry-interval-multiplier>
+						<reconnect-attempts>-1</reconnect-attempts>
+						<transaction mode="xa" />
+						<connectors>
+							<connector-ref connector-name="in-vm" />
+						</connectors>
+						<entries>
+							<entry name="java:/JmsXA" />
+						</entries>
+					</pooled-connection-factory>
+				</jms-connection-factories>
+			</hornetq-server>
+			<hornetq-server name="backup-server">
+				<persistence-enabled>true</persistence-enabled>
+				<cluster-password>clusterPassword1!</cluster-password>
+				<backup>true</backup>
+				<allow-failback>true</allow-failback>
+				<failover-on-shutdown>false</failover-on-shutdown>
+				<shared-store>false</shared-store>
+				<journal-type>NIO</journal-type>
+				<journal-min-files>2</journal-min-files>
+				<check-for-live-server>true</check-for-live-server>
+				<backup-group-name>group-1</backup-group-name>
+				<paging-directory path="messagingpagingbackupa" />
+				<bindings-directory path="messagingbindingsbackupa" />
+				<journal-directory path="messagingjournalbackupa" />
+				<large-messages-directory path="messaginglargemessagesbackupa" />
+				<connectors>
+					<netty-connector name="netty" socket-binding="messaging-backup" />
+					<in-vm-connector name="in-vm" server-id="2" />
+				</connectors>
+				<acceptors>
+					<netty-acceptor name="netty" socket-binding="messaging-backup" />
+					<in-vm-acceptor name="in-vm" server-id="2" />
+				</acceptors>
+				<broadcast-groups>
+					<broadcast-group name="bg-group1">
+						<socket-binding>messaging-group</socket-binding>
+						<broadcast-period>5000</broadcast-period>
+						<connector-ref>netty</connector-ref>
+					</broadcast-group>
+				</broadcast-groups>
+
+				<discovery-groups>
+					<discovery-group name="dg-group1">
+						<socket-binding>messaging-group</socket-binding>
+						<refresh-timeout>10000</refresh-timeout>
+					</discovery-group>
+				</discovery-groups>
+				<cluster-connections>
+					<cluster-connection name="my-cluster">
+						<address>jms</address>
+						<connector-ref>netty</connector-ref>
+						<discovery-group-ref discovery-group-name="dg-group1" />
+					</cluster-connection>
+				</cluster-connections>
+				<security-settings>
+					<security-setting match="#">
+						<permission type="send" roles="guest" />
+						<permission type="consume" roles="guest" />
+						<permission type="createNonDurableQueue" roles="guest" />
+						<permission type="deleteNonDurableQueue" roles="guest" />
+					</security-setting>
+				</security-settings>
+				<address-settings>
+					<!--default for catch all -->
+					<address-setting match="#">
+						<dead-letter-address>jms.queue.DLQ</dead-letter-address>
+						<expiry-address>jms.queue.ExpiryQueue</expiry-address>
+						<redelivery-delay>0</redelivery-delay>
+						<redistribution-delay>1000</redistribution-delay>
+						<max-size-bytes>10485760</max-size-bytes>
+						<address-full-policy>BLOCK</address-full-policy>
+						<message-counter-history-day-limit>10
+						</message-counter-history-day-limit>
+					</address-setting>
+				</address-settings>
+
+				<jms-connection-factories>
+					<connection-factory name="InVmConnectionFactory">
+						<connectors>
+							<connector-ref connector-name="in-vm" />
+						</connectors>
+						<entries>
+							<entry name="java:/ConnectionFactory" />
+						</entries>
+					</connection-factory>
+					<connection-factory name="RemoteConnectionFactory">
+						<connectors>
+							<connector-ref connector-name="netty" />
+						</connectors>
+						<entries>
+							<entry name="java:jboss/exported/jms/RemoteConnectionFactory" />
+						</entries>
+						<ha>true</ha>
+						<block-on-acknowledge>true</block-on-acknowledge>
+						<retry-interval>1000</retry-interval>
+						<retry-interval-multiplier>1.0</retry-interval-multiplier>
+						<reconnect-attempts>-1</reconnect-attempts>
+					</connection-factory>
+					<pooled-connection-factory name="hornetq-ra">
+						<ha>true</ha>
+						<block-on-acknowledge>true</block-on-acknowledge>
+						<retry-interval>1000</retry-interval>
+						<retry-interval-multiplier>1</retry-interval-multiplier>
+						<reconnect-attempts>-1</reconnect-attempts>
+						<transaction mode="xa" />
+						<connectors>
+							<connector-ref connector-name="in-vm" />
+						</connectors>
+						<entries>
+							<entry name="java:/JmsXA" />
+						</entries>
+					</pooled-connection-factory>
+				</jms-connection-factories>
+			</hornetq-server>
+		</subsystem>
+
+在<socket-binding-group name="standard-sockets"添加messaging-backup socket-binding如下：
+<socket-binding name="messaging-backup" port="5446" />
+注意，我将以附件的形式添加我实验过程中配置文件standalone-full-ha-node1.xml和standalone-full-ha-node2.xml。
+创建Application User
+我们需要创建Application User来与JBoss进行交换，具体使用JBOSS_HOME/bin/add_user.sh或JBOSS_HOME/bin/add_user.bat创建Application User democlient/passowrd1!。
+
+部署高可用实验应用
+本实验需要部署消息队列到JBoss，根据之前系列（）部署DistributedQueue到JBoss。我们可以使用拷贝queue-jms.xml文件到deployments目录下面的方式部署DistributedQueue。queue-jms.xml内容如下所示：
+----
+<?xml version="1.0" encoding="UTF-8"?>
+<messaging-deployment xmlns="urn:jboss:messaging-deployment:1.0">
+	<hornetq-server>
+		<jms-destinations>
+			<jms-queue name="DistributedQueue">
+				<entry name="queue/DistributedQueue" />
+				<entry name="java:jboss/exported/jms/queue/DistributedQueue"/>
+				<durable>true</durable>
+			</jms-queue>
+		</jms-destinations>
+	</hornetq-server>
+</messaging-deployment>
+----
+本实验应用代码位于github（），使用系列一方法下载编译代码，会生成部署应用cluster-demo-jms.jar，我们可以使用拷贝cluster-demo-jms.jar文件到deployments目录下面的方式部署应用。
+
+部署完成我们通过如下命令分别启动两个节点。
+----
+./standalone.sh -c standalone-full-ha-node1.xml -b 10.66.218.47 -bmanagement=10.66.218.47 -u 239.255.100.100 -Djboss.node.name=node1
+./standalone.sh -c standalone-full-ha-node2.xml -b 10.66.218.48 -bmanagement=10.66.218.48 -u 239.255.100.100 -Djboss.node.name=node2
+----
+
+高可用和负载均衡过程测试
+我们通过如下步骤测试JBoss 7/WildFly消息服务高可用：
+1. 发送连续10条消息
+运行JMSClient通过node1发送连续的10条消息到集群，我们发现node1处理第一条和第三条消息，输出如下日志
+05:20:09,741 INFO  [stdout] (Thread-8 (HornetQ-client-global-threads-62067681)) 1: JBoss 7/WildFly HornetQ Messaging High Available
+05:20:19,750 INFO  [stdout] (Thread-8 (HornetQ-client-global-threads-62067681)) 3: JBoss 7/WildFly HornetQ Messaging High Available
+与此同时node2处理第二条和第四条消息，输出如下日志
+05:20:11,626 INFO  [stdout] (Thread-7 (HornetQ-client-global-threads-1878339755)) 2: JBoss 7/WildFly HornetQ Messaging High Available
+05:20:21,648 INFO  [stdout] (Thread-7 (HornetQ-client-global-threads-1878339755)) 4: JBoss 7/WildFly HornetQ Messaging High Available
+此处体现了JBoss 7/WildFly消息服务器的负载均衡功能，10条消息分别给node1分发五条，给node2分发五条，node1分发五条为（第1，3，5，7，9），node2分发五条为（第2，4，6，8，10）。
+2. 关闭node1，故障转移高可用测试
+当node1处理第1条和第3条消息后，还有3条消息（5，7，9），未被处理，这个时候我们强制关闭node1，模拟发生故障，这时5，7，9消息被分发到node2，node2处理5，7，9消息，node2处理日志如下
+05:20:31,658 INFO  [stdout] (Thread-7 (HornetQ-client-global-threads-1878339755)) 6: JBoss 7/WildFly HornetQ Messaging High Available
+05:20:41,679 INFO  [stdout] (Thread-7 (HornetQ-client-global-threads-1878339755)) 8: JBoss 7/WildFly HornetQ Messaging High Available
+05:20:51,688 INFO  [stdout] (Thread-7 (HornetQ-client-global-threads-1878339755)) 10: JBoss 7/WildFly HornetQ Messaging High Available
+05:21:28,059 INFO  [stdout] (Thread-8 (HornetQ-client-global-threads-1878339755)) 5: JBoss 7/WildFly HornetQ Messaging High Available
+05:21:38,068 INFO  [stdout] (Thread-8 (HornetQ-client-global-threads-1878339755)) 7: JBoss 7/WildFly HornetQ Messaging High Available
+05:21:48,076 INFO  [stdout] (Thread-8 (HornetQ-client-global-threads-1878339755)) 9: JBoss 7/WildFly HornetQ Messaging High Available
+注意，处理第5条和第10条消息之间的间隔为30多秒，这说明故障转移的时间为30多秒。
+
+
+
+
