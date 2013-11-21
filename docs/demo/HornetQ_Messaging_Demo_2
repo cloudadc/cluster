@@ -1,0 +1,24 @@
+如下两个链接为JBoss 7/WildFly HornetQ Messaging 集群示例中用到的配置文件
+https://github.com/kylinsoong/cluster/blob/master/demo/jms/standalone-full-ha-node1.xml
+https://github.com/kylinsoong/cluster/blob/master/demo/jms/standalone-full-ha-node2.xml
+我们在自己配置过程中，可以参考这两个配置文件进行。本文围绕配置文件进一步说明JBoss 7/WildFly HornetQ Messaging 集群。
+
+HornetQ 服务器
+两个节点中用到的配置文件standalone-full-ha-node1.xml和standalone-full-ha-node2.xml中都定义了两个HornetQ 服务器，即在<subsystem xmlns="urn:jboss:domain:messaging中有如下配置：
+----
+<subsystem xmlns="urn:jboss:domain:messaging:1.3">
+	<hornetq-server name="live-server">
+		...
+	</hornetq-server>
+	<hornetq-server name="backup-server">
+		...
+	</hornetq-server>
+</subsystem>
+----
+如上即两个节点中分别有现场服务器live-server和备份服务器backup-server。
+
+消息需要persistence-enabled
+两个配置文件中的两个<hornetq-server>中persistence-enabled属性的配置为true，如下
+   <persistence-enabled>true</persistence-enabled>
+消息只有在标记persistence-enabled
+
