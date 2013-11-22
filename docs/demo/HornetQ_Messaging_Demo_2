@@ -20,5 +20,40 @@ HornetQ 服务器
 消息需要persistence-enabled
 两个配置文件中的两个<hornetq-server>中persistence-enabled属性的配置为true，如下
    <persistence-enabled>true</persistence-enabled>
-消息只有在标记persistence-enabled
+消息只有在标记persistence-enabled为true时才可以在线程服务器和备份服务器之间复制，才能实现高可用。
+
+消息cluster-password
+cluster-password用来在HornetQ 服务器之间复制消息使用，我们使用clusterPassword1!作为所有服务器之间的密码如下配置
+   <cluster-password>clusterPassword1!</cluster-password>
+
+通过backup属性确定HornetQ 服务器是否为现场服务器
+我们通过backup来确定HornetQ 服务器是否为现场服务器，如上两个节点中，线程服务器backup配置为true如下：
+   <backup>false</backup>
+而备份服务器的配置为
+   <backup>true</backup>
+
+如何配置backup-group-name
+我们示例中的两个节点共有两个Groups，即group-1和group-2，node1节点live-server和node2节点backup-server属于group-1，node2节点live-server和node1节点backup-server属于group-2，配置明细如下：
+node1节点
+	<hornetq-server name="live-server">
+		<backup-group-name>group-1</backup-group-name>
+	</hornetq-server>
+	<hornetq-server name="backup-server">
+		<backup-group-name>group-2</backup-group-name>
+	</hornetq-server>
+node2节点
+	<hornetq-server name="live-server">
+		<backup-group-name>group-2</backup-group-name>
+	</hornetq-server>
+	<hornetq-server name="backup-server">
+		<backup-group-name>group-1</backup-group-name>
+	</hornetq-server>
+
+不使用shared-store
+我们知道JBoss 7/WildFly 中 HornetQ Messaging 集群有两种模式：Shared Store 和 Message Replication，Shared Store 需要依赖于高性能存储，所以我们通过配置
+   <shared-store>false</shared-store>
+来使用Message Replication完成集群高可用
+
+
+
 
