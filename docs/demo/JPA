@@ -1,0 +1,40 @@
+Java持久性API（JPA）是在Java项目中使用持久性的标准。Java EE 6的应用程序使用Java Persistence2.0规范。的Hibernate EntityManager的实现了JPA规范定义的程序编程接口及生命周期规则，它为JBoss 7提供一个完整的Java持久性解决方案。JBoss 7是100％兼容JPA2.0规范的，Hibernate也提供了除JPA规范外额外的功能。
+
+当在JBoss集群中使用JPA，数据通常被存储在中央数据库或数据库集群中，与JBoss集群是独立的，分离的。因此，请求在JBoss集群中的任何一个节点上的失败或JBoss实例的毁坏都不影响数据库中的数据。这也是JPA规范所考虑的范畴，为了这一目的，JPA本身被认为是无状态的，因为状态在JPA系统之外，是独立的。
+
+JPA中的一级缓存（First-level caching）涉及到持久化上下文，在JBoss中指的是Hibernate的Session，这个缓存是本地的，并认为它是短暂的，适用于单个的请求。它不会改变JPA技术的无状态特性，并不会对JPA应用的水平扩展和集群造成风险。
+
+JPA的二级缓存（SECOND-LEVEL CACHING）指的是对传统数据库的缓存。它是JPA实体的一个本地数据存储，通过减少所需的往返数据库的次数来提高性能。使用了二级缓存，可以理解数据库中的数据在同一个集群中可以仅通过JPA进行修改。任何一个节点上数据的改变，对应的在其他节点上是数据的失效，这样保证的数据的连续性。尽管这样，有时候二级缓存还是会为JPA带来状态，这些问题需要注意解决。
+
+JBoss 7 使用Infinispan做二级缓存，默认在配置文件的infinispan子系统中hibernate缓存容器中名为entity的invalidation-cache缓存为二级缓存，如下：
+---
+<cache-container name="hibernate" default-cache="local-query" module="org.jboss.as.jpa.hibernate:4">
+                <transport lock-timeout="60000"/>
+                <local-cache name="local-query">
+                    <transaction mode="NONE"/>
+                    <eviction strategy="LRU" max-entries="10000"/>
+                    <expiration max-idle="100000"/>
+                </local-cache>
+                <invalidation-cache name="entity" mode="SYNC">
+                    <transaction mode="NON_XA"/>
+                    <eviction strategy="LRU" max-entries="10000"/>
+                    <expiration max-idle="100000"/>
+                </invalidation-cache>
+            </cache-container>
+---
+注意local-query为JBoss 7默认使用的一级缓存。
+
+配置应用程序来使用缓存，JPA配置文件中Hibernate属性hibernate.cache.use_second_level_cache应该配置为true，如下：
+<property name="hibernate.cache.use_second_level_cache">true</property>
+<property name="hibernate.cache.use_query_cache">true</property>
+
+一旦一个持久化单元配置为使用第二级缓存，JPA配置文件中shared-cache-mode属性确定那些属性的要被缓存起来的，可能的值包括如下：
+ENABLE_SELECTIVE 只缓存明确地标记为cacheable的实体
+DISABLE_SELECTIVE 缓存除标记不缓存的所有实体
+ALL 缓存所有实体，不管实体自身的标注
+NONE 不缓存任何实体，忽略所有标注
+
+单个实体类可能会被标记为@Cacheable(true) 或 @Cacheable(false)，@Cacheable(true)明确标记为缓存的实体，@Cacheable(false)明确标注为不缓存的实体。
+
+实体缓存是一个失效缓存，这意味着实体只有当它在某节点上被加载时缓存到该节点，一旦实体在一个节点上发生变化，一个无效的消息被广播到集群的所有节点上，其他节点上失效并删除所缓存的实体实例，这避免数据的连续性，不会出现数据陈旧与最新数据发生冲突。
+
