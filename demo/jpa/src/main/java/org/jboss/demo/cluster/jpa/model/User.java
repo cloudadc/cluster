@@ -9,7 +9,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Lob;
 
-@Entity
+@Entity(name = "t_user")
 @Cacheable(true)
 public class User implements Serializable {
 

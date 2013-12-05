@@ -27,10 +27,16 @@ public class JPAClusterDemoResource {
 		
 		List<User> users = new ArrayList<User>();
 		for(int i = 1 ; i <= number ; i ++){
-			users.add(new User("name-" + r.nextInt(5), new byte[100]));
+			users.add(new User("name-" + i, new byte[100]));
 		}
-			
-		return userDao.addUsers(users);
+		
+		Long start = System.currentTimeMillis();
+		
+		String content = userDao.addUsers(users);
+		
+		Long end = System.currentTimeMillis();
+		
+		return content + " spend " + (end -start) + " milliseconds";
 	}
 	
 	@GET

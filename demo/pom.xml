@@ -16,6 +16,8 @@
 	<module>client</module>
 	<module>jms</module>
 	<module>jpa</module>
+	<module>slsb</module>
+	<module>slsb-client</module>
     </modules>
 
 

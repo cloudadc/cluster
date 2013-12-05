@@ -5,11 +5,11 @@
    <datasource jndi-name="java:jboss/datasources/JBossClusterDemoJPADS"
       pool-name="tasks-rs-xml-quickstart" enabled="true"
       use-java-context="true">
-      <connection-url>jdbc:h2:mem:jbosscluster-demo-jpa;DB_CLOSE_ON_EXIT=FALSE;DB_CLOSE_DELAY=-1</connection-url>
-      <driver>h2</driver>
+      <connection-url>jdbc:oracle:thin:@//10.66.192.144:1521/JBOSS</connection-url>
+      <driver>oracle</driver>
       <security>
-         <user-name>sa</user-name>
-         <password>sa</password>
+         <user-name>demo_user</user-name>
+         <password>soong</password>
       </security>
    </datasource>
 </datasources>
