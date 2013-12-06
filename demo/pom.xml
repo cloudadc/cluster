@@ -18,6 +18,8 @@
 	<module>jpa</module>
 	<module>slsb</module>
 	<module>slsb-client</module>
+	<module>sfsb</module>
+        <module>sfsb-client</module>
     </modules>
 
 

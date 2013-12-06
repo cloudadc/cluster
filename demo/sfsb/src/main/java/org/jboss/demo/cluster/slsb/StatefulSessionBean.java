@@ -1,14 +1,14 @@
 package org.jboss.demo.cluster.slsb;
 
 import javax.ejb.Remote;
-import javax.ejb.Stateless;
+import javax.ejb.Stateful;
 
 import org.jboss.ejb3.annotation.Clustered;
 
-@Stateless
-@Remote(StatelessSession.class)
+@Stateful
+@Remote(StatefulSession.class)
 @Clustered
-public class StatelessSessionBean implements StatelessSession {
+public class StatefulSessionBean implements StatefulSession {
 
 	public String getServer() {
 		StringBuffer sb = new StringBuffer();
@@ -29,6 +29,16 @@ public class StatelessSessionBean implements StatelessSession {
         System.out.println(result);
         
         return result;
+	}
+	
+	private String name;
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 }
