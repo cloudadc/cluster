@@ -1,0 +1,165 @@
+概述
+本文分两个部分：有状态会话Bean集群和有状态会话Bean集群示例
+
+有状态会话Bean集群
+我们通过如下五句话来明白无状态会话Bean集群的基本理论。
+
+状态
+有状态会话Bean的状态指的是每一个client stub在容器中都有一个对应的实例，通过同一个client stub的连续请求被认为是一个会话，状态在服务器端维护。
+
+Sticky 特性
+不像无状态会话Bean的负载均衡策略（集群节点中切换），有状态会话Bean集群中采用Sticky机制，即client stub将请求发送到集群中同一个节点，知道节点发生异常退出。
+
+容错
+EJB client stub能够容错请求到可达的集群节点，状态通过Infinispan在集群中复制同步。
+
+集群拓扑
+集群拓扑可以通过集群的EJB或EJB client端的配置文件确定。
+
+EJB client stub
+通过JNDI查询有状态会话Bean返回一个EJB client stub，它包括集群的拓扑结构，进行Sticky转发，容错等。另外每一次EJB调运都会更新stub中的集群信息，这使得stub中集群信息始终为最新。
+
+有状态会话Bean集群示例
+有状态会话Bean集群示例架构如下图：
+如图：
+1. JBoss node1和node2组成一个集群，node1对应IP地址10.66.218.46，node2对应IP地址10.66.218.47
+2. EJB 客户端位于另一台机器
+我们通过如下几步部署运行有状态会话Bean集群示例。
+
+定义StatefulSession接口
+---
+public interface StatefulSession {
+	public String getServer();
+	public String getName();
+	public void setName(String name);
+}
+---
+
+定义StatefulSession接口实现
+---
+@Stateful
+@Remote(StatefulSession.class)
+@Clustered
+public class StatefulSessionBean implements StatefulSession {
+
+	public String getServer() {
+		StringBuffer sb = new StringBuffer();
+        
+        String ip = System.getProperty("jboss.bind.address");
+        if(null != ip) {
+                sb.append("jboss.bind.address: " + ip);
+                sb.append(", jboss.node.name: ");
+        }
+        
+        String jbossNodeName = System.getProperty("jboss.node.name");
+        if(null != jbossNodeName) {
+                sb.append(jbossNodeName);
+        }
+        
+        String result = sb.toString();
+        
+        System.out.println(result);
+        
+        return result;
+	}
+	
+	private String name;
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+}
+---
+
+启动并部署有状态会话Bean集群应用
+EJB远程调运我们需要创建Application User，具体执行JBOSS_HOME/bin/add_user.sh或JBOSS_HOME/bin/add_user.bat创建Application User democlient/password1!
+我们使用如下命令分别启动两个JBoss节点：
+./standalone.sh -c standalone-ha.xml -b 10.66.218.46 -bmanagement=10.66.218.46 -u 239.255.100.100 -Djboss.node.name=node1  
+
+./standalone.sh -c standalone-ha.xml -b 10.66.218.47 -bmanagement=10.66.218.47 -u 239.255.100.100 -Djboss.node.name=node2 
+
+有状态会话Bean集群应用代码位于：
+
+定义EJB客户端
+EJB客户端配置文件jboss-ejb-client.properties内容如下：
+---
+endpoint.name=client-endpoint
+remote.connectionprovider.create.options.org.xnio.Options.SSL_ENABLED=false
+remote.connections=node1,node2
+
+remote.connection.node1.host=10.66.218.46
+remote.connection.node1.port=4447
+remote.connection.node1.connect.timeout=500
+remote.connection.node1.connect.options.org.xnio.Options.SASL_POLICY_NOANONYMOUS=false
+remote.connection.node1.username=democlient
+remote.connection.node1.password=password1!
+
+remote.connection.node2.host=10.66.218.47
+remote.connection.node2.port=4447
+remote.connection.node2.connect.timeout=500
+remote.connection.node2.connect.options.org.xnio.Options.SASL_POLICY_NOANONYMOUS=false
+remote.connection.node2.username=democlient
+remote.connection.node2.password=password1!
+
+
+remote.clusters=ejb
+remote.cluster.ejb.connect.options.org.xnio.Options.SASL_POLICY_NOANONYMOUS=false
+remote.cluster.ejb.username=democlient
+remote.cluster.ejb.password=password1!
+---
+EJB客户端调运类如下：
+---
+public class StatefulSessionBeanClient {
+	
+	private String applicationContext = "cluster-demo-sfsb";
+	private String SFSB_JNDI = "ejb:/" + applicationContext + "/StatefulSessionBean!" + StatefulSession.class.getName()  + "?stateful";		
+	
+	private void execute() throws Exception {
+		Hashtable<String, String> jndiProps = new Hashtable<String, String>();
+		jndiProps.put( Context.URL_PKG_PREFIXES, "org.jboss.ejb.client.naming" );
+		Context context = new InitialContext( jndiProps );
+		StatefulSession sfsb = (StatefulSession)context.lookup(SFSB_JNDI);
+		
+		System.out.println("Sticky routes Test");
+		for(int i = 0 ; i < 10 ; i ++){
+			System.out.println(sfsb.getServer());
+		}
+		
+		System.out.println("\nFail Over Test");
+		for(int i = 0 ; i < 10 ; i ++) {
+			System.out.println(sfsb.getName());
+			sfsb.setName("sfsb-test-" + i);
+			Thread.currentThread().sleep(1000 * 5);
+		}
+	}
+
+	public static void main(String[] args) throws Exception {
+		new StatefulSessionBeanClient().execute();
+	}
+
+}
+---
+运行StatefulSessionBeanClient输出如下：
+---
+jboss.bind.address: 10.66.218.47, jboss.node.name: node2
+jboss.bind.address: 10.66.218.46, jboss.node.name: node1
+jboss.bind.address: 10.66.218.46, jboss.node.name: node1
+jboss.bind.address: 10.66.218.47, jboss.node.name: node2
+jboss.bind.address: 10.66.218.46, jboss.node.name: node1
+jboss.bind.address: 10.66.218.46, jboss.node.name: node1
+jboss.bind.address: 10.66.218.47, jboss.node.name: node2
+jboss.bind.address: 10.66.218.46, jboss.node.name: node1
+jboss.bind.address: 10.66.218.47, jboss.node.name: node2
+jboss.bind.address: 10.66.218.47, jboss.node.name: node2
+---
+我们看到同一个EJB Client通过相同的client stub的一系列EJB调运会进行负载均衡，即请求在集群中两个节点中切换。
+
+
+
+
+

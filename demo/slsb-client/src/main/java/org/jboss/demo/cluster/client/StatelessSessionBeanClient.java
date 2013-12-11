@@ -18,14 +18,13 @@ public class StatelessSessionBeanClient {
 		jndiProps.put( Context.URL_PKG_PREFIXES, "org.jboss.ejb.client.naming" );
 		Context context = new InitialContext( jndiProps );
 		StatelessSession slsb = (StatelessSession)context.lookup(SLSB_JNDI);
-		System.out.println(slsb.getServer());
+		for (int i = 0; i < 10; i++){
+			System.out.println(slsb.getServer());
+		}
 	}
-
 
 
 	public static void main(String[] args) throws Exception {
-
 		new StatelessSessionBeanClient().execute();
 	}
-
 }

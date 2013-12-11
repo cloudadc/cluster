@@ -18,20 +18,21 @@ public class StatefulSessionBeanClient {
 		jndiProps.put( Context.URL_PKG_PREFIXES, "org.jboss.ejb.client.naming" );
 		Context context = new InitialContext( jndiProps );
 		StatefulSession sfsb = (StatefulSession)context.lookup(SFSB_JNDI);
-		System.out.println(sfsb.getServer());
+		
+		System.out.println("Sticky routes Test");
+		for(int i = 0 ; i < 10 ; i ++){
+			System.out.println(sfsb.getServer());
+		}
+		
+		System.out.println("\nFail Over Test");
 		for(int i = 0 ; i < 10 ; i ++) {
 			System.out.println(sfsb.getName());
 			sfsb.setName("sfsb-test-" + i);
 			Thread.currentThread().sleep(1000 * 5);
 		}
-		
-		
 	}
 
-
-
 	public static void main(String[] args) throws Exception {
-
 		new StatefulSessionBeanClient().execute();
 	}
 

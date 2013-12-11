@@ -1,0 +1,141 @@
+无状态会话Bean集群
+
+无数据的丢失
+无状态会话Bean avoids holding data on behalf of its client，这使得无状态会话Bean集群变得简单，因为我们不必担心数据的丢失。
+
+负载均衡
+同一个EJB Client通过相同的client stub的一系列EJB调运会进行负载均衡，即EJB请求会在JBoss节点上切换(sequential calls made by the same client through the same stub
+can be load balanced across available cluster nodes)。
+
+容错
+EJB client stub能够容错请求到可达的集群节点（fail over a request across the available cluster nodes）。
+
+集群拓扑
+集群拓扑可以通过集群的EJB或EJB client端的配置文件确定。
+
+EJB client stub
+通过JNDI查询无状态会话Bean返回一个EJB client stub，它包括集群的拓扑结构 and can successfully load balance or fail over a request across the available cluster nodes. 每一次EJB调运都会更新stub中的集群信息，这使得stub中集群信息始终为最新。
+
+无状态会话Bean集群示例
+无状态会话Bean集群示例架构如下图：
+如图：
+1. JBoss node1和node2组成一个集群，node1对应IP地址10.66.218.46，node2对应IP地址10.66.218.47
+2. EJB 客户端位于另一台机器
+我们通过如下几步部署运行无状态会话Bean集群示例。
+
+定义StatelessSession接口
+---
+public interface StatelessSession {
+	public String getServer();
+}
+---
+
+定义StatelessSession接口实现
+---
+@Stateless
+@Remote(StatelessSession.class)
+@Clustered
+public class StatelessSessionBean implements StatelessSession {
+
+	public String getServer() {
+		StringBuffer sb = new StringBuffer();
+        
+        String ip = System.getProperty("jboss.bind.address");
+        if(null != ip) {
+                sb.append("jboss.bind.address: " + ip);
+                sb.append(", jboss.node.name: ");
+        }
+        
+        String jbossNodeName = System.getProperty("jboss.node.name");
+        if(null != jbossNodeName) {
+                sb.append(jbossNodeName);
+        }
+        
+        String result = sb.toString();
+        
+        System.out.println(result);
+        
+        return result;
+	}
+
+}
+---
+
+启动并部署无状态会话Bean集群应用
+EJB远程调运我们需要创建Application User，具体执行JBOSS_HOME/bin/add_user.sh或JBOSS_HOME/bin/add_user.bat创建Application User democlient/password1!
+我们使用如下命令分别启动两个JBoss节点：
+./standalone.sh -c standalone-ha.xml -b 10.66.218.46 -bmanagement=10.66.218.46 -u 239.255.100.100 -Djboss.node.name=node1  
+
+./standalone.sh -c standalone-ha.xml -b 10.66.218.47 -bmanagement=10.66.218.47 -u 239.255.100.100 -Djboss.node.name=node2 
+
+无状态会话Bean集群应用代码位于：
+
+定义EJB客户端
+EJB客户端配置文件jboss-ejb-client.properties内容如下：
+---
+endpoint.name=client-endpoint
+remote.connectionprovider.create.options.org.xnio.Options.SSL_ENABLED=false
+remote.connections=node1,node2
+
+remote.connection.node1.host=10.66.218.46
+remote.connection.node1.port=4447
+remote.connection.node1.connect.timeout=500
+remote.connection.node1.connect.options.org.xnio.Options.SASL_POLICY_NOANONYMOUS=false
+remote.connection.node1.username=democlient
+remote.connection.node1.password=password1!
+
+remote.connection.node2.host=10.66.218.47
+remote.connection.node2.port=4447
+remote.connection.node2.connect.timeout=500
+remote.connection.node2.connect.options.org.xnio.Options.SASL_POLICY_NOANONYMOUS=false
+remote.connection.node2.username=democlient
+remote.connection.node2.password=password1!
+
+
+remote.clusters=ejb
+remote.cluster.ejb.connect.options.org.xnio.Options.SASL_POLICY_NOANONYMOUS=false
+remote.cluster.ejb.username=democlient
+remote.cluster.ejb.password=password1!
+---
+EJB客户端调运类如下：
+---
+public class StatelessSessionBeanClient {
+	
+	private String applicationContext = "cluster-demo-slsb";
+	private String SLSB_JNDI = "ejb:/" + applicationContext + "/StatelessSessionBean!" + StatelessSession.class.getName() ;		
+	
+	private void execute() throws Exception {
+		Hashtable<String, String> jndiProps = new Hashtable<String, String>();
+		jndiProps.put( Context.URL_PKG_PREFIXES, "org.jboss.ejb.client.naming" );
+		Context context = new InitialContext( jndiProps );
+		StatelessSession slsb = (StatelessSession)context.lookup(SLSB_JNDI);
+		for (int i = 0; i < 10; i++){
+			System.out.println(slsb.getServer());
+		}
+	}
+
+
+	public static void main(String[] args) throws Exception {
+		new StatelessSessionBeanClient().execute();
+	}
+}
+---
+运行StatelessSessionBeanClient输出如下：
+---
+jboss.bind.address: 10.66.218.47, jboss.node.name: node2
+jboss.bind.address: 10.66.218.46, jboss.node.name: node1
+jboss.bind.address: 10.66.218.46, jboss.node.name: node1
+jboss.bind.address: 10.66.218.47, jboss.node.name: node2
+jboss.bind.address: 10.66.218.46, jboss.node.name: node1
+jboss.bind.address: 10.66.218.46, jboss.node.name: node1
+jboss.bind.address: 10.66.218.47, jboss.node.name: node2
+jboss.bind.address: 10.66.218.46, jboss.node.name: node1
+jboss.bind.address: 10.66.218.47, jboss.node.name: node2
+jboss.bind.address: 10.66.218.47, jboss.node.name: node2
+---
+我们看到同一个EJB Client通过相同的client stub的一系列EJB调运会进行负载均衡，即请求在集群中两个节点中切换。
+
+
+
+
+
