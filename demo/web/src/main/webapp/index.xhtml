@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	template="/WEB-INF/templates/template.xhtml">
+	
+
+		<ui:define name="content">
+
+			<h1>JBoss 7/WildFly cluster Demo Http Session</h1>
+			<p></p>
+			
+			<h:form>
+			
+			<fieldset>
+				<p>
+					<h:outputLabel value="#{contentBean.sessionID}" for="amt" />
+					<div class="input-prepend">
+					<h:inputText id="amt" value="#{contentBean.content}" required="true" requiredMessage="An input is required" maxlength="25" />
+					<h:message for="amt" errorClass="invalid" />
+					</div>
+				</p>
+				
+				
+				<div class="actions">
+					<h:commandButton value="Reset" action="#{contentBean.reset}" styleClass="btn" />
+					<h:commandButton id="submit" value=" Add " action="#{contentBean.add}" styleClass="btn primary"/>
+				</div>
+				
+				<p></p>
+			</fieldset>
+			</h:form>	
+			
+			<h:dataTable var="content" value="#{contents}" rendered="#{not empty contents}" styleClass="zebra-striped">
+         
+         	<h:column>
+            	<f:facet name="header">Content</f:facet>
+                #{content.content}
+            </h:column>
+            
+            <h:column>
+            	<f:facet name="header">Server</f:facet>
+                #{content.server}
+            </h:column>
+         
+        </h:dataTable>
+        
+		</ui:define>
+</ui:composition>

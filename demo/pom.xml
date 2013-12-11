@@ -20,6 +20,7 @@
 	<module>slsb-client</module>
 	<module>sfsb</module>
         <module>sfsb-client</module>
+	<module>web</module>
     </modules>
 
 

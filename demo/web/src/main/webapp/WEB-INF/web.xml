@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+ 
+ <distributable/>
+ 
+ <display-name>JBoss 7/WildFly cluster Demo Http Session</display-name>
+ 
+<!-- Authentication 
+	<login-config>
+		<auth-method>BASIC</auth-method>
+		<realm-name>JBossAdmin</realm-name>
+	</login-config>
+--> 
+<!-- 
+	<security-constraint>
+		<web-resource-collection>
+			<web-resource-name>Entire web application</web-resource-name>
+			<description>Declarative security tests</description>
+			<url-pattern>/content/*</url-pattern>
+			<http-method>HEAD</http-method>
+			<http-method>GET</http-method>
+			<http-method>POST</http-method>
+			<http-method>PUT</http-method>
+			<http-method>DELETE</http-method>
+		</web-resource-collection>
+
+		<auth-constraint>
+			<role-name>JBossAdmin</role-name>
+		</auth-constraint>
+	</security-constraint>
+	
+  
+	<security-role>
+		<role-name>JBossAdmin</role-name>
+	</security-role>
+
+	<error-page>
+		<error-code>403</error-code>
+		<location>/message.html</location>
+	</error-page>
+ -->
+</web-app>
