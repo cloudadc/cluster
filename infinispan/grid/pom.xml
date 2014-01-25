@@ -20,6 +20,7 @@
     <modules>
         <module>helloworld</module>
 	<module>demo</module>
+        <module>bom</module>
     </modules>
 
 </project>
