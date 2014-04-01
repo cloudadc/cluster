@@ -13,7 +13,7 @@ public class StatelessSessionBeanClient {
 	private String applicationContext = "cluster-demo-slsb";
 	private String SLSB_JNDI = "ejb:/" + applicationContext + "/StatelessSessionBean!" + StatelessSession.class.getName() ;		
 	
-	private void execute() throws Exception {
+	protected void execute() throws Exception {
 		Hashtable<String, String> jndiProps = new Hashtable<String, String>();
 		jndiProps.put( Context.URL_PKG_PREFIXES, "org.jboss.ejb.client.naming" );
 		Context context = new InitialContext( jndiProps );
