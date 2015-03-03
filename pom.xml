@@ -21,10 +21,8 @@
         <module>jgroups</module>
         <module>jbosscache</module>
         <module>infinispan</module>
-	<module>ehcache</module>
 	<module>bootstrap</module>
 	<module>tools</module>
-	<module>demo</module>
     </modules>
 
 </project>
