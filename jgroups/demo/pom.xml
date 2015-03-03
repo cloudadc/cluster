@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    
     <parent>
     	<groupId>org.jboss.cluster.demo</groupId>
     	<artifactId>jgroups-demo-parent</artifactId>
@@ -8,24 +9,20 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.jgroups.demo</groupId>
-    <artifactId>jgroups-demo-tankwar</artifactId>
+    <artifactId>jgroups-demo</artifactId>
     <packaging>jar</packaging>
-    <name>JGroups Demo TankWar</name>
-    <description>A jGroups Demo TankWar Project </description>
+    <name>JGroups Demo</name>
+    <description>A jGroups Demo Project </description>
 
     <dependencies>
 		<dependency>
         	<groupId>org.jgroups</groupId>
         	<artifactId>jgroups</artifactId>
 		</dependency>
-		<dependency>
-        	<groupId>log4j</groupId>
-        	<artifactId>log4j</artifactId>
-		</dependency>
     </dependencies>
     
     <build>
     	<finalName>${artifactId}</finalName>
     </build>
-    
+
 </project>

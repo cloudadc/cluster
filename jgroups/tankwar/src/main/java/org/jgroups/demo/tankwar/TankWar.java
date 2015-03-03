@@ -9,8 +9,8 @@ import org.jgroups.demo.tankwar.jgroups.AsychCommunication;
  * 
  * mvn clean install dependency:copy-dependencies
  * 
- * java -cp ./target/jgroups-tankwar-1.0.jar:./target/dependency/* -Djava.net.preferIPv4Stack=true com.kylin.tankwar.TankWar -p tankwar-udp.xml -n node1 isGood
- * java -cp ./target/jgroups-tankwar-1.0.jar:./target/dependency/* -Djava.net.preferIPv4Stack=true com.kylin.tankwar.TankWar -p tankwar-udp.xml -n node2
+ * java -cp ./target/jgroups-demo-tankwar.jar:./target/dependency/* -Djava.net.preferIPv4Stack=true org.jgroups.demo.tankwar.TankWar -p tankwar-udp.xml -n node1 isGood
+ * java -cp ./target/jgroups-demo-tankwar.jar:./target/dependency/* -Djava.net.preferIPv4Stack=true org.jgroups.demo.tankwar.TankWar -p tankwar-udp.xml -n node2
  * 
  * @author kylin
  *
