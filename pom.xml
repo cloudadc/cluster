@@ -13,6 +13,7 @@
     <properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		
+		<version.jboss-modules>1.4.1.Final</version.jboss-modules>	
 		<version.jgroups>3.6.2.Final</version.jgroups>
 		<version.log4j>1.2.16</version.log4j>
 		
@@ -78,6 +79,11 @@
     
     <dependencyManagement>
     	<dependencies>
+	<dependency>
+            <groupId>org.jboss.modules</groupId>
+            <artifactId>jboss-modules</artifactId>
+            <version>${version.jboss-modules}</version>
+        </dependency>
     	<dependency>
     		<groupId>org.jgroups</groupId>
     		<artifactId>jgroups</artifactId>
@@ -88,6 +94,11 @@
            <artifactId>log4j</artifactId>
            <version>${version.log4j}</version>
        </dependency>
+	<dependency>
+            <groupId>org.jgroups.demo</groupId>
+            <artifactId>jgroups-demo</artifactId>
+	    <version>${project.version}</version>
+	</dependency>
     </dependencies>
     </dependencyManagement>
     

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <parent>
+		<groupId>org.jboss.cluster.demo</groupId>
+		<artifactId>cluster-demo-parent</artifactId>
+		<version>2.0-SNAPSHOT</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>cluster-demo-build</artifactId>
+    <name>JBoss Cluster Framework Demo Build</name>
+    <description>JBoss Cluster Framework Demo Build</description>
+    
+    <dependencies>
+    	<dependency>
+        	<groupId>org.jgroups</groupId>
+        	<artifactId>jgroups</artifactId>
+		</dependency>
+		<dependency>
+        	<groupId>log4j</groupId>
+        	<artifactId>log4j</artifactId>
+		</dependency>
+		<dependency>
+        	<groupId>org.jgroups.demo</groupId>
+        	<artifactId>jgroups-demo</artifactId>
+		</dependency>
+		<dependency>
+            <groupId>org.jboss.modules</groupId>
+            <artifactId>jboss-modules</artifactId>
+        </dependency>
+		
+    </dependencies>
+    
+    <build>
+
+    	<pluginManagement>
+    		<plugins>
+    			<plugin>
+    				<artifactId>maven-assembly-plugin</artifactId>
+	                <configuration>
+	                  <archiverConfig>
+	                      <fileMode>0644</fileMode>
+	                      <directoryMode>0755</directoryMode>
+	                      <defaultDirectoryMode>0755</defaultDirectoryMode>
+	                  </archiverConfig>
+	                </configuration>
+    			</plugin>
+    		</plugins>
+    	</pluginManagement>
+    	
+    	<plugins>
+    		<plugin>
+    			<artifactId>maven-assembly-plugin</artifactId>
+    			<configuration>
+    				<finalName>cluster-demo</finalName>
+    				<descriptors>
+    					<descriptor>assembly/dist.xml</descriptor>
+    				</descriptors>
+    				<archive>
+    					<addMavenDescriptor>false</addMavenDescriptor>
+    				</archive>
+    			</configuration>
+    			<executions>
+    				<execution>
+    					<id>create-assemblies</id>
+		                <phase>package</phase>
+		                <goals>
+		                  <goal>single</goal>
+		                </goals>
+    				</execution>
+    			</executions>
+    		</plugin>
+    	</plugins>
+    </build>
+
+</project>

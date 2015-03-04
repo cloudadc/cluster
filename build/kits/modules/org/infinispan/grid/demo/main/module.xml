@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module xmlns="urn:jboss:module:1.1" name="org.infinispan.grid.demo">
+
+	<!-- package dependent jars together 
+	<resources>
+        <resource-root path="infinispan-grid-demo.jar" />
+    </resources>
+
+    <dependencies>
+    	<module name="javax.api"/>
+    	<module name="org.apache.log4j" services="import"/>
+    </dependencies>
+-->
+    <!--  -->
+    <resources>
+        <resource-root path="infinispan-grid-demo-1.0.jar" />
+    </resources>
+
+    <dependencies>
+    	<module name="javax.api"/>
+    	<module name="org.infinispan" services="import"/>
+    	<module name="com.customized.tools.cli" services="import"/>
+    	<module name="com.customized.tools.common" services="import"/>
+    	<module name="com.customized.tools.ui" services="import"/>
+    	<module name="org.apache.log4j" services="import"/>
+    	<module name="org.eclipse.swt" services="import"/>
+    </dependencies>
+    
+    
+</module>
