@@ -4,27 +4,6 @@ import bsh.EvalError;
 import bsh.Interpreter;
 import bsh.util.JConsole;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.jboss.cache.demo.Cache;
-import org.jboss.cache.demo.Fqn;
-import org.jboss.cache.demo.Node;
-import org.jboss.cache.demo.lock.TimeoutException;
-import org.jboss.cache.demo.notifications.annotation.CacheListener;
-import org.jboss.cache.demo.notifications.annotation.CacheStarted;
-import org.jboss.cache.demo.notifications.annotation.CacheStopped;
-import org.jboss.cache.demo.notifications.annotation.NodeCreated;
-import org.jboss.cache.demo.notifications.annotation.NodeEvicted;
-import org.jboss.cache.demo.notifications.annotation.NodeModified;
-import org.jboss.cache.demo.notifications.annotation.NodeRemoved;
-import org.jboss.cache.demo.notifications.annotation.ViewChanged;
-import org.jboss.cache.demo.notifications.event.Event;
-import org.jboss.cache.demo.notifications.event.NodeEvent;
-import org.jboss.cache.demo.notifications.event.NodeModifiedEvent;
-import org.jboss.cache.demo.notifications.event.ViewChangedEvent;
-import org.jboss.cache.demo.util.CachePrinter;
-import org.jgroups.Address;
-
 import javax.swing.AbstractAction;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -50,8 +29,6 @@ import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
-import javax.transaction.Transaction;
-import javax.transaction.TransactionManager;
 
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;

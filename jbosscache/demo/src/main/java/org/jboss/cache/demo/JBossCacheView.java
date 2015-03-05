@@ -3,10 +3,6 @@ package org.jboss.cache.demo;
 import java.io.IOException;
 
 import org.apache.log4j.Logger;
-import org.jboss.cache.demo.Cache;
-import org.jboss.cache.demo.CacheFactory;
-import org.jboss.cache.demo.CacheStatus;
-import org.jboss.cache.demo.DefaultCacheFactory;
 
 import com.customized.tools.cli.TreeNode;
 

@@ -6,7 +6,6 @@ import java.io.FileNotFoundException;
 import org.apache.log4j.Logger;
 import org.jboss.cache.demo.JBossCacheView;
 
-import com.customized.tools.common.ResourceLoader;
 
 public class Main  {
 	

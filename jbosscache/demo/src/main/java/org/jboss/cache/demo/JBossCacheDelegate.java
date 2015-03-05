@@ -1,7 +1,5 @@
 package org.jboss.cache.demo;
 
-import org.jboss.cache.demo.Cache;
-
 /**
  * Delegate that hides cache model details for the demo GUI
  * 

@@ -1,7 +1,5 @@
 package org.jboss.cache.demo;
 
-import org.jboss.cache.demo.Cache;
-
 /**
  * Model delegate implementation for JBossCache demo
  */

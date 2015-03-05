@@ -8,21 +8,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 import org.apache.log4j.Logger;
-import org.jboss.cache.demo.Cache;
-import org.jboss.cache.demo.Fqn;
-import org.jboss.cache.demo.Node;
-import org.jboss.cache.demo.notifications.annotation.CacheListener;
-import org.jboss.cache.demo.notifications.annotation.CacheStarted;
-import org.jboss.cache.demo.notifications.annotation.CacheStopped;
-import org.jboss.cache.demo.notifications.annotation.NodeCreated;
-import org.jboss.cache.demo.notifications.annotation.NodeEvicted;
-import org.jboss.cache.demo.notifications.annotation.NodeModified;
-import org.jboss.cache.demo.notifications.annotation.NodeRemoved;
-import org.jboss.cache.demo.notifications.annotation.ViewChanged;
-import org.jboss.cache.demo.notifications.event.Event;
-import org.jboss.cache.demo.notifications.event.NodeEvent;
-import org.jboss.cache.demo.notifications.event.NodeModifiedEvent;
-import org.jboss.cache.demo.notifications.event.ViewChangedEvent;
+
 import org.jgroups.Address;
 
 import com.customized.tools.cli.TreeInputConsole;

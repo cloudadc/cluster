@@ -1,11 +1,6 @@
 package org.jboss.cache.demo;
 
 import org.apache.log4j.Logger;
-import org.jboss.cache.demo.Cache;
-import org.jboss.cache.demo.Node;
-import org.jboss.cache.demo.notifications.event.Event;
-import org.jboss.cache.demo.notifications.event.NodeEvent;
-import org.jboss.cache.demo.notifications.event.ViewChangedEvent;
 
 public class JBossCacheLogger {
 	
