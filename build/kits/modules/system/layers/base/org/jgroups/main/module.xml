@@ -7,10 +7,7 @@
 
     <dependencies>
     	<module name="javax.api"/>
-    	<!--  
-    	<module name="org.apache.log4j" services="import"/>
     	<module name="org.hamcrest" services="import"/>
     	<module name="org.jgroups.demo.tankwar" services="import"/>
-    	-->
     </dependencies>
 </module>

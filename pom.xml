@@ -16,7 +16,10 @@
 		<version.jboss-modules>1.4.1.Final</version.jboss-modules>	
 		<version.jgroups>3.6.2.Final</version.jgroups>
 		<version.log4j>1.2.16</version.log4j>
-		
+		<version.hamcrest-core>1.1</version.hamcrest-core>
+	        <version.jbosscache-core>3.2.5.GA</version.jbosscache-core>
+		<version.beanshell>2.0b5</version.beanshell>
+	
 		<version.jar.plugin>2.2</version.jar.plugin>
 		<version.assembly.plugin>2.4</version.assembly.plugin>
 		<version.compiler.plugin>3.1</version.compiler.plugin>
@@ -89,6 +92,11 @@
     		<artifactId>jgroups</artifactId>
     		<version>${version.jgroups}</version>
     	</dependency>
+	<dependency>
+          <groupId>org.hamcrest</groupId>
+          <artifactId>hamcrest-core</artifactId>
+          <version>${version.hamcrest-core}</version>
+        </dependency>
     	<dependency>
            <groupId>log4j</groupId>
            <artifactId>log4j</artifactId>
@@ -99,11 +107,35 @@
             <artifactId>jgroups-demo</artifactId>
 	    <version>${project.version}</version>
 	</dependency>
+	<dependency>
+            <groupId>org.jgroups.demo</groupId>
+            <artifactId>jgroups-demo-tankwar</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+	<dependency>
+            <groupId>org.jboss.cache</groupId>
+            <artifactId>jbosscache-core</artifactId>
+            <version>${version.jbosscache-core}</version>
+        </dependency>
+	<dependency>
+   	    <groupId>org.beanshell</groupId>
+            <artifactId>bsh</artifactId>
+	    <version>${version.beanshell}</version>
+        </dependency>
+	<dependency>
+            <groupId>org.jboss.cluster.demo</groupId>
+            <artifactId>cluster-demo-utils</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+
     </dependencies>
     </dependencyManagement>
     
     <modules>
+	<module>utils</module>
         <module>jgroups</module>
+	<module>jbosscache</module>
     </modules>
 
 </project>

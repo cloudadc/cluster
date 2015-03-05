@@ -10,7 +10,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.Random;
 
-import org.apache.log4j.Logger;
 import org.jgroups.demo.tankwar.jgroups.Communication;
 import org.jgroups.demo.tankwar.model.Blood;
 import org.jgroups.demo.tankwar.model.Direction;
@@ -26,9 +25,7 @@ public class MainFrame extends Frame {
 	
 	public static final int GAME_WIDTH = 800;
 	public static final int GAME_HEIGHT = 600;
-	
-	private static final Logger logger = Logger.getLogger(MainFrame.class);
-	
+		
 	private Communication comm;
 	
 	public Communication getComm() {
@@ -55,7 +52,7 @@ public class MainFrame extends Frame {
 		initBlood();
 		launchFrame();
 		
-		logger.info("initialize  MainFrame");
+		System.out.println("initialize  MainFrame");
 	}
 
 	private void initBlood() {
@@ -90,7 +87,7 @@ public class MainFrame extends Frame {
 
 	private void launchFrame() {
 		
-		logger.info("launch Frame Start");
+		System.out.println("launch Frame Start");
 		
 		this.setSize(GAME_WIDTH, GAME_HEIGHT);
 	

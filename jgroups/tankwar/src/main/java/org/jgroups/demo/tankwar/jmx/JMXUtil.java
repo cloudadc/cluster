@@ -11,15 +11,12 @@ import javax.management.MalformedObjectNameException;
 import javax.management.NotCompliantMBeanException;
 import javax.management.ObjectName;
 
-import org.apache.log4j.Logger;
 import org.jgroups.demo.tankwar.jmx.annotations.MBean;
 import org.jgroups.demo.tankwar.model.Tank;
 
 
 public class JMXUtil {
-	
-	private static final Logger log = Logger.getLogger(JMXUtil.class);
-	
+		
 	public static final String DOMAIN_NAME = "TankWar";
 	
 	public static MBeanServer getMBeanServer() {
@@ -63,22 +60,22 @@ public class JMXUtil {
 			ObjectName objName = getObjectName(obj, name);
 			
 			if (server.isRegistered(objName)) {
-				log.warn("unregistering already registered MBean: " + objName);
+				System.out.println("unregistering already registered MBean: " + objName);
 					
 				try {
 					server.unregisterMBean(objName);
 				} catch (InstanceNotFoundException e) {
-					log.error("failed to unregister MBean " + e.getMessage());
+					System.out.println("failed to unregister MBean " + e.getMessage());
 				}
 			}
 
 			ResourceMBean res = new ResourceMBean(obj);
 			server.registerMBean(res, objName);
 		} catch (InstanceAlreadyExistsException e) {
-			log.error("register MBean failed " + e.getMessage());
+			System.out.println("register MBean failed " + e.getMessage());
 			throw new MBeanRegistrationException(e, "The @MBean objectName is not unique");
 		} catch (NotCompliantMBeanException e) {
-			log.error("register MBean failed " + e.getMessage());
+			System.out.println("register MBean failed " + e.getMessage());
 			throw new MBeanRegistrationException(e);
 		}
 

@@ -3,7 +3,6 @@ package org.jgroups.demo.tankwar.jgroups.threads;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 
-import org.apache.log4j.Logger;
 import org.jgroups.Message;
 import org.jgroups.demo.tankwar.core.Session;
 import org.jgroups.demo.tankwar.core.Type;
@@ -12,9 +11,7 @@ import org.jgroups.demo.tankwar.model.Explode;
 
 
 public class AsychOtherThread extends ThreadBase implements Runnable {
-	
-	private static final Logger logger = Logger.getLogger(AsychOtherThread.class);
-	
+		
 	private ArrayBlockingQueue<Session> queue ;
 	
 	private List<Explode> explodes ;
@@ -29,10 +26,6 @@ public class AsychOtherThread extends ThreadBase implements Runnable {
 	}
 
 	public void receive(Message msg) {
-		
-		if(logger.isDebugEnabled()) {
-			logger.debug("handle message, " + msg.printHeaders() + " | " + msg.getSrc()  + " | "  + msg.getObject()) ;
-		}
 				
 		Session session = (Session) msg.getObject();
 		
@@ -47,18 +40,12 @@ public class AsychOtherThread extends ThreadBase implements Runnable {
 	public void run() {
 		
 		Thread.currentThread().setName("TankWar-Asych-Other");
-		
-		logger.info("Start Running");
-		
+				
 		while(true) {
 			
 			try {
 				Session session = queue.take();
-				
-				if(logger.isDebugEnabled()){
-					logger.debug("send message " + session + ", queue size =" + queue.size() );
-				}
-								
+										
 				channel.send(null, session);
 				
 //				if(session.type().equals(Type.B) && isCoordinator()){

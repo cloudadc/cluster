@@ -45,11 +45,49 @@
 		</dependencySet>
 		<dependencySet>
 		  <includes>
+	        <include>org.hamcrest:hamcrest-core:jar</include>
+	      </includes>
+		  <outputDirectory>modules/system/layers/base/org/hamcrest/main</outputDirectory>
+	      <unpack>false</unpack>
+		</dependencySet>
+		<dependencySet>
+		  <includes>
 	        <include>org.jgroups.demo:jgroups-demo:jar</include>
 	      </includes>
 		  <outputDirectory>modules/system/layers/base/org/jgroups/demo/main</outputDirectory>
 	      <unpack>false</unpack>
 		</dependencySet>
+		<dependencySet>
+		  <includes>
+	        <include>org.jgroups.demo:jgroups-demo-tankwar:jar</include>
+	      </includes>
+		  <outputDirectory>modules/system/layers/base/org/jgroups/demo/tankwar/main</outputDirectory>
+	      <unpack>false</unpack>
+		</dependencySet>
+		
+		<!-- JBossCache Demo -->
+		<dependencySet>
+		  <includes>
+	        <include>org.jboss.cache:jbosscache-core:jar</include>
+	      </includes>
+		  <outputDirectory>modules/system/layers/base/org/jboss/cache/main</outputDirectory>
+	      <unpack>false</unpack>
+		</dependencySet>
+		<dependencySet>
+		  <includes>
+	        <include>org.beanshell:bsh:jar</include>
+	      </includes>
+		  <outputDirectory>modules/system/layers/base/org/beanshell/main</outputDirectory>
+	      <unpack>false</unpack>
+		</dependencySet>
+		<dependencySet>
+		  <includes>
+	        <include>org.jboss.cluster.demo:cluster-demo-utils:jar</include>
+	      </includes>
+		  <outputDirectory>modules/system/layers/base/org/jboss/cluster/demo/cluster-demo-utils/main</outputDirectory>
+	      <unpack>false</unpack>
+		</dependencySet>
+		
 	</dependencySets>
 
 </assembly>

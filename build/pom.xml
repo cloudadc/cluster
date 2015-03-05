@@ -18,6 +18,10 @@
         	<artifactId>jgroups</artifactId>
 		</dependency>
 		<dependency>
+          <groupId>org.hamcrest</groupId>
+          <artifactId>hamcrest-core</artifactId>
+        </dependency>
+		<dependency>
         	<groupId>log4j</groupId>
         	<artifactId>log4j</artifactId>
 		</dependency>
@@ -26,9 +30,27 @@
         	<artifactId>jgroups-demo</artifactId>
 		</dependency>
 		<dependency>
+        	<groupId>org.jgroups.demo</groupId>
+        	<artifactId>jgroups-demo-tankwar</artifactId>
+		</dependency>
+		<dependency>
             <groupId>org.jboss.modules</groupId>
             <artifactId>jboss-modules</artifactId>
         </dependency>
+        
+        <dependency>
+            <groupId>org.jboss.cache</groupId>
+            <artifactId>jbosscache-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.beanshell</groupId>
+            <artifactId>bsh</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.cluster.demo</groupId>
+            <artifactId>cluster-demo-utils</artifactId>
+        </dependency>
+        
 		
     </dependencies>
     

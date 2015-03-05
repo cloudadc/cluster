@@ -21,7 +21,6 @@ import javax.management.MBeanInfo;
 import javax.management.MBeanOperationInfo;
 import javax.management.ReflectionException;
 
-import org.apache.log4j.Logger;
 import org.jgroups.demo.tankwar.jmx.annotations.MBean;
 import org.jgroups.demo.tankwar.jmx.annotations.ManagedAttribute;
 import org.jgroups.demo.tankwar.jmx.annotations.ManagedOperation;
@@ -31,9 +30,7 @@ import org.jgroups.demo.tankwar.jmx.annotations.Property;
 
 
 public class ResourceMBean implements DynamicMBean{
-	
-	private static final Logger log = Logger.getLogger(ResourceMBean.class);
-	
+		
 	private static final Class<?>[] primitives= { int.class,
 												  byte.class,
 												  short.class,
@@ -99,7 +96,7 @@ public class ResourceMBean implements DynamicMBean{
             }
             catch(NoSuchFieldException e) {
                //this should not happen unless somebody removes description field 
-               log.warn("Could not reflect field description of this class. Was it removed?");               
+               System.out.println("Could not reflect field description of this class. Was it removed?");               
             }
         }
     }
@@ -199,7 +196,7 @@ public class ResourceMBean implements DynamicMBean{
 	private void exposeManagedAttribute(Method method){
         String methodName=method.getName();
         if(!methodName.startsWith("get") && !methodName.startsWith("set") && !methodName.startsWith("is")) {
-			log.warn("method name " + methodName + " doesn't start with \"get\", \"set\", or \"is\"" + ", but is annotated with @ManagedAttribute: will be ignored");
+			System.out.println("method name " + methodName + " doesn't start with \"get\", \"set\", or \"is\"" + ", but is annotated with @ManagedAttribute: will be ignored");
             return;
         }
         ManagedAttribute attr = method.getAnnotation(ManagedAttribute.class);
@@ -257,7 +254,7 @@ public class ResourceMBean implements DynamicMBean{
                                                 false);
                 }
 			} else {
-            	log.warn("Method " + method.getName() + " must have a valid return type and zero parameters");
+            	System.out.println("Method " + method.getName() + " must have a valid return type and zero parameters");
                 //silently skip this method
                 return;
             }
@@ -268,7 +265,7 @@ public class ResourceMBean implements DynamicMBean{
         if(!writeAttribute) {
             //we already have annotated field as read
             if(ae instanceof FieldAttributeEntry && ae.getInfo().isReadable()) {
-                log.warn("not adding annotated method " + method + " since we already have read attribute");
+                System.out.println("not adding annotated method " + method + " since we already have read attribute");
             }
             //we already have annotated set method
             else if(ae instanceof MethodAttributeEntry) {
@@ -286,7 +283,7 @@ public class ResourceMBean implements DynamicMBean{
             if(ae instanceof FieldAttributeEntry) {
                 //we already have annotated field as write
                 if(ae.getInfo().isWritable()) {
-                    log.warn("Not adding annotated method " + methodName + " since we already have writable attribute");
+                    System.out.println("Not adding annotated method " + methodName + " since we already have writable attribute");
                 }
                 else {
                     //we already have annotated field as read
@@ -378,7 +375,7 @@ public class ResourceMBean implements DynamicMBean{
 			if (attr != null) {
 				al.add(attr);
 			} else {
-				log.warn("Did not find attribute " + name);
+				System.out.println("Did not find attribute " + name);
 			}
 		}
         return al;
@@ -392,7 +389,7 @@ public class ResourceMBean implements DynamicMBean{
 			if (setNamedAttribute(attr)) {
 				results.add(attr);
 			} else {
-				log.warn("Failed to update attribute name " + attr.getName() + " with value " + attr.getValue());
+				System.out.println("Failed to update attribute name " + attr.getName() + " with value " + attr.getValue());
             }
         }
         return results;
@@ -443,10 +440,10 @@ public class ResourceMBean implements DynamicMBean{
 				entry.invoke(attribute);
 				result = true;
 			} catch (Exception e) {
-                log.warn("Exception while writing value for attribute " + attribute.getName(), e);
+                System.out.println("Exception while writing value for attribute " + attribute.getName());
             }            
 		} else {
-            log.warn("Could not invoke set on attribute " + attribute.getName() + " with value " + attribute.getValue());
+            System.out.println("Could not invoke set on attribute " + attribute.getName() + " with value " + attribute.getValue());
         }
         return result;
     }
@@ -461,10 +458,10 @@ public class ResourceMBean implements DynamicMBean{
 				try {
 					result = new Attribute(name, entry.invoke(null));
 				} catch (Exception e) {
-					log.warn("Exception while reading value of attribute " + name, e);
+					System.out.println("Exception while reading value of attribute " + name);
 				}
 			} else {
-				log.warn("Did not find queried attribute with name " + name);
+				System.out.println("Did not find queried attribute with name " + name);
 			}
 		}
 		return result;

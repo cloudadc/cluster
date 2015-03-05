@@ -1,6 +1,5 @@
 package org.jgroups.demo.tankwar.jgroups.threads;
 
-import org.apache.log4j.Logger;
 import org.jgroups.JChannel;
 import org.jgroups.ReceiverAdapter;
 import org.jgroups.View;
@@ -8,9 +7,7 @@ import org.jgroups.demo.tankwar.jgroups.factory.JChannelDefaultFactory;
 
 
 public class ThreadBase extends ReceiverAdapter {
-	
-	private static final Logger logger = Logger.getLogger(ThreadBase.class);
-	
+		
 	protected String name;
 	protected String cluster;
 	protected String jgroupsProps;
@@ -27,14 +24,7 @@ public class ThreadBase extends ReceiverAdapter {
 
 	public void viewAccepted(View view) {
 
-		logger.info("** view: " + view);
-
-		if (logger.isDebugEnabled()) {
-			logger.debug(" -> View Id: " + view.getViewId());
-			logger.debug(" -> View Creater: " + view.getCreator());
-			logger.debug(" -> View Coordinator: " + view.getMembers().get(0));
-			logger.debug(" -> View Memembers: " + view.getMembers());
-		}
+		System.out.println("** view: " + view);
 
 	}
 	

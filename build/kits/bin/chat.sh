@@ -53,9 +53,9 @@ if [ "x$LAUNCH_DEMO_IN_BACKGROUND" = "x" ]; then
     # Execute the JVM in the foreground
     eval \"$JAVA\" $JAVA_OPTS \
         -Ddemo.home.dir=\"$DEMO_HOME\" \
-        -jar \"$DEMO_HOME/jboss-modules-1.1.2.GA.jar\" \
+        -jar \"$DEMO_HOME/jboss-modules-${version.jboss-modules}.jar\" \
         -mp \"$DEMO_HOME/modules\" \
-        bootstrap.jgroups.chat \
+        org.jgroups.demo.chat \
         "$@"
     DEMO_STATUS=$?
     echo "JBoss Cluster FrameWork Demo Status: $DEMO_STATUS"
@@ -63,9 +63,9 @@ else
     # Execute the JVM in the background
     eval \"$JAVA\" $JAVA_OPTS \
         -Ddemo.home.dir=\"$DEMO_HOME\" \
-        -jar \"$DEMO_HOME/jboss-modules-1.1.2.GA.jar\" \
+        -jar \"$DEMO_HOME/jboss-modules-${version.jboss-modules}.jar\" \
         -mp \"$DEMO_HOME/modules\" \
-        bootstrap.jgroups.chat \
+        org.jgroups.demo.chat \
         "$@" "&"
     DEMO_PID=$!
     echo "JBoss Cluster FrameWork Demo PID: $DEMO_PID"
