@@ -1,5 +1,6 @@
 ## JBoss Cluster Framework Demo
 
+A series demo that allows you quick understand JBoss Cluster/Data Grid Framework(jGroups, JBossCache, Infinispan).
 
 ## Build
 
@@ -9,11 +10,24 @@
 Enter the following:
 
 ~~~
-git clone git@github.com:kylinsoong/cluster.git
-cd cluster
-mvn clean install -P release
+$ git clone git@github.com:<yourname>/cluster.git
+$ cd cluster
+$ mvn clean install -P release
 ~~~
 
-the release distribution will be generated under `cluster/build/target` directory once the build is completed.
+`cluster-demo-dist.zip` will be generated under `cluster/build/target` directory once the build is completed.
 
 ## Run 
+
+~~~
+$ unzip cluster-demo-dist.zip
+$ cd cluster-demo-<version>/
+$ ./bin/draw.sh
+~~~
+
+[Complete jGroups Demos Gallery](build/docs/jgroups-demos.md)
+
+## Contribute
+
+* Open an issue on [https://github.com/jbosschina/cluster/issues](https://github.com/jbosschina/cluster/issues)
+* Fork and submit pull request 
