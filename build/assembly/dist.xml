@@ -65,21 +65,7 @@
 	      <unpack>false</unpack>
 		</dependencySet>
 		
-		<!-- JBossCache Demo -->
-		<dependencySet>
-		  <includes>
-	        <include>org.jboss.cache:jbosscache-core:jar</include>
-	      </includes>
-		  <outputDirectory>modules/system/layers/base/org/jboss/cache/main</outputDirectory>
-	      <unpack>false</unpack>
-		</dependencySet>
-		<dependencySet>
-		  <includes>
-	        <include>org.beanshell:bsh:jar</include>
-	      </includes>
-		  <outputDirectory>modules/system/layers/base/org/beanshell/main</outputDirectory>
-	      <unpack>false</unpack>
-		</dependencySet>
+		
 		<dependencySet>
 		  <includes>
 	        <include>org.jboss.cluster.demo:cluster-demo-utils:jar</include>

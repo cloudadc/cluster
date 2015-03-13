@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<module xmlns="urn:jboss:module:1.1" name="com.kylin.tools.h2">
+<module xmlns="urn:jboss:module:1.1" name="org.beanshell">
 
     <resources>
-        <resource-root path="tools-h2.jar" />
+        <resource-root path="bsh-${version.beanshell}.jar"/>
     </resources>
 
     <dependencies>

@@ -6,18 +6,18 @@ import java.io.FileNotFoundException;
 import org.apache.log4j.Logger;
 import org.jboss.cache.demo.JBossCacheView;
 
+import com.customized.tools.common.ResourceLoader;
+
 
 public class Main  {
 	
-	private final static Logger logger = Logger.getLogger(MainTest.class);
+	private final static Logger logger = Logger.getLogger(Main.class);
 
 	public static void main(String[] args) throws Exception {
 		
 		logger.info("JBossCache Demo Bootstrap");
 		
-		if(null != System.getProperty("demo.conf.dir")) {
-			ResourceLoader.registerBaseDir(System.getProperty("demo.conf.dir"));
-		}
+		ResourceLoader.registerBaseDir(System.getProperty("demo.home.dir") + File.separator + "configuration");
 		
 		parseParameters(args);
 		
