@@ -17,7 +17,7 @@
 		<version.jgroups>3.6.2.Final</version.jgroups>
 		<version.log4j>1.2.16</version.log4j>
 		<version.hamcrest-core>1.1</version.hamcrest-core>
-	        <version.jbosscache-core>3.2.6.GA</version.jbosscache-core>
+	        <version.jbosscache-core>3.2.7.GA</version.jbosscache-core>
 		<version.beanshell>2.0b5</version.beanshell>
 	
 		<version.jar.plugin>2.2</version.jar.plugin>
@@ -135,9 +135,7 @@
     <modules>
 	<module>utils</module>
         <module>jgroups</module>
-<!--
 	<module>jbosscache</module>
--->
     </modules>
 
 </project>

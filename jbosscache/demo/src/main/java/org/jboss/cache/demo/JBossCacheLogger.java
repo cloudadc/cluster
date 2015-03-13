@@ -1,6 +1,11 @@
 package org.jboss.cache.demo;
 
 import org.apache.log4j.Logger;
+import org.jboss.cache.Cache;
+import org.jboss.cache.Node;
+import org.jboss.cache.notifications.event.Event;
+import org.jboss.cache.notifications.event.NodeEvent;
+import org.jboss.cache.notifications.event.ViewChangedEvent;
 
 public class JBossCacheLogger {
 	
@@ -43,6 +48,8 @@ public class JBossCacheLogger {
 		case VIEW_CHANGED:
 			ViewChangedEvent event4 = (ViewChangedEvent) e;
 			debugCache("View changed " + event4.getNewView().getMembers());
+			break;
+		default:
 			break;
 		}
 	}
