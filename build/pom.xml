@@ -50,6 +50,11 @@
             <groupId>org.jboss.cluster.demo</groupId>
             <artifactId>cluster-demo-utils</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.jboss.cache.demo</groupId>
+            <artifactId>jbosscache-replication-demo</artifactId>
+            <classifier>all-jar</classifier>
+        </dependency>
         
 		
     </dependencies>

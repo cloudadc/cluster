@@ -47,7 +47,6 @@
             <configuration>
                 <descriptors>
                     <descriptor>assembly/all-jar.xml</descriptor>
-                    <descriptor>assembly/dist.xml</descriptor>
                 </descriptors>
             </configuration>
             <executions>
