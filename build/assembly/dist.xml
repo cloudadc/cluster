@@ -74,6 +74,27 @@
 	      <unpack>false</unpack>
 		</dependencySet>
 		
+		<dependencySet>
+		  <includes>
+	        <include>org.jboss.cache.demo:jbosscache-replication-demo:jar:all-jar</include>
+	      </includes>
+		  <outputDirectory>modules/system/layers/base/org/jboss/cache/demo/main/</outputDirectory>
+	      <unpack>false</unpack>
+		</dependencySet>
+		<dependencySet>
+		  <includes>
+	        <include>org.jboss.cache:jbosscache-core:jar</include>
+	      </includes>
+		  <outputDirectory>modules/system/layers/base/org/jboss/cache/main</outputDirectory>
+	      <unpack>false</unpack>
+		</dependencySet>
+		<dependencySet>
+		  <includes>
+	        <include>org.beanshell:bsh:jar</include>
+	      </includes>
+		  <outputDirectory>modules/system/layers/base/org/beanshell/main</outputDirectory>
+	      <unpack>false</unpack>
+		</dependencySet>
 	</dependencySets>
 
 </assembly>

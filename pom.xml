@@ -127,6 +127,12 @@
             <artifactId>cluster-demo-utils</artifactId>
             <version>${project.version}</version>
         </dependency>
+	<dependency>
+            <groupId>org.jboss.cache.demo</groupId>
+            <artifactId>jbosscache-replication-demo</artifactId>
+            <classifier>all-jar</classifier>
+            <version>${project.version}</version>
+        </dependency>
 
 
     </dependencies>
