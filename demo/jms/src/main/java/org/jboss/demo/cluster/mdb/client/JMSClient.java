@@ -20,7 +20,7 @@ public class JMSClient {
 
 		final Properties env = new Properties();
 		env.put(Context.INITIAL_CONTEXT_FACTORY, "org.jboss.naming.remote.client.InitialContextFactory");
-		env.put(Context.PROVIDER_URL, "remote://10.66.218.47:4447");
+		env.put(Context.PROVIDER_URL, "http-remoting://127.0.0.1:8080");
 		env.put(Context.SECURITY_PRINCIPAL,"democlient");
 		env.put(Context.SECURITY_CREDENTIALS,"password1!");
 
@@ -59,7 +59,7 @@ public class JMSClient {
             
             HashMap<String, Serializable> map = new HashMap<String, Serializable>();
             map.put( "delay", new Long(1000 * 10) );
-            map.put( "message", "JBoss 7/WildFly HornetQ Messaging High Available" );
+            map.put( "message", "WildFly 9 HornetQ Messaging High Available" );
             System.out.println("Send 10 messages to DistributedQueue");
             for (int index = 1; index <= 10; index++) {
 				map.put( "count", index );
