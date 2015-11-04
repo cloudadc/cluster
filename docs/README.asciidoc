@@ -1,28 +1,3 @@
-agaenda
--------
+## Note
 
-link:agenda.asciidoc[agenda entry]
-
-
-JGroups
--------
-
-link:JGroups.asciidoc[JGroups document entry]
-
-link:JGroups-Demo.asciidoc[JGroups Demo document entry]
-
-link:JGroups-Test.asciidoc[JGroups Test document entry]
-
-
-Infinispan
-----------
-
-link:Infinispan.asciidoc[Infinispan document entry]
-
-link:infinispan-Test.asciidoc[Infinispan Test entry]
-
-
-TankWar
--------
-
-link:how_to_plan.asciidoc[How to plan?]
+This folder will be remove soon

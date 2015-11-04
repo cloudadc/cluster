@@ -1,0 +1,100 @@
+<assembly xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2 http://maven.apache.org/xsd/assembly-1.1.2.xsd">
+          
+	<id>dist</id>
+	<formats>
+    	<format>zip</format>
+	</formats>
+	
+	<includeBaseDirectory>true</includeBaseDirectory>
+	
+	<baseDirectory>cluster-demo-${project.version}</baseDirectory>
+	
+	<fileSets>
+		<fileSet>
+	        <directory>${project.basedir}/kits</directory>
+	        <outputDirectory>/</outputDirectory>
+	        <fileMode>755</fileMode>
+	        <filtered>true</filtered>
+		</fileSet>
+   	
+	</fileSets>
+	
+	<dependencySets>
+		<dependencySet>
+		  <includes>
+	        <include>org.jboss.modules:jboss-modules:jar</include>
+	      </includes>
+		  <outputDirectory>/</outputDirectory>
+	      <unpack>false</unpack>
+		</dependencySet>
+		<dependencySet>
+		  <includes>
+	        <include>log4j:log4j:jar</include>
+	      </includes>
+		  <outputDirectory>modules/system/layers/base/org/apache/log4j/main</outputDirectory>
+	      <unpack>false</unpack>
+		</dependencySet>
+		<dependencySet>
+		  <includes>
+	        <include>org.jgroups:jgroups:jar</include>
+	      </includes>
+		  <outputDirectory>modules/system/layers/base/org/jgroups/main</outputDirectory>
+	      <unpack>false</unpack>
+		</dependencySet>
+		<dependencySet>
+		  <includes>
+	        <include>org.hamcrest:hamcrest-core:jar</include>
+	      </includes>
+		  <outputDirectory>modules/system/layers/base/org/hamcrest/main</outputDirectory>
+	      <unpack>false</unpack>
+		</dependencySet>
+		<dependencySet>
+		  <includes>
+	        <include>org.jgroups.demo:jgroups-demo:jar</include>
+	      </includes>
+		  <outputDirectory>modules/system/layers/base/org/jgroups/demo/main</outputDirectory>
+	      <unpack>false</unpack>
+		</dependencySet>
+		<dependencySet>
+		  <includes>
+	        <include>org.jgroups.demo:jgroups-demo-tankwar:jar</include>
+	      </includes>
+		  <outputDirectory>modules/system/layers/base/org/jgroups/demo/tankwar/main</outputDirectory>
+	      <unpack>false</unpack>
+		</dependencySet>
+		
+		
+		<dependencySet>
+		  <includes>
+	        <include>org.jboss.cluster.demo:cluster-demo-utils:jar</include>
+	      </includes>
+		  <outputDirectory>modules/system/layers/base/org/jboss/cluster/demo/cluster-demo-utils/main</outputDirectory>
+	      <unpack>false</unpack>
+		</dependencySet>
+		
+		<dependencySet>
+		  <includes>
+	        <include>org.jboss.cache.demo:jbosscache-replication-demo:jar:all-jar</include>
+	      </includes>
+		  <outputDirectory>modules/system/layers/base/org/jboss/cache/demo/main/</outputDirectory>
+	      <unpack>false</unpack>
+		</dependencySet>
+		<dependencySet>
+		  <includes>
+	        <include>org.jboss.cache:jbosscache-core:jar</include>
+	      </includes>
+		  <outputDirectory>modules/system/layers/base/org/jboss/cache/main</outputDirectory>
+	      <unpack>false</unpack>
+		</dependencySet>
+		<dependencySet>
+		  <includes>
+	        <include>org.beanshell:bsh:jar</include>
+	      </includes>
+		  <outputDirectory>modules/system/layers/base/org/beanshell/main</outputDirectory>
+	      <unpack>false</unpack>
+		</dependencySet>
+	</dependencySets>
+
+</assembly>

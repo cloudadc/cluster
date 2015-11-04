@@ -1,107 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <parent>
+    	<groupId>org.jboss.cluster.demo</groupId>
+    	<artifactId>jgroups-demo-parent</artifactId>
+		<version>2.0-SNAPSHOT</version>
+    </parent>
     <modelVersion>4.0.0</modelVersion>
-
-    <groupId>com.kylin.jgroups</groupId>
-    <artifactId>jgroups-tankwar</artifactId>
-    <version>1.0</version>
+    <groupId>org.jgroups.demo</groupId>
+    <artifactId>jgroups-demo-tankwar</artifactId>
     <packaging>jar</packaging>
-
-    <name>JGroups TankWar</name>
-    <description>A jGroups Test Project </description>
-
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.build.timestamp.format>yyyyMMdd'T'HHmmss</maven.build.timestamp.format>
-
-        <jboss.bom.version>1.0.0.Final</jboss.bom.version>
-        <hibernate.validator.version>4.2.0.Final</hibernate.validator.version>
-        <hibernate.jpamodelgen.version>1.1.1.Final</hibernate.jpamodelgen.version>
-
-        <!-- other plugin versions -->
-        <surefire.plugin.version>2.10</surefire.plugin.version>
-        <war.plugin.version>2.1.1</war.plugin.version>
-        <compiler.plugin.version>2.3.1</compiler.plugin.version>
-
-        <!-- maven-compiler-plugin -->
-        <maven.compiler.target>1.6</maven.compiler.target>
-        <maven.compiler.source>1.6</maven.compiler.source>
-    </properties>
-
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.jboss.bom</groupId>
-                <artifactId>jboss-javaee-6.0-with-tools</artifactId>
-                <version>${jboss.bom.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
+    <name>JGroups Demo TankWar</name>
+    <description>A jGroups Demo TankWar Project </description>
 
     <dependencies>
-
-	<dependency>
-           <groupId>org.jgroups</groupId>
-           <artifactId>jgroups</artifactId>
-           <version>3.3.1.Final</version>
-       </dependency>
-	<dependency>
-           <groupId>log4j</groupId>
-           <artifactId>log4j</artifactId>
-           <version>1.2.16</version>
-       </dependency>
-        
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-
+		<dependency>
+        	<groupId>org.jgroups</groupId>
+        	<artifactId>jgroups</artifactId>
+		</dependency>
+		
     </dependencies>
-
+    
     <build>
-        <!-- Maven will append the version to the finalName (which is the name
-            given to the generated war, and hence the context root) 
-        <finalName>tankwar-1.0</finalName> -->
-
-        <!-- Define plugin versions required for Deployment and Testing Tools -->
-        <pluginManagement>
-        </pluginManagement>
-
-        <plugins>
-            <!-- Compiler plugin enforces Java 1.6 compatibility and activates annotation processors -->
-            <plugin>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>${compiler.plugin.version}</version>
-                <configuration>
-                    <source>${maven.compiler.source}</source>
-                    <target>${maven.compiler.target}</target>
-                </configuration>
-            </plugin>
-        </plugins>
+    	<finalName>${artifactId}</finalName>
     </build>
-
-    <profiles>
-        <profile>
-            <id>default</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <artifactId>maven-surefire-plugin</artifactId>
-                        <configuration>
-                            <skip>true</skip>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-
-    </profiles>
+    
 </project>

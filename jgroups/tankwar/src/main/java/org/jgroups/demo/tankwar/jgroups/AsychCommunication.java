@@ -1,6 +1,5 @@
 package org.jgroups.demo.tankwar.jgroups;
 
-import org.apache.log4j.Logger;
 import org.jgroups.demo.tankwar.core.Session;
 import org.jgroups.demo.tankwar.jgroups.threads.AsychMissileThread;
 import org.jgroups.demo.tankwar.jgroups.threads.AsychOtherThread;
@@ -16,16 +15,12 @@ public class AsychCommunication extends Communication {
 	
 	protected void startThreads() {
 		
-		logger.info("Start Thread");
+		System.out.println("Start Thread");
 		
 		tankExecutor.execute(new AsychTankThread(tankQueue, getTankMap(), tankChannelName, tankClusterlName, jgroupsProps));
 		missileExecutor.execute(new AsychMissileThread(missileQueue, getMissileMap(), missileChannelName, missileClusterName, jgroupsProps));
 		otherExecutor.execute(new AsychOtherThread(otherQueue, explodes, getBloods(), otherChannelName, otherClusterName, jgroupsProps));
 	}	
-	
-
-	private static final Logger logger = Logger.getLogger(AsychCommunication.class);
-
 
 	@Override
 	public Session synchSend(Session session)

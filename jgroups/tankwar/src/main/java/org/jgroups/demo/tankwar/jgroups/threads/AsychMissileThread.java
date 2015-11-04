@@ -3,7 +3,6 @@ package org.jgroups.demo.tankwar.jgroups.threads;
 import java.util.Map;
 import java.util.concurrent.ArrayBlockingQueue;
 
-import org.apache.log4j.Logger;
 import org.jgroups.Message;
 import org.jgroups.demo.tankwar.core.Session;
 import org.jgroups.demo.tankwar.model.Missile;
@@ -12,7 +11,6 @@ import org.jgroups.demo.tankwar.model.MissileView;
 
 public class AsychMissileThread extends ThreadBase implements Runnable {
 	
-	private static final Logger logger = Logger.getLogger(AsychMissileThread.class);
 	
 	private ArrayBlockingQueue<Session> queue ;
 	
@@ -25,11 +23,7 @@ public class AsychMissileThread extends ThreadBase implements Runnable {
 	}
 
 	public void receive(Message msg) {
-		
-		if(logger.isDebugEnabled()) {
-			logger.debug("handle message, " + msg.printHeaders() + " | " + msg.getSrc()  + " | "  + msg.getObject()) ;
-		}
-		
+
 		Session session = (Session) msg.getObject();
 		MissileView view = session.missileView();
 		if(view.isLive()) {
@@ -47,17 +41,11 @@ public class AsychMissileThread extends ThreadBase implements Runnable {
 	public void run() {
 
 		Thread.currentThread().setName("TankWar-Asych-Missile");
-		
-		logger.info("Start Running");
-		
+				
 		while(true) {
 			
 			try {
 				Session session = queue.take();
-				
-				if(logger.isDebugEnabled()){
-					logger.debug("send message " + session + ", queue size =" + queue.size() + ", missileMap size = " + missileMap.size());
-				}
 				
 				channel.send(null, session);
 			} catch (Exception e) {

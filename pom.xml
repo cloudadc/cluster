@@ -3,28 +3,145 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.kylin.cluster</groupId>
-    <artifactId>parent</artifactId>
-    <version>1.0</version>
+    <groupId>org.jboss.cluster.demo</groupId>
+    <artifactId>cluster-demo-parent</artifactId>
+    <version>2.0-SNAPSHOT</version>
     <packaging>pom</packaging>
-    <name>Parent for Cluster Strategy Solution Project</name>
+    <name>JBoss Cluster Framework Demo</name>
+    <description>JBoss Cluster Framework(jGroups, JBossCache, Infinispan) Demo Project</description>
 
-    <licenses>
-        <license>
-            <name>Apache License, Version 2.0</name>
-            <distribution>repo</distribution>
-            <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
-        </license>
-    </licenses>
+    <properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		
+		<version.jboss-modules>1.4.1.Final</version.jboss-modules>	
+		<version.jgroups>3.6.2.Final</version.jgroups>
+		<version.log4j>1.2.16</version.log4j>
+		<version.hamcrest-core>1.1</version.hamcrest-core>
+	        <version.jbosscache-core>3.2.7.GA</version.jbosscache-core>
+		<version.beanshell>2.0b5</version.beanshell>
+	
+		<version.jar.plugin>2.2</version.jar.plugin>
+		<version.assembly.plugin>2.4</version.assembly.plugin>
+		<version.compiler.plugin>3.1</version.compiler.plugin>
+		
+		<maven.compiler.target>1.7</maven.compiler.target>
+        <maven.compiler.source>1.7</maven.compiler.source>
+    </properties>
 
+    <profiles>
+		<profile>
+	 	    <id>release</id>
+		    <properties>
+	                <maven.javadoc.skip>true</maven.javadoc.skip>
+	            </properties>
+		    <modules>
+	                <module>build</module>
+	            </modules>
+		    <build>
+	                <plugins>
+	       		</plugins>
+	            </build>
+		</profile>
+    </profiles>
+    
+    <build>
+    	<pluginManagement>
+    		<plugins>
+    			<plugin>
+    				<groupId>org.apache.maven.plugins</groupId>
+    				<artifactId>maven-jar-plugin</artifactId>
+    				<version>${version.jar.plugin}</version>
+    			</plugin>
+    			<plugin>
+    				<groupId>org.apache.maven.plugins</groupId>
+    				<artifactId>maven-assembly-plugin</artifactId>
+    				<version>${version.assembly.plugin}</version>
+    			</plugin>
+    		</plugins>
+    	</pluginManagement>
+    	<plugins>
+    		<plugin>
+    			<groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${version.compiler.plugin}</version>
+                <configuration>
+                    <source>${maven.compiler.source}</source>
+                    <target>${maven.compiler.target}</target>
+                    <showDeprecation>false</showDeprecation>
+                    <showWarnings>false</showWarnings>
+                 </configuration>
+    		</plugin>
+    		<plugin>
+    			<artifactId>maven-release-plugin</artifactId>
+    			<configuration>
+    				<releaseProfiles>release</releaseProfiles>
+    			</configuration>
+    		</plugin>
+    	</plugins>
+    </build>
+    
+    <dependencyManagement>
+    	<dependencies>
+	<dependency>
+            <groupId>org.jboss.modules</groupId>
+            <artifactId>jboss-modules</artifactId>
+            <version>${version.jboss-modules}</version>
+        </dependency>
+    	<dependency>
+    		<groupId>org.jgroups</groupId>
+    		<artifactId>jgroups</artifactId>
+    		<version>${version.jgroups}</version>
+    	</dependency>
+	<dependency>
+          <groupId>org.hamcrest</groupId>
+          <artifactId>hamcrest-core</artifactId>
+          <version>${version.hamcrest-core}</version>
+        </dependency>
+    	<dependency>
+           <groupId>log4j</groupId>
+           <artifactId>log4j</artifactId>
+           <version>${version.log4j}</version>
+       </dependency>
+	<dependency>
+            <groupId>org.jgroups.demo</groupId>
+            <artifactId>jgroups-demo</artifactId>
+	    <version>${project.version}</version>
+	</dependency>
+	<dependency>
+            <groupId>org.jgroups.demo</groupId>
+            <artifactId>jgroups-demo-tankwar</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+	<dependency>
+            <groupId>org.jboss.cache</groupId>
+            <artifactId>jbosscache-core</artifactId>
+            <version>${version.jbosscache-core}</version>
+        </dependency>
+	<dependency>
+   	    <groupId>org.beanshell</groupId>
+            <artifactId>bsh</artifactId>
+	    <version>${version.beanshell}</version>
+        </dependency>
+	<dependency>
+            <groupId>org.jboss.cluster.demo</groupId>
+            <artifactId>cluster-demo-utils</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+	<dependency>
+            <groupId>org.jboss.cache.demo</groupId>
+            <artifactId>jbosscache-replication-demo</artifactId>
+            <classifier>all-jar</classifier>
+            <version>${project.version}</version>
+        </dependency>
+
+
+    </dependencies>
+    </dependencyManagement>
+    
     <modules>
+	<module>utils</module>
         <module>jgroups</module>
-        <module>jbosscache</module>
-        <module>infinispan</module>
-	<module>ehcache</module>
-	<module>bootstrap</module>
-	<module>tools</module>
-	<module>demo</module>
+	<module>jbosscache</module>
     </modules>
 
 </project>

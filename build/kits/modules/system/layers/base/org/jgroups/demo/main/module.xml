@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module xmlns="urn:jboss:module:1.1" name="org.jgroups.demo">
+
+    <resources>
+        <resource-root path="jgroups-demo-${project.version}.jar"/>
+    </resources>
+
+    <dependencies>
+    	<module name="javax.api"/>
+    	<module name="org.jgroups" services="import"/>
+    	<!--  
+    	<module name="org.apache.log4j" services="import"/>
+    	<module name="org.hamcrest" services="import"/>
+    	<module name="org.jgroups.demo.tankwar" services="import"/>
+    	-->
+    </dependencies>
+</module>

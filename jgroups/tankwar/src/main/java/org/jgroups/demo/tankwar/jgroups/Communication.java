@@ -9,7 +9,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
-import org.apache.log4j.Logger;
 import org.jgroups.demo.tankwar.core.ICommunication;
 import org.jgroups.demo.tankwar.core.IJGroups;
 import org.jgroups.demo.tankwar.core.IReplication;
@@ -27,9 +26,7 @@ import org.jgroups.demo.tankwar.model.TankView;
 
 
 public abstract class Communication implements ICommunication, IReplication, IJGroups, ITank{
-	
-	private final static Logger logger = Logger.getLogger(Communication.class);
-	
+		
 	Map<String,Tank> tankMap = new ConcurrentHashMap<String,Tank>();
 	
 	public Map<String, Tank> getTankMap() {
@@ -127,12 +124,12 @@ public abstract class Communication implements ICommunication, IReplication, IJG
 		tankExecutor = Executors.newCachedThreadPool();
 		missileExecutor = Executors.newCachedThreadPool();
 		otherExecutor = Executors.newCachedThreadPool();
-		logger.info("initialized ThreadPools");
+		System.out.println("initialized ThreadPools");
 		
 		tankQueue = new ArrayBlockingQueue<Session> (500);
 		missileQueue = new ArrayBlockingQueue<Session> (500);
 		otherQueue = new ArrayBlockingQueue<Session> (500);
-		logger.info("initialized blocking queue");
+		System.out.println("initialized blocking queue");
 		
 		tankChannelName = name + "-Tank";
 		missileChannelName = name + "-Missile";

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    
+    <parent>
+    	<groupId>org.jboss.cluster.demo</groupId>
+    	<artifactId>jgroups-demo-parent</artifactId>
+		<version>2.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.jgroups.demo</groupId>
+    <artifactId>jgroups-demo</artifactId>
+    <packaging>jar</packaging>
+    <name>JGroups Demo</name>
+    <description>A jGroups Demo Project </description>
+
+    <dependencies>
+		<dependency>
+        	<groupId>org.jgroups</groupId>
+        	<artifactId>jgroups</artifactId>
+		</dependency>
+    </dependencies>
+    
+    <build>
+    	<finalName>${artifactId}</finalName>
+    </build>
+
+</project>

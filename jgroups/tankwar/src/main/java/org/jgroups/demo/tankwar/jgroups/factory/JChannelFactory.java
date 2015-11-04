@@ -10,7 +10,6 @@ import java.util.concurrent.ThreadFactory;
 
 import javax.management.MBeanServer;
 
-import org.apache.log4j.Logger;
 import org.jgroups.Channel;
 import org.jgroups.ChannelListener;
 import org.jgroups.JChannel;
@@ -21,9 +20,7 @@ import org.jgroups.jmx.JmxConfigurator;
 import org.jgroups.protocols.TP;
 
 public class JChannelFactory implements ChannelFactory, ChannelListener, ProtocolStackConfigurator {
-	
-	private static final Logger logger = Logger.getLogger(JChannelFactory.class);
-	
+		
 	private final ProtocolStackConfiguration configuration ;
 	private final Map<Channel, String> channels = Collections.synchronizedMap(new WeakHashMap<Channel, String>());
 	
@@ -59,7 +56,7 @@ public class JChannelFactory implements ChannelFactory, ChannelListener, Protoco
                 this.channels.put(channel, id);
                 JmxConfigurator.registerChannel(channel, server, id);
             } catch (Exception e) {
-            	logger.warn(e.getMessage(), e);
+            	System.out.println(e.getMessage());
             }
             channel.addChannelListener(this);
         }

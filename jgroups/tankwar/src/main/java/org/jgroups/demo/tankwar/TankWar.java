@@ -1,6 +1,5 @@
 package org.jgroups.demo.tankwar;
 
-import org.apache.log4j.Logger;
 import org.jgroups.demo.tankwar.core.MainFrame;
 import org.jgroups.demo.tankwar.jgroups.AsychCommunication;
 
@@ -9,16 +8,14 @@ import org.jgroups.demo.tankwar.jgroups.AsychCommunication;
  * 
  * mvn clean install dependency:copy-dependencies
  * 
- * java -cp ./target/jgroups-tankwar-1.0.jar:./target/dependency/* -Djava.net.preferIPv4Stack=true com.kylin.tankwar.TankWar -p tankwar-udp.xml -n node1 isGood
- * java -cp ./target/jgroups-tankwar-1.0.jar:./target/dependency/* -Djava.net.preferIPv4Stack=true com.kylin.tankwar.TankWar -p tankwar-udp.xml -n node2
+ * java -cp ./target/jgroups-demo-tankwar.jar:./target/dependency/* -Djava.net.preferIPv4Stack=true org.jgroups.demo.tankwar.TankWar -p tankwar-udp.xml -n node1 isGood
+ * java -cp ./target/jgroups-demo-tankwar.jar:./target/dependency/* -Djava.net.preferIPv4Stack=true org.jgroups.demo.tankwar.TankWar -p tankwar-udp.xml -n node2
  * 
  * @author kylin
  *
  */
 public class TankWar {
-	
-	private static final Logger logger = Logger.getLogger(TankWar.class);
-	
+		
 	private String jgroupsProps ;
 	
 	private String name ;
@@ -33,7 +30,7 @@ public class TankWar {
 	
 	public void doStart() {
 		
-		logger.info("JGroups TankWar Demo doStart, [jgroupsProps=" + jgroupsProps + ", name=" + name + ", isGood=" + isGood + "]");
+		System.out.println("JGroups TankWar Demo doStart, [jgroupsProps=" + jgroupsProps + ", name=" + name + ", isGood=" + isGood + "]");
 		
 		// Current use asynchronous Communication
 		AsychCommunication comm = new AsychCommunication(jgroupsProps, name);
@@ -54,17 +51,17 @@ public class TankWar {
 				continue;
 			}
 
-			if (args[i].equals("-n")) {
+			if (args[i].equals("-n") || args[i].equals("-name")) {
 				name = args[++i];
 				continue;
 			}
 			
-			if (args[i].equals("isGood")) {
+			if (args[i].equals("good")) {
 				isGood = true ;
 				continue;
 			}
 
-			System.out.println("Run Application with [-n <name>] [isGood]");
+			System.out.println("Run Application with [-n <name>] [good]");
 			System.exit(1);
 		}
 		
